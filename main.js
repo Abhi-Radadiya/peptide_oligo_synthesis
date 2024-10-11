@@ -13,6 +13,7 @@ async function createWindow() {
     mainWindow = new BrowserWindow({
         width: screenDimention.width,
         height: screenDimention.height,
+        autoHideMenuBar: true,
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
             contextIsolation: true,
@@ -22,16 +23,12 @@ async function createWindow() {
 
     mainWindow.loadURL("http://localhost:3000");
 
-    // mainWindow.loadURL("https://kmlesh.vercel.app/");
-
     mainWindow.webContents.openDevTools();
 
     mainWindow.on("closed", function () {
         mainWindow = null;
     });
 }
-
-app.on("ready", createWindow);
 
 app.on("activate", function () {
     if (mainWindow === null) {
@@ -119,4 +116,172 @@ ipcMain.handle("send-data", async (event, data) => {
             resolve("Data sent successfully");
         });
     });
+});
+
+// <------------- Save SQL
+
+const dbPath = path.join(__dirname, "settings", "bottle_mapping", "ameditePositions.db");
+let db;
+const sqlite3 = require("sqlite3").verbose();
+
+function initializeDB() {
+    db = new sqlite3.Database(dbPath, (err) => {
+        if (err) {
+            console.error("Could not open database: " + err.message);
+        }
+    });
+
+    db.run(
+        `
+                CREATE TABLE IF NOT EXISTS amedite_positions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    position TEXT NOT NULL UNIQUE,
+                    value TEXT NOT NULL
+                );
+            `,
+        (err) => {
+            if (err) {
+                console.error("Could not create table: " + err.message);
+            }
+        }
+    );
+
+    db.run(
+        `
+                CREATE TABLE IF NOT EXISTS reagent_positions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    position TEXT NOT NULL UNIQUE,
+                    value TEXT NOT NULL
+                );
+            `,
+        (err) => {
+            if (err) {
+                console.error("Could not create table: " + err.message);
+            }
+        }
+    );
+
+    db.run(
+        `
+        CREATE TABLE IF NOT EXISTS amedites (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            full_name TEXT NOT NULL,
+            wm TEXT NOT NULL,
+            case_no TEXT NOT NULL,
+            msds TEXT NOT NULL,
+            concentration REAL NOT NULL
+        );
+    `,
+        (err) => {
+            if (err) {
+                console.error("Could not create `amedites` table: " + err.message);
+            }
+        }
+    );
+
+    console.log("db intialide");
+}
+
+ipcMain.handle("save-bottle-mapping-positions", async (event, positions, mappingOption) => {
+    console.log(`positions : `, positions, mappingOption);
+
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT * FROM ${mappingOption}`, [], (err, rows) => {
+            if (err) {
+                console.error("Error fetching data: " + err.message);
+                reject(err);
+                return;
+            }
+
+            db.serialize(() => {
+                db.run("BEGIN TRANSACTION");
+
+                const queries = Object.entries(positions).map(([position, value]) => {
+                    return new Promise((resolve, reject) => {
+                        db.run(`INSERT INTO ${mappingOption} (position, value) VALUES (?, ?) ON CONFLICT(position) DO UPDATE SET value=?`, [position, value, value], (err) => {
+                            if (err) {
+                                console.log(`err for ${position}: `, err);
+                                reject(err);
+                            } else {
+                                resolve();
+                            }
+                        });
+                    });
+                });
+
+                Promise.all(queries)
+                    .then(() => {
+                        db.run("COMMIT", (err) => {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                resolve();
+                            }
+                        });
+                    })
+                    .catch((err) => {
+                        db.run("ROLLBACK");
+                        reject(err);
+                    });
+            });
+        });
+    });
+});
+
+ipcMain.handle("get-bottle-mapping-positions", async (event, mappingOption) => {
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT * FROM ${mappingOption}`, [], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+});
+
+ipcMain.handle("save-bottle-mapping-details", async (event, amediteDetails) => {
+    const { full_name, wm, case_no, msds, concentration } = amediteDetails;
+
+    console.log(`amediteDetails : `, amediteDetails);
+
+    return new Promise((resolve, reject) => {
+        db.run(
+            `INSERT INTO amedites (full_name, wm, case_no, msds, concentration) 
+            VALUES (?, ?, ?, ?, ?)`,
+            [full_name, wm, case_no, msds, concentration],
+            (err) => {
+                if (err) {
+                    console.error("Error inserting amedite details: " + err.message);
+                    reject(err);
+                } else {
+                    resolve("Amedite details saved successfully");
+                }
+            }
+        );
+    });
+});
+
+ipcMain.handle("get-bottle-mapping-details", async (_) => {
+    return new Promise((resolve, reject) => {
+        db.all("SELECT * FROM amedites", [], (err, rows) => {
+            if (err) {
+                console.error("Error fetching amedite details: " + err.message);
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+});
+
+app.on("before-quit", () => {
+    if (db) {
+        db.close();
+    }
+});
+
+app.on("ready", () => {
+    initializeDB();
+    createWindow();
 });
