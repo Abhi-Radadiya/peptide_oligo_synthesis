@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import Configuration from "./Components/Configuration";
 import { Tabs } from "../../../Components/Tabs/Tab";
-import Position from "./Components/Position";
+import Amedites from "./Components/Amedites";
 
-export default function BottleMapping() {
+export default function Prime() {
     const tabs = [
-        { label: "Position", value: "positions" },
-        { label: "Configuration", value: "configuration" },
+        { label: "Amedites", value: "amedites" },
+        { label: "Solvents", value: "solvents" },
     ];
 
     const [activeTab, setActiveTab] = useState(tabs[0].value);
@@ -15,7 +14,7 @@ export default function BottleMapping() {
         <>
             <Tabs setActiveTab={setActiveTab} tabs={tabs} className="mb-4 pb-4 border-b border-neutral-300" />
 
-            {activeTab == tabs[0].value ? <Position /> : <Configuration />}
+            {activeTab == tabs[0].value ? <Amedites /> : <React.Fragment />}
         </>
     );
 }

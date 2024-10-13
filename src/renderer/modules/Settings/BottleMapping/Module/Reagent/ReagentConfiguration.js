@@ -90,7 +90,7 @@ const ReagentConfiguration = () => {
 
                 <tbody>
                     {data.map((item) => (
-                        <tr key={item.id} className="border-b hover:bg-gray-100">
+                        <tr key={item.id} className="border-b hover:bg-gray-100 even:bg-neutral-50">
                             <td className="py-3 px-6">{item.full_name}</td>
                             <td className="py-3 px-6">{item.wm}</td>
                             <td className="py-3 px-6">{item.case_no}</td>

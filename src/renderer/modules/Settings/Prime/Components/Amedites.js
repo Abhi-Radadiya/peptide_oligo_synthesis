@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { ControllerDropdown } from "../../../../../Components/Dropdown/Dropdown";
-import { useForm } from "react-hook-form";
-import { getBottleMappingData, getBottleMappingDetails, saveBottleMappingData } from "../../../../../function/electronFunctionDeclaration";
+// import { ControllerDropdown } from "../../../../../Components/Dropdown/Dropdown";
+import { Controller, useForm } from "react-hook-form";
+// import { getBottleMappingDetails,savePrimeAmediteDetails } from "../../../../../function/electronFunctionDeclaration";
 import _ from "lodash";
+import { ControllerDropdown } from "../../../../Components/Dropdown/Dropdown";
+import { getBottleMappingDetails, savePrimeAmediteDetails } from "../../../../function/electronFunctionDeclaration";
 
-export default function Amedite() {
+export default function Amedites() {
     const [amedites, setAmedites] = useState([]);
 
     const positions = Array.from({ length: 24 });
@@ -13,21 +15,20 @@ export default function Amedite() {
 
     const loadPosition = async () => {
         try {
-            const response = await getBottleMappingData("amedite_positions");
-
-            response.data.forEach((item) => {
-                setValue(item.position, item.value);
-            });
+            // const response = await getBottleMappingData("prime_amedite_positions");
+            // response.data.forEach((item) => {
+            //     setValue(item.position, item.value);
+            // });
         } catch (error) {
             console.error("Failed to load data:", error);
         }
     };
 
     const onSubmit = async (data) => {
-        const filteredDataOnValue = _.omitBy(data, _.isUndefined);
+        const filteredData = _.pickBy(data, (item) => item.value !== undefined || item.check !== undefined);
 
         try {
-            await saveBottleMappingData(filteredDataOnValue, "amedite_positions");
+            await savePrimeAmediteDetails(filteredData, "prime_amedites_position");
 
             console.log("Data saved successfully!");
         } catch (error) {
@@ -38,7 +39,6 @@ export default function Amedite() {
     const loadAmediteList = async () => {
         try {
             const response = await getBottleMappingDetails("amedites");
-
             setAmedites(response.data.map((el) => ({ label: el.full_name, value: el.full_name })));
         } catch (error) {
             console.log(`error : `, error);
@@ -65,7 +65,19 @@ export default function Amedite() {
                     {positions.slice(0, 12)?.map((_, index) => (
                         <div key={index} className="space-y-2 flex gap-3 items-center w-full">
                             <span className="pt-2.5 block font-medium text-gray-700">{index < 9 ? `0${index + 1}` : index + 1}</span>
-                            <ControllerDropdown control={control} name={`amedite_${index + 1}`} menuItem={amedites} label={`Select`} className="max-w-[200px]" />
+                            <ControllerDropdown
+                                rules={{}}
+                                control={control}
+                                name={`prime_amedite_${index + 1}.value`}
+                                menuItem={amedites}
+                                label={`Select`}
+                                className="max-w-[200px]"
+                            />
+                            <Controller
+                                control={control}
+                                name={`prime_amedite_${index + 1}.check`}
+                                render={({ field: { onChange, onBlur, value } }) => <input type="checkbox" onBlur={onBlur} onChange={onChange} checked={value ?? false} />}
+                            />
                         </div>
                     ))}
                 </div>
@@ -74,7 +86,19 @@ export default function Amedite() {
                     {positions.slice(12, 24)?.map((_, index) => (
                         <div key={index} className="space-y-2 flex gap-3 items-center w-full">
                             <span className="pt-2.5 block font-medium text-gray-700">{index + 13}</span>
-                            <ControllerDropdown control={control} name={`amedite_${index + 13}`} menuItem={amedites} label={`Select`} className="max-w-[200px]" />
+                            <ControllerDropdown
+                                rules={{}}
+                                control={control}
+                                name={`prime_amedite_${index + 13}.value`}
+                                menuItem={amedites}
+                                label={`Select`}
+                                className="max-w-[200px]"
+                            />
+                            <Controller
+                                control={control}
+                                name={`prime_amedite_${index + 13}.check`}
+                                render={({ field: { onChange, onBlur, value } }) => <input type="checkbox" onBlur={onBlur} onChange={onChange} checked={value ?? false} />}
+                            />
                         </div>
                     ))}
                 </div>

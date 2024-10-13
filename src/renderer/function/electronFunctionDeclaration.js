@@ -22,4 +22,16 @@ const getBottleMappingData = async (mappingOption) => {
     return await window.electron.getBottleMappingData(mappingOption);
 };
 
-export { getBottleMappingDetails, saveBottleMappingDetails, updateBottleMappingDetails, deleteBottleMappingDetails, saveBottleMappingData, getBottleMappingData };
+const savePrimeAmediteDetails = async (primePositions, primeOption) => {
+    return await window.electron.savePrimeAmediteDetails(primePositions, primeOption);
+};
+
+export {
+    getBottleMappingDetails,
+    saveBottleMappingDetails,
+    updateBottleMappingDetails,
+    deleteBottleMappingDetails,
+    saveBottleMappingData,
+    getBottleMappingData,
+    savePrimeAmediteDetails,
+};

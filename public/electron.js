@@ -1,50 +1,17 @@
 const { app, BrowserWindow, ipcMain, screen } = require("electron");
 
 const path = require("path");
-const ExcelJS = require("exceljs");
-const fs = require("fs");
 const { SerialPort } = require("serialport");
-
-const logFilePath = path.join(__dirname, "action_log.xlsx");
-
-let workbook;
-let worksheet;
-
-if (fs.existsSync(logFilePath)) {
-    workbook = new ExcelJS.Workbook();
-    workbook.xlsx.readFile(logFilePath).then(() => {
-        worksheet = workbook.getWorksheet(1);
-    });
-} else {
-    workbook = new ExcelJS.Workbook();
-    worksheet = workbook.addWorksheet("Action Log");
-    worksheet.columns = [
-        { header: "Timestamp", key: "timestamp", width: 30 },
-        { header: "Action", key: "action", width: 30 },
-        { header: "Details", key: "details", width: 50 },
-    ];
-}
-
-const logAction = async (action, details, color) => {
-    const timestamp = new Date().toISOString();
-
-    worksheet.addRow({
-        timestamp,
-        action,
-        details,
-    });
-
-    const row = worksheet.lastRow;
-    row.getCell(1).fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFFFF00" } };
-    row.getCell(2).fill = { type: "pattern", pattern: "solid", fgColor: { argb: color } };
-    row.getCell(3).fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFFFF00" } };
-
-    await workbook.xlsx.writeFile(logFilePath);
-};
-
-ipcMain.handle("log-action", async (event, { action, details, color }) => {
-    await logAction(action, details, color);
-});
+const {
+    initializeDB,
+    saveBottleMappingData,
+    getBottleMappingData,
+    saveBottleMappingDetails,
+    getBottleMappingDetails,
+    quitDb,
+    updateBottleMappingDetails,
+    deleteBottleMappingDetails,
+} = require("./db");
 
 let mainWindow;
 let activePort = null;
@@ -56,6 +23,7 @@ async function createWindow() {
     mainWindow = new BrowserWindow({
         width: screenDimention.width,
         height: screenDimention.height,
+        autoHideMenuBar: true,
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
             contextIsolation: true,
@@ -64,7 +32,7 @@ async function createWindow() {
     });
 
     mainWindow.loadURL("http://localhost:3000");
-    // mainWindow.loadURL("https://kmlesh.vercel.app/");
+
     mainWindow.webContents.openDevTools();
 
     mainWindow.on("closed", function () {
@@ -72,20 +40,18 @@ async function createWindow() {
     });
 }
 
-app.on("ready", createWindow);
-app.on("window-all-closed", function () {
-    if (process.platform !== "darwin") {
-        app.quit();
-    }
-});
-
 app.on("activate", function () {
     if (mainWindow === null) {
         createWindow();
     }
 });
 
-// Get list of COM ports
+app.on("window-all-closed", function () {
+    if (process.platform !== "darwin") {
+        app.quit();
+    }
+});
+
 ipcMain.handle("list-ports", async () => {
     try {
         const ports = await SerialPort.list();
@@ -107,7 +73,6 @@ ipcMain.handle("get-port-info", async () => {
     }
 });
 
-// Manage serial port connections
 ipcMain.handle("open-port", async (event, portPath) => {
     if (!portPath) {
         throw new Error("No port path provided");
@@ -161,4 +126,72 @@ ipcMain.handle("send-data", async (event, data) => {
             resolve("Data sent successfully");
         });
     });
+});
+
+// <------------- Save SQL
+
+app.on("before-quit", () => {
+    quitDb();
+});
+
+app.on("ready", () => {
+    initializeDB();
+    createWindow();
+});
+
+// bottle-mapping-positions --------------->
+ipcMain.handle("save-bottle-mapping-positions", async (_, data, mappingOption) => {
+    try {
+        await saveBottleMappingData(data, mappingOption);
+        return { success: true };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+ipcMain.handle("get-bottle-mapping-positions", async (_, mappingOption) => {
+    try {
+        const data = await getBottleMappingData(mappingOption);
+        return { success: true, data };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+// bottle-mapping-details ------------------------>
+
+ipcMain.handle("save-bottle-mapping-details", async (_, amediteDetails, mappingOption) => {
+    try {
+        await saveBottleMappingDetails(amediteDetails, mappingOption);
+        return { success: true };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+ipcMain.handle("get-bottle-mapping-details", async (_, mappingOption) => {
+    try {
+        const data = await getBottleMappingDetails(mappingOption);
+        return { success: true, data };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+ipcMain.handle("update-bottle-mapping-details", async (_, amediteDetails, mappingOption) => {
+    try {
+        const data = await updateBottleMappingDetails(amediteDetails, mappingOption);
+        return { success: true, data };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+ipcMain.handle("delete-bottle-mapping-details", async (_, id, mappingOption) => {
+    try {
+        const data = await deleteBottleMappingDetails(id, mappingOption);
+        return { success: true, data };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
 });
