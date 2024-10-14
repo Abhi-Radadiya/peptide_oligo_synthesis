@@ -23,9 +23,9 @@ const AmediteConfiguration = () => {
     };
 
     const addNewDetails = async (data) => {
+        console.log(`response xxx : `, data);
         try {
             const response = await saveBottleMappingDetails(data, "amedites");
-
             if (response.success) {
                 setIsModalOpen(false);
                 loadAmediteList();
@@ -36,6 +36,7 @@ const AmediteConfiguration = () => {
     };
 
     const handleForm = async (data) => {
+        console.log(`data : `, data);
         _.isEmpty(editAmediteDetails) ? addNewDetails(data) : updateDetails(data);
     };
 

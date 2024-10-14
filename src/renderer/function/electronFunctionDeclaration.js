@@ -3,6 +3,7 @@ const getBottleMappingDetails = async (mappingOption) => {
 };
 
 const saveBottleMappingDetails = async (data, mappingOption) => {
+    console.log(`data preload : `, data);
     return await window.electron.saveBottleMappingDetails(data, mappingOption);
 };
 

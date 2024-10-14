@@ -1,7 +1,6 @@
-const { app, BrowserWindow, ipcMain, screen } = require("electron");
-
+const { app, BrowserWindow, screen, ipcMain } = require("electron");
+const { autoUpdater } = require("electron-updater");
 const path = require("path");
-const { SerialPort } = require("serialport");
 const {
     initializeDB,
     saveBottleMappingData,
@@ -11,19 +10,19 @@ const {
     quitDb,
     updateBottleMappingDetails,
     deleteBottleMappingDetails,
-} = require("./db");
+} = require("./db.js");
 
 let mainWindow;
-let activePort = null;
 
 async function createWindow() {
     const primaryDisplay = screen.getPrimaryDisplay();
     let screenDimention = primaryDisplay.workAreaSize;
 
     mainWindow = new BrowserWindow({
+        // width: 300,
+        // height: 300,
         width: screenDimention.width,
         height: screenDimention.height,
-        autoHideMenuBar: true,
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
             contextIsolation: true,
@@ -31,12 +30,17 @@ async function createWindow() {
         },
     });
 
-    mainWindow.loadURL("http://localhost:3000");
+    mainWindow.loadURL("http://localhost:3000/");
 
     mainWindow.webContents.openDevTools();
 
     mainWindow.on("closed", function () {
         mainWindow = null;
+    });
+
+    // Trigger update check once the window is ready
+    mainWindow.once("ready-to-show", () => {
+        autoUpdater.checkForUpdatesAndNotify(); // Check for updates
     });
 }
 
@@ -46,89 +50,17 @@ app.on("activate", function () {
     }
 });
 
-app.on("window-all-closed", function () {
-    if (process.platform !== "darwin") {
-        app.quit();
-    }
+// Auto-updater events
+autoUpdater.on("update-available", () => {
+    console.log("Update available!");
+    mainWindow.webContents.send("update_available");
 });
 
-ipcMain.handle("list-ports", async () => {
-    try {
-        const ports = await SerialPort.list();
-        return ports;
-    } catch (error) {
-        console.error("Error listing ports:", error);
-        throw error;
-    }
+autoUpdater.on("update-downloaded", () => {
+    console.log("Update downloaded; will install now");
+    mainWindow.webContents.send("update_downloaded");
+    autoUpdater.quitAndInstall();
 });
-
-ipcMain.handle("get-port-info", async () => {
-    try {
-        const ports = await SerialPort.list();
-        const selectedPort = activePort ? activePort.path : null;
-        return { ports, selectedPort };
-    } catch (error) {
-        console.error("Error fetching port info:", error);
-        throw error;
-    }
-});
-
-ipcMain.handle("open-port", async (event, portPath) => {
-    if (!portPath) {
-        throw new Error("No port path provided");
-    }
-
-    if (activePort) {
-        if (activePort.path === portPath) {
-            return "Port already opened";
-        }
-        activePort.close((err) => {
-            if (err) console.error("Error closing previous port:", err);
-        });
-        activePort = null;
-    }
-
-    activePort = new SerialPort({
-        path: portPath,
-        baudRate: 9600,
-    });
-
-    activePort.on("data", (data) => {
-        console.log("Data received:", data.toString());
-        mainWindow.webContents.send("serial-data", data.toString());
-    });
-
-    activePort.on("close", () => {
-        console.log("Port closed", activePort);
-        mainWindow.webContents.send("port-disconnected");
-        activePort = null;
-    });
-
-    activePort.on("error", (err) => {
-        console.error("Serial port error:", err);
-    });
-
-    return "Port opened successfully";
-});
-
-ipcMain.handle("send-data", async (event, data) => {
-    if (!activePort) {
-        throw new Error("Port is not opened");
-    }
-
-    return new Promise((resolve, reject) => {
-        activePort.write(`${data}\n`, (err) => {
-            if (err) {
-                console.error("Error sending data:", err);
-                return reject(err);
-            }
-            console.log("Data sent:", data);
-            resolve("Data sent successfully");
-        });
-    });
-});
-
-// <------------- Save SQL
 
 app.on("before-quit", () => {
     quitDb();
@@ -161,6 +93,7 @@ ipcMain.handle("get-bottle-mapping-positions", async (_, mappingOption) => {
 // bottle-mapping-details ------------------------>
 
 ipcMain.handle("save-bottle-mapping-details", async (_, amediteDetails, mappingOption) => {
+    console.log(`amediteDetails : `, amediteDetails);
     try {
         await saveBottleMappingDetails(amediteDetails, mappingOption);
         return { success: true };

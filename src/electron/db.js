@@ -1,29 +1,57 @@
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
+const { dialog } = require("electron");
 
-const dbPath = path.join(__dirname, "settings", "bottle_mapping.db");
 let db;
 
+const fs = require("fs");
+
+let dbDir = "D:/software/peptide_synthesis/settings";
+let dbPath = path.join(dbDir, "bottle_mapping.db");
+
 const initializeDB = () => {
+    // dialog.showMessageBox({
+    //     type: "info",
+    //     message: `Attempting to create or access directory at: ${dbDir}`,
+    // });
+
+    // Check if the directory exists, if not create it
+    if (!fs.existsSync(dbDir)) {
+        try {
+            dialog.showMessageBox({
+                type: "info",
+                message: "Directory does not exist, creating...",
+            });
+            fs.mkdirSync(dbDir, { recursive: true });
+            dialog.showMessageBox({
+                type: "info",
+                message: `Directory created successfully at: ${dbDir}`,
+            });
+        } catch (err) {
+            dialog.showErrorBox("Error", "Failed to create directory: " + err.message);
+            return; // Stop execution if the directory can't be created
+        }
+    } else {
+        dialog.showMessageBox({
+            type: "info",
+            message: "Directory already exists.",
+        });
+    }
+
     db = new sqlite3.Database(dbPath, (err) => {
         if (err) {
-            console.error("Could not open database: " + err.message);
+            dialog.showErrorBox("Database Error", "Could not open database: " + err.message);
+        } else {
+            dialog.showMessageBox({
+                type: "info",
+                message: `Database opened successfully at: ${dbPath}`,
+            });
         }
     });
 
-    // db.run(`DROP TABLE IF EXISTS amedite_positions`, (err) => {
+    // db = new sqlite3.Database(dbPath, (err) => {
     //     if (err) {
-    //         console.error("Could not drop table 'amedite_positions': " + err.message);
-    //     } else {
-    //         console.log("Table 'amedite_positions' dropped successfully");
-    //     }
-    // });
-
-    // db.run(`DROP TABLE IF EXISTS reagent_positions`, (err) => {
-    //     if (err) {
-    //         console.error("Could not drop table 'amedite_positions': " + err.message);
-    //     } else {
-    //         console.log("Table 'amedite_positions' dropped successfully");
+    //         console.error("Could not open database: " + err.message);
     //     }
     // });
 

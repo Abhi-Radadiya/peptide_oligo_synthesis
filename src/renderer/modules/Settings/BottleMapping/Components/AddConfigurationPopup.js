@@ -5,6 +5,11 @@ import _ from "lodash";
 
 export default function AddConfigurationPopup(props) {
     const { editingData, onSubmit, togglePopup } = props;
+    // const { editingData, togglePopup } = props;
+
+    // const onSubmit = (data) => {
+    //     console.log(`data : `, data);
+    // };
 
     const getDefaultValue = () => {
         return !_.isEmpty(editingData) ? editingData : { full_name: "", wm: "", case_no: "", msds: "", concentration: "" };

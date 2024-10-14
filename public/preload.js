@@ -8,6 +8,8 @@ contextBridge.exposeInMainWorld("electron", {
     updateBottleMappingDetails: (amediteDetails, mappingOption) => ipcRenderer.invoke("update-bottle-mapping-details", amediteDetails, mappingOption),
     deleteBottleMappingDetails: (id, mappingOption) => ipcRenderer.invoke("delete-bottle-mapping-details", id, mappingOption),
     savePrimeAmediteDetails: (primeAmediteData) => ipcRenderer.invoke("save-prime-position-details", primeAmediteData),
+    onUpdateAvailable: (callback) => ipcRenderer.on("update_available", callback),
+    onUpdateDownloaded: (callback) => ipcRenderer.on("update_downloaded", callback),
 });
 
 // listPorts: () => ipcRenderer.invoke("list-ports"),
