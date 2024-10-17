@@ -1,15 +1,28 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("electron", {
+    // get any table data
+    getTableData: (tableName) => ipcRenderer.invoke("get-table-data", tableName),
+
     saveBottleMappingData: (data, mappingOption) => ipcRenderer.invoke("save-bottle-mapping-positions", data, mappingOption),
     getBottleMappingData: (mappingOption) => ipcRenderer.invoke("get-bottle-mapping-positions", mappingOption),
     saveBottleMappingDetails: (details, mappingOption) => ipcRenderer.invoke("save-bottle-mapping-details", details, mappingOption),
     getBottleMappingDetails: (mappingOption) => ipcRenderer.invoke("get-bottle-mapping-details", mappingOption),
     updateBottleMappingDetails: (amediteDetails, mappingOption) => ipcRenderer.invoke("update-bottle-mapping-details", amediteDetails, mappingOption),
     deleteBottleMappingDetails: (id, mappingOption) => ipcRenderer.invoke("delete-bottle-mapping-details", id, mappingOption),
-    savePrimeAmediteDetails: (primeAmediteData) => ipcRenderer.invoke("save-prime-position-details", primeAmediteData),
     onUpdateAvailable: (callback) => ipcRenderer.on("update_available", callback),
     onUpdateDownloaded: (callback) => ipcRenderer.on("update_downloaded", callback),
+
+    // setting - prime
+    savePrimeDetails: (primePositions, primeOption) => ipcRenderer.invoke("save-prime-position-details", primePositions, primeOption),
+    getPrimePosition: (primeOption) => ipcRenderer.invoke("get-prime-position", primeOption),
+
+    // liquid detection
+    saveLiquidDetectionDetails: (details) => ipcRenderer.invoke("save-liquid-detection-details", details),
+    getLiquidDetection: () => ipcRenderer.invoke("get-liquid-detection"),
+
+    // UV Settings
+    saveUVSettings: (details) => ipcRenderer.invoke("save-UV-setting-details", details),
 });
 
 // // listPorts: () => ipcRenderer.invoke("list-ports"),

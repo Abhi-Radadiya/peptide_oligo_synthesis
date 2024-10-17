@@ -1,9 +1,13 @@
+// get any table data
+const getTableData = async (tableName) => {
+    return await window.electron.getTableData(tableName);
+};
+
 const getBottleMappingDetails = async (mappingOption) => {
     return await window.electron.getBottleMappingDetails(mappingOption);
 };
 
 const saveBottleMappingDetails = async (data, mappingOption) => {
-    console.log(`data preload : `, data);
     return await window.electron.saveBottleMappingDetails(data, mappingOption);
 };
 
@@ -23,16 +27,46 @@ const getBottleMappingData = async (mappingOption) => {
     return await window.electron.getBottleMappingData(mappingOption);
 };
 
-const savePrimeAmediteDetails = async (primePositions, primeOption) => {
-    return await window.electron.savePrimeAmediteDetails(primePositions, primeOption);
+// prime function
+const savePrimeDetails = async (primePositions, primeOption) => {
+    return await window.electron.savePrimeDetails(primePositions, primeOption);
+};
+
+const getPrimePosition = async (primeOption) => {
+    return await window.electron.getPrimePosition(primeOption);
+};
+
+// liquid detection
+
+const saveLiquidDetectionDetails = async (details) => {
+    return await window.electron.saveLiquidDetectionDetails(details);
+};
+
+const getLiquidDetection = async () => {
+    return await window.electron.getLiquidDetection();
+};
+
+// UV Settings
+const saveUVSettings = async (details) => {
+    return await window.electron.saveUVSettings(details);
 };
 
 export {
+    // get any table data
+    getTableData,
     getBottleMappingDetails,
     saveBottleMappingDetails,
     updateBottleMappingDetails,
     deleteBottleMappingDetails,
     saveBottleMappingData,
     getBottleMappingData,
-    savePrimeAmediteDetails,
+    savePrimeDetails,
+    getPrimePosition,
+
+    // liquid detection
+    saveLiquidDetectionDetails,
+    getLiquidDetection,
+
+    // UV Settings
+    saveUVSettings,
 };

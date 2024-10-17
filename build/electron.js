@@ -1,6 +1,9 @@
-const { app, BrowserWindow, screen, ipcMain, dialog } = require("electron");
-const { autoUpdater } = require("electron-updater");
+const { app, BrowserWindow, ipcMain, screen, dialog } = require("electron");
+
+const fs = require("fs");
+
 const path = require("path");
+const { SerialPort } = require("serialport");
 const {
     initializeDB,
     saveBottleMappingData,
@@ -11,18 +14,20 @@ const {
     updateBottleMappingDetails,
     deleteBottleMappingDetails,
 } = require("./db");
+const { autoUpdater } = require("electron-updater");
 
 let mainWindow;
+let activePort = null;
 
 async function createWindow() {
     const primaryDisplay = screen.getPrimaryDisplay();
     let screenDimention = primaryDisplay.workAreaSize;
 
     mainWindow = new BrowserWindow({
-        // width: 300,
-        // height: 300,
         width: screenDimention.width,
+        // height: 100,
         height: screenDimention.height,
+        autoHideMenuBar: true,
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
             contextIsolation: true,
@@ -30,7 +35,7 @@ async function createWindow() {
         },
     });
 
-    mainWindow.loadURL("http://localhost:3000/");
+    mainWindow.loadURL("https://peptide-oligo-synthesis.vercel.app/");
 
     mainWindow.webContents.openDevTools();
 
@@ -38,19 +43,11 @@ async function createWindow() {
         mainWindow = null;
     });
 
-    // Trigger update check once the window is ready
     mainWindow.once("ready-to-show", () => {
         autoUpdater.checkForUpdatesAndNotify(); // Check for updates
     });
 }
 
-app.on("activate", function () {
-    if (mainWindow === null) {
-        createWindow();
-    }
-});
-
-// Auto-updater events
 autoUpdater.on("update-available", () => {
     console.log("Update available!");
     mainWindow.webContents.send("update_available");
@@ -62,6 +59,90 @@ autoUpdater.on("update-downloaded", () => {
     autoUpdater.quitAndInstall();
 });
 
+app.on("window-all-closed", function () {
+    if (process.platform !== "darwin") {
+        app.quit();
+    }
+});
+
+ipcMain.handle("list-ports", async () => {
+    try {
+        const ports = await SerialPort.list();
+        return ports;
+    } catch (error) {
+        console.error("Error listing ports:", error);
+        throw error;
+    }
+});
+
+ipcMain.handle("get-port-info", async () => {
+    try {
+        const ports = await SerialPort.list();
+        const selectedPort = activePort ? activePort.path : null;
+        return { ports, selectedPort };
+    } catch (error) {
+        console.error("Error fetching port info:", error);
+        throw error;
+    }
+});
+
+ipcMain.handle("open-port", async (event, portPath) => {
+    if (!portPath) {
+        throw new Error("No port path provided");
+    }
+
+    if (activePort) {
+        if (activePort.path === portPath) {
+            return "Port already opened";
+        }
+        activePort.close((err) => {
+            if (err) console.error("Error closing previous port:", err);
+        });
+        activePort = null;
+    }
+
+    activePort = new SerialPort({
+        path: portPath,
+        baudRate: 9600,
+    });
+
+    activePort.on("data", (data) => {
+        console.log("Data received:", data.toString());
+        mainWindow.webContents.send("serial-data", data.toString());
+    });
+
+    activePort.on("close", () => {
+        console.log("Port closed", activePort);
+        mainWindow.webContents.send("port-disconnected");
+        activePort = null;
+    });
+
+    activePort.on("error", (err) => {
+        console.error("Serial port error:", err);
+    });
+
+    return "Port opened successfully";
+});
+
+ipcMain.handle("send-data", async (event, data) => {
+    if (!activePort) {
+        throw new Error("Port is not opened");
+    }
+
+    return new Promise((resolve, reject) => {
+        activePort.write(`${data}\n`, (err) => {
+            if (err) {
+                console.error("Error sending data:", err);
+                return reject(err);
+            }
+            console.log("Data sent:", data);
+            resolve("Data sent successfully");
+        });
+    });
+});
+
+// <------------- Save SQL
+
 app.on("before-quit", () => {
     quitDb();
 });
@@ -71,6 +152,7 @@ app.on("ready", () => {
         type: "info",
         message: "Ready and web can load here !!...",
     });
+
     initializeDB();
     createWindow();
 });

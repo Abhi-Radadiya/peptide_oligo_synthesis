@@ -1,35 +1,29 @@
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
-const { dialog } = require("electron");
+const { app, dialog } = require("electron");
 
 let db;
 
 const fs = require("fs");
 
-let dbDir = "D:/software/peptide_synthesis/settings";
+let dbDir = path.join(app.getPath("userData"), "settings");
 let dbPath = path.join(dbDir, "bottle_mapping.db");
 
 const initializeDB = () => {
-    // dialog.showMessageBox({
-    //     type: "info",
-    //     message: `Attempting to create or access directory at: ${dbDir}`,
-    // });
-
-    // Check if the directory exists, if not create it
     if (!fs.existsSync(dbDir)) {
         try {
             dialog.showMessageBox({
                 type: "info",
-                message: "Directory does not exist, creating...",
+                message: `Directory does not exist, ${dbPath} creating...`,
             });
             fs.mkdirSync(dbDir, { recursive: true });
             dialog.showMessageBox({
                 type: "info",
-                message: `Directory created successfully at: ${dbDir}`,
+                message: `Directory created successfully at: ${dbPath}`,
             });
         } catch (err) {
-            dialog.showErrorBox("Error", "Failed to create directory: " + err.message);
-            return; // Stop execution if the directory can't be created
+            dialog.showErrorBox("Error", `Failed to create directory: ${dbPath} ` + err.message);
+            return;
         }
     } else {
         dialog.showMessageBox({

@@ -1,53 +1,28 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
+import { Tabs } from "./renderer/Components/Tabs/Tab";
 import BottleMapping from "../src/renderer/modules/Settings/BottleMapping/BottleMapping";
-// import Prime from "../src/renderer/modules/Settings/Prime/Prime";
+import Prime from "../src/renderer/modules/Settings/Prime/Prime";
+import LiquidDetection from "../src/renderer/modules/Settings/LiquidDetection/LiquidDetection";
+import UVSetting from "../src/renderer/modules/Settings/UVSetting/UVSetting";
+import Configuration from "./renderer/modules/Settings/BottleMapping/Components/Configuration";
 
 export default function App() {
-    useEffect(() => {
-        window.electron.onUpdateAvailable(() => {
-            console.log(`update availebl : `);
-        });
+    const tabs = [
+        { label: "Bottle Mapping", value: "bottleMapping", component: BottleMapping },
+        { label: "Prime", value: "prime", component: Prime },
+        { label: "Liquid Detection", value: "liquidDetection", component: LiquidDetection },
+        { label: "UV Setting", value: "uvSetting", component: UVSetting },
+        { label: "Configuration", value: "configuration", component: Configuration },
+    ];
 
-        window.electron.onUpdateDownloaded(() => {
-            console.log(`update downloaded : `);
-        });
-    }, []);
+    const [activeTab, setActiveTab] = useState(tabs[3].value);
+
+    const ComponentToRender = tabs.find((el) => el.value === activeTab).component;
 
     return (
         <>
-            <div className="p-4">
-                <BottleMapping />
-
-                {/* <Prime /> */}
-            </div>
+            <Tabs setActiveTab={setActiveTab} activeTab={activeTab} tabs={tabs} className="mb-4 pb-4 border-b border-neutral-300" />
+            <ComponentToRender />
         </>
     );
 }
-
-// import React, { useEffect, useState } from "react";
-
-// function App() {
-//     const [updateAvailable, setUpdateAvailable] = useState(false);
-
-//     console.log(`updateAvailable : `, updateAvailable);
-
-//     useEffect(() => {
-//         window.electron.onUpdateAvailable(() => {
-//             setUpdateAvailable(true);
-//         });
-
-//         window.electron.onUpdateDownloaded(() => {
-//             setUpdateAvailable("Downloaded");
-//         });
-//     }, []);
-
-//     return (
-//         <div>
-//             <h1>This is Main File</h1>
-//             {updateAvailable && <p>An update is available! It will be installed soon.</p>}
-//             {updateAvailable}
-//         </div>
-//     );
-// }
-
-// export default App;

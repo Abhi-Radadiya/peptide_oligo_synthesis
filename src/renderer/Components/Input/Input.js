@@ -1,7 +1,26 @@
 import React from "react";
 import { Controller } from "react-hook-form";
 
-const InputField = ({ control, name, label, rules, placeholder, type = "text", wrapperClassName }) => {
+const InputField = ({ control, name, label, rules, placeholder, type = "text", wrapperClassName, className, width }) => {
+    const handleKeyDown = (e) => {
+        if (e.key === "e" || e.key === "E") {
+            e.preventDefault();
+        }
+
+        if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+            e.preventDefault();
+        }
+    };
+
+    const handleWheel = (e) => {
+        e.target.blur();
+    };
+
+    const numberInputProps = {
+        onKeyDown: handleKeyDown,
+        onWheel: handleWheel,
+    };
+
     return (
         <div className={`${wrapperClassName}`}>
             <label className="block text-gray-700">{label}</label>
@@ -11,7 +30,14 @@ const InputField = ({ control, name, label, rules, placeholder, type = "text", w
                 rules={rules}
                 render={({ field, fieldState: { error } }) => (
                     <>
-                        <input {...field} type={type} placeholder={placeholder} className={`w-full px-3 py-2 border rounded ${error ? "border-red-500" : "border-gray-300"}`} />
+                        <input
+                            {...field}
+                            type={type}
+                            placeholder={placeholder}
+                            className={`px-3 py-2 border rounded ${error ? "border-red-500" : "border-gray-300"} ${className} ${width ?? "w-full"}`}
+                            {...(type === "number" ? numberInputProps : {})}
+                            {...(type === "checkbox" ? { checked: field.value ?? false } : {})}
+                        />
                         {error && <p className="text-red-500 text-sm mt-1">{error.message}</p>}
                     </>
                 )}

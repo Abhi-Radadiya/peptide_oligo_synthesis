@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, screen, dialog } = require("electron");
+const { app, BrowserWindow, ipcMain, screen } = require("electron");
 
 const fs = require("fs");
 
@@ -13,6 +13,12 @@ const {
     quitDb,
     updateBottleMappingDetails,
     deleteBottleMappingDetails,
+    savePrimeDetails,
+    getPrimePosition,
+    saveLiquidDetectionDetails,
+    getLiquidDetection,
+    saveUVSettings,
+    getTableData,
 } = require("./db");
 const { autoUpdater } = require("electron-updater");
 
@@ -35,7 +41,8 @@ async function createWindow() {
         },
     });
 
-    mainWindow.loadURL("http://localhost:3000");
+    mainWindow.loadURL("http://localhost:3000/");
+    // mainWindow.loadURL("https://peptide-oligo-synthesis.vercel.app/");
 
     mainWindow.webContents.openDevTools();
 
@@ -147,23 +154,19 @@ app.on("before-quit", () => {
     quitDb();
 });
 
-let dbDir = "D:/software/peptide_synthesis/settings";
-
 app.on("ready", () => {
-    dialog.showMessageBox({
-        type: "info",
-        message: "Ready and web can load here !!...",
-    });
-
-    fs.mkdirSync(dbDir, { recursive: true });
-
-    dialog.showMessageBox({
-        type: "info",
-        message: `Directory created successfully at: ${dbDir}`,
-    });
-
     initializeDB();
     createWindow();
+});
+
+// get any table data
+ipcMain.handle("get-table-data", async (_, tableName) => {
+    try {
+        const data = await getTableData(tableName);
+        return { success: true, data };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
 });
 
 // bottle-mapping-positions --------------->
@@ -218,6 +221,57 @@ ipcMain.handle("update-bottle-mapping-details", async (_, amediteDetails, mappin
 ipcMain.handle("delete-bottle-mapping-details", async (_, id, mappingOption) => {
     try {
         const data = await deleteBottleMappingDetails(id, mappingOption);
+        return { success: true, data };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+// prime details -------------------->
+
+// savePrimeData
+ipcMain.handle("save-prime-position-details", async (_, primePositionDetails, mappingOption) => {
+    try {
+        const data = await savePrimeDetails(primePositionDetails, mappingOption);
+        return { success: true, data };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+// getPrimePosition
+ipcMain.handle("get-prime-position", async (_, primeOption) => {
+    try {
+        const data = await getPrimePosition(primeOption);
+        return { success: true, data };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+// liquid detection --------------->
+ipcMain.handle("save-liquid-detection-details", async (_, details) => {
+    try {
+        const data = await saveLiquidDetectionDetails(details);
+        return { success: true, data };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+ipcMain.handle("get-liquid-detection", async () => {
+    try {
+        const data = await getLiquidDetection();
+        return { success: true, data };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+// UV Settings
+ipcMain.handle("save-UV-setting-details", async (_, details) => {
+    try {
+        const data = await saveUVSettings(details);
         return { success: true, data };
     } catch (error) {
         return { success: false, error: error.message };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Tab = (props) => {
     const { label, active, disabled, className, onClick } = props;
@@ -24,6 +24,10 @@ const Tabs = (props) => {
         setActiveTab(tabValue);
         props.setActiveTab(tabValue);
     };
+
+    useEffect(() => {
+        setActiveTab(props.activeTab);
+    }, []);
 
     return (
         <>
