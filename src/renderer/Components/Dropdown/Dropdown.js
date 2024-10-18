@@ -20,7 +20,7 @@ export function Dropdown({ menuItem, onSelectItem, value, label, className, erro
                 onMouseLeave={handleMouseLeave}
                 className={`${value ? "text-black" : "text-neutral-400"} ${
                     error && "ring-2 ring-red-300"
-                } bg-neutral-300 focus:outline-none justify-between font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center w-full`}
+                } border border-neutral-700 bg-neutral-50 focus:outline-none justify-between font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center w-full`}
                 type="button"
             >
                 {value ? value : label}
@@ -32,11 +32,11 @@ export function Dropdown({ menuItem, onSelectItem, value, label, className, erro
             {isOpen && (
                 <div
                     id="dropdownDelay"
-                    className="absolute z-10 bg-white top-10 divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 w-full"
+                    className="absolute z-10 bg-white top-[42px] divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 w-full"
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
                 >
-                    <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDelayButton">
+                    <ul className="py-2 text-sm text-gray-700" aria-labelledby="dropdownDelayButton">
                         {menuItem.map((el, index) => (
                             <li
                                 key={index}
@@ -45,7 +45,9 @@ export function Dropdown({ menuItem, onSelectItem, value, label, className, erro
                                     setIsOpen(false);
                                 }}
                             >
-                                <span className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{el.label}</span>
+                                <span className="block px-4 py-2 font-normal text-base hover:cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                    {el.label}
+                                </span>
                             </li>
                         ))}
                     </ul>
@@ -64,7 +66,7 @@ export function ControllerDropdown(props) {
             control={control}
             rules={rules}
             render={({ field: { onChange, value }, fieldState: { error } }) => (
-                <div className={`flex flex-col w-full ${className}`}>
+                <div className={`w-full ${className}`}>
                     <Dropdown
                         menuItem={menuItem}
                         label={label}

@@ -20,6 +20,8 @@ const initializeDB = () => {
     } else {
     }
 
+    console.log(`dbPath : `,dbPath)
+
     db = new sqlite3.Database(dbPath, (err) => {
         if (err) {
             dialog.showErrorBox("Database Error", "Could not open database: " + err.message);

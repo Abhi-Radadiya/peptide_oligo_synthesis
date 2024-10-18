@@ -1,28 +1,25 @@
 import React, { useState } from "react";
 import { Tabs } from "./renderer/Components/Tabs/Tab";
-import BottleMapping from "../src/renderer/modules/Settings/BottleMapping/BottleMapping";
-import Prime from "../src/renderer/modules/Settings/Prime/Prime";
-import LiquidDetection from "../src/renderer/modules/Settings/LiquidDetection/LiquidDetection";
-import UVSetting from "../src/renderer/modules/Settings/UVSetting/UVSetting";
-import Configuration from "./renderer/modules/Settings/BottleMapping/Components/Configuration";
+import Settings from "./renderer/modules/Settings/Settings";
+import MethodSetup from "./renderer/modules/MethodSetup/MethodSetup";
 
 export default function App() {
     const tabs = [
-        { label: "Bottle Mapping", value: "bottleMapping", component: BottleMapping },
-        { label: "Prime", value: "prime", component: Prime },
-        { label: "Liquid Detection", value: "liquidDetection", component: LiquidDetection },
-        { label: "UV Setting", value: "uvSetting", component: UVSetting },
-        { label: "Configuration", value: "configuration", component: Configuration },
+        { label: "Method Setup", value: "methodSetup", component: MethodSetup },
+        { label: "Settings", value: "settings", component: Settings },
     ];
 
-    const [activeTab, setActiveTab] = useState(tabs[3].value);
+    const [activeTab, setActiveTab] = useState(tabs[1].value);
 
     const ComponentToRender = tabs.find((el) => el.value === activeTab).component;
 
     return (
         <>
-            <Tabs setActiveTab={setActiveTab} activeTab={activeTab} tabs={tabs} className="mb-4 pb-4 border-b border-neutral-300" />
-            <ComponentToRender />
+            <div className="p-4">
+                <Tabs setActiveTab={setActiveTab} activeTab={activeTab} tabs={tabs} className="mb-4 pb-4 border-b border-neutral-300" />
+
+                <ComponentToRender />
+            </div>
         </>
     );
 }

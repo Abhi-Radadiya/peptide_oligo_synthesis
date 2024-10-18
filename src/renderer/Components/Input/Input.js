@@ -1,7 +1,9 @@
 import React from "react";
 import { Controller } from "react-hook-form";
 
-const InputField = ({ control, name, label, rules, placeholder, type = "text", wrapperClassName, className, width }) => {
+const InputField = (props) => {
+    const { control, name, label, rules, placeholder, type = "text", wrapperClassName, className, width } = props;
+
     const handleKeyDown = (e) => {
         if (e.key === "e" || e.key === "E") {
             e.preventDefault();
@@ -23,7 +25,7 @@ const InputField = ({ control, name, label, rules, placeholder, type = "text", w
 
     return (
         <div className={`${wrapperClassName}`}>
-            <label className="block text-gray-700">{label}</label>
+            {label && <label className="block text-gray-700 leading-[17px]">{label}</label>}
             <Controller
                 control={control}
                 name={name}
