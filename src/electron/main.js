@@ -1,7 +1,5 @@
 const { app, BrowserWindow, ipcMain, screen } = require("electron");
 
-const fs = require("fs");
-
 const path = require("path");
 const { SerialPort } = require("serialport");
 const {

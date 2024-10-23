@@ -1,19 +1,5 @@
 import React, { useEffect, useState } from "react";
-
-const Button = (props) => {
-    const { label, active, disabled, className, onClick } = props;
-    return (
-        <button
-            className={`border font-medium border-neutral-300 rounded-lg px-5 py-1.5 hover:bg-neutral-300 hover:text-black ${
-                active ? "bg-neutral-400 text-white" : "bg-neutral-200"
-            } ${className}`}
-            disabled={disabled}
-            onClick={onClick}
-        >
-            {label}
-        </button>
-    );
-};
+import { Button } from "../Buttons/Buttons";
 
 const Tabs = (props) => {
     const { tabs, className } = props;
@@ -60,4 +46,4 @@ const Tab = (props) => {
     );
 };
 
-export { Button, Tabs, Tab };
+export { Tabs, Tab };

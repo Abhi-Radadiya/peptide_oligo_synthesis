@@ -4,6 +4,8 @@ import Prime from "./Prime/Prime";
 import LiquidDetection from "./LiquidDetection/LiquidDetection";
 import UVSetting from "./UVSetting/UVSetting";
 import Pressure from "./Pressure/Pressure";
+import FlowRate from "./FlowRate/FlowRate";
+import ColumnEditor from "./ColumnEditor/ColumnEditor";
 import Configuration from "./BottleMapping/Components/Configuration";
 import { Tabs } from "../../Components/Tabs/Tab";
 
@@ -14,10 +16,12 @@ export default function Settings() {
         { label: "Liquid Detection", value: "liquidDetection", component: LiquidDetection },
         { label: "UV Setting", value: "uvSetting", component: UVSetting },
         { label: "Pressure", value: "pressure", component: Pressure },
+        { label: "Flow Rate", value: "flowRate", component: FlowRate },
+        { label: "Column Editor", value: "columnEditor", component: ColumnEditor },
         { label: "Configuration", value: "configuration", component: Configuration },
     ];
 
-    const [activeTab, setActiveTab] = useState(tabs[4].value);
+    const [activeTab, setActiveTab] = useState(tabs[0].value);
 
     const ComponentToRender = tabs.find((el) => el.value === activeTab).component;
 

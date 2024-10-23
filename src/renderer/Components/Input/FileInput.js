@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 
-const FileUploader = () => {
-    const [selectedFile, setSelectedFile] = useState(null);
+const FileUploader = (props) => {
+    const { setSelectedFile } = props;
+
     const [errorMessage, setErrorMessage] = useState("");
 
     const handleFileChange = (e) => {

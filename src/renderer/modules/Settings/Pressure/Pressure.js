@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { FileUploader } from "../../../Components/Input/FileInput";
 
 export default function Pressure() {
-    const { control } = useForm();
+    const { control, setValue, watch } = useForm();
 
     const positions = [
         { label: "Main", value: "main" },
@@ -48,10 +48,22 @@ export default function Pressure() {
                                 </td>
 
                                 <td className="py-3 px-6">
-                                    <FileUploader />
+                                    <FileUploader setSelectedFile={(file) => setValue(`${el.value}.file`, file)} />
                                 </td>
 
-                                <td className="py-3 px-6">No file is selected</td>
+                                <td className="py-3 px-6">
+                                    {watch(`${el.value}`)?.file?.name ? (
+                                        <div className="group relative">
+                                            <span className="text-neutral-800 font-normal cursor-alias">{watch(`${el.value}.file.name`)}</span>
+
+                                            <span className="hidden group-hover:block absolute right-0 bg-slate-200 text-xs py-0.5 rounded-lg px-2 top-6">
+                                                {watch(`${el.value}.file.path`)}
+                                            </span>
+                                        </div>
+                                    ) : (
+                                        <span className="text-neutral-500">No file selected</span>
+                                    )}
+                                </td>
                             </tr>
                         );
                     })}

@@ -9,7 +9,7 @@ export default function App() {
         { label: "Settings", value: "settings", component: Settings },
     ];
 
-    const [activeTab, setActiveTab] = useState(tabs[1].value);
+    const [activeTab, setActiveTab] = useState(tabs[0].value);
 
     const ComponentToRender = tabs.find((el) => el.value === activeTab).component;
 
