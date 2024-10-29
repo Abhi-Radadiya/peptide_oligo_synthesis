@@ -20,12 +20,12 @@ export default function FinalSynthesis(props) {
                     <div className="flex flex-row gap-6 max-w-[700px] mt-4">
                         <div className="gap-6 w-full max-w-[500px]">
                             <div className="font-medium text-base text-neutral-500 leading-7 w-full mb-2">Volume :</div>
-                            <InputField control={control} placeholder="Enter Volume in CV" name="volume" type="number" />
+                            <InputField control={control} placeholder="Enter Volume in ml" name="volume" type="number" />
                         </div>
 
                         <div className="gap-6 w-full max-w-[500px]">
                             <div className="font-medium text-base text-neutral-500 leading-7 w-full mb-2">Flow Rate :</div>
-                            <InputField control={control} placeholder="Enter Flow Rate in CV/min" name="flowRate" type="number" />
+                            <InputField control={control} placeholder="Enter Flow Rate in ml/min" name="flowRate" type="number" />
                         </div>
                     </div>
                 </div>

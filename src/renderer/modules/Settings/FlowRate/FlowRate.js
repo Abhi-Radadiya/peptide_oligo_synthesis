@@ -43,6 +43,7 @@ export default function FlowRate() {
                     <thead className="bg-gray-200">
                         <tr>
                             <th className="py-3 px-6 text-left text-gray-600 font-semibold">Index</th>
+                            <th className="py-3 px-6 text-left text-gray-600 font-semibold">Chemical</th>
                             <th className="py-3 px-6 text-left text-gray-600 font-semibold">Flow Rate</th>
                             <th className="py-3 px-6 text-left text-gray-600 font-semibold">Disable</th>
                             <th className="py-3 px-6 text-left text-gray-600 font-semibold">Actions</th>
@@ -57,6 +58,10 @@ export default function FlowRate() {
 
                                 <td className="py-3 px-6">
                                     <ControllerDropdown control={control} name={`${field.id}.value`} menuItem={chemicals} label={`Select Chemical`} className="max-w-[200px]" />
+                                </td>
+
+                                <td className="py-3 px-6">
+                                    <InputField width="w-[200px]" control={control} name={`${field.id}.flowRate`} type="number" />
                                 </td>
 
                                 <td className="py-3 px-6">

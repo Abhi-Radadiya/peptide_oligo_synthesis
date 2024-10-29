@@ -126,7 +126,7 @@ export default function MethodSetting(props) {
                 </div>
 
                 <div className="pb-6 mb-6 border-b border-neutral-400">
-                    <span className="text-xl font-semibold">Air Sensor Setting</span>
+                    <span className="text-xl font-semibold">Pressure Setting</span>
 
                     <div className="flex flex-row gap-6 items-center mt-4 max-w-[700px]">
                         <div className="flex flex-row gap-3 items-center">

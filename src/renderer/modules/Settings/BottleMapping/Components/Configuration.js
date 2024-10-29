@@ -15,7 +15,7 @@ export default function Configuration() {
 
     return (
         <>
-            <Tabs setActiveTab={setActiveTab} tabs={tabs} className="mb-4" />
+            <Tabs setActiveTab={setActiveTab} activeTab={activeTab} tabs={tabs} className="mb-4" />
 
             {activeTab == tabs[0].value ? <AmediteConfiguration /> : activeTab == tabs[1].value ? <ReagentConfiguration /> : <SolventConfiguration />}
         </>

@@ -55,7 +55,7 @@ export default function UVSetting() {
                         <tr>
                             <th className="py-3 px-6 text-left text-gray-600 font-semibold">Position</th>
                             <th className="py-3 px-6 text-left text-gray-600 font-semibold">UV Value</th>
-                            <th className="py-3 px-6 text-left text-gray-600 font-semibold">*</th>
+                            <th className="py-3 px-6 text-left text-gray-600 font-semibold">Disable</th>
                         </tr>
                     </thead>
 
