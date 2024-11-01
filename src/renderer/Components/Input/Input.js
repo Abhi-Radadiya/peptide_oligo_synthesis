@@ -2,7 +2,7 @@ import React from "react";
 import { Controller } from "react-hook-form";
 
 const InputField = (props) => {
-    const { control, name, label, rules, placeholder, type = "text", wrapperClassName, className, width, disabled } = props;
+    const { control, name, label, rules, placeholder, type = "text", wrapperClassName, className, width, disabled, borderClass = "border" } = props;
 
     const handleKeyDown = (e) => {
         if (e.key === "e" || e.key === "E") {
@@ -25,7 +25,7 @@ const InputField = (props) => {
 
     return (
         <div className={`${wrapperClassName}`}>
-            {label && <label className="block text-gray-700 leading-[17px]">{label}</label>}
+            {label && <label className="block text-gray-700 leading-[17px] pb-2 font-normal">{label}</label>}
             <Controller
                 control={control}
                 name={name}
@@ -37,7 +37,7 @@ const InputField = (props) => {
                             type={type}
                             placeholder={placeholder}
                             disabled={disabled}
-                            className={`px-3 py-2 border rounded ${error ? "border-red-500" : "border-gray-300"} ${className} ${width ?? "w-full"}`}
+                            className={`px-3 py-2 ${borderClass} rounded ${error ? "border-red-500" : "border-gray-300"} ${className} ${width ?? "w-full"}`}
                             {...(type === "number" ? numberInputProps : {})}
                             {...(type === "checkbox" ? { checked: field.value ?? false } : {})}
                         />

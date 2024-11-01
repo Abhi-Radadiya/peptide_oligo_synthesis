@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Controller } from "react-hook-form";
+import Select from "react-select";
 
 export function Dropdown({ menuItem, onSelectItem, value, label, className, error }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -75,6 +76,57 @@ export function ControllerDropdown(props) {
                         className={className}
                         error={error}
                     />
+                </div>
+            )}
+        />
+    );
+}
+
+export function SelectionController(props) {
+    const { control, name, menuItem, rules, isDisabled, className, placeholder, width, isClearable = true } = props;
+
+    const customStyles = {
+        control: (provided, state) => ({
+            ...provided,
+            background: "#f4f4f4",
+            color: "#333",
+            width,
+            borderColor: state.isFocused ? "#dedcdc" : "#f4f4f4",
+            boxShadow: state.isFocused ? "0 0 0 1px #333" : "none",
+            "&:hover": {
+                borderColor: "#f5f5f5",
+            },
+        }),
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: state.isSelected ? "#dedcdc" : "white",
+            color: "#333",
+            "&:hover": {
+                backgroundColor: "#f5f5f5",
+            },
+        }),
+    };
+
+    return (
+        <Controller
+            name={name}
+            control={control}
+            rules={rules}
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+                <div className={`${className}`}>
+                    <Select
+                        value={value}
+                        isSearchable
+                        className={`basic-single ${className}`}
+                        classNamePrefix="select"
+                        isDisabled={isDisabled}
+                        isClearable={isClearable}
+                        options={menuItem}
+                        placeholder={placeholder}
+                        styles={customStyles}
+                        onChange={onChange}
+                    />
+                    {error && <p className="text-red-500 text-xs">*{error.message}</p>}
                 </div>
             )}
         />

@@ -48,6 +48,8 @@ async function createWindow() {
         mainWindow = null;
     });
 
+    mainWindow.removeMenu();
+
     mainWindow.once("ready-to-show", () => {
         autoUpdater.checkForUpdatesAndNotify(); // Check for updates
     });

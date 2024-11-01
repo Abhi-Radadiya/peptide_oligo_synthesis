@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Tabs } from "./renderer/Components/Tabs/Tab";
 import Settings from "./renderer/modules/Settings/Settings";
-import MethodSetup from "./renderer/modules/MethodSetup/MethodSetup";
+import MethodSetup2 from "./renderer/modules/MethodSetup2/MethodSetup2";
+//remove method setup if need to
 
 export default function App() {
     const tabs = [
-        { label: "Method Setup", value: "methodSetup", component: MethodSetup },
+        { label: "Method Setup", value: "methodSetup", component: MethodSetup2 },
         { label: "Settings", value: "settings", component: Settings },
     ];
 
