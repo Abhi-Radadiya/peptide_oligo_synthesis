@@ -5,11 +5,16 @@ import LastMethod from "./Tabs/Last/LastMethod";
 import { FormProvider, useForm } from "react-hook-form";
 import LeftPanel from "../../Components/LeftPanel/LeftPanel";
 import { useWindowSize } from "@uidotdev/usehooks";
+import { useParams } from "react-router-dom";
+import MethodDetails from "./Tabs/Details/MethodDetails";
 
 export default function MethodSetup2() {
+    const { id } = useParams();
+
     const method = useForm({ defaultValues: { "1_waste": { label: 1, value: 1 } } });
 
     const steps = [
+        { label: "Details", value: "detail", component: MethodDetails },
         { label: "First Method", value: "firstMethod", component: FirstMethod },
         {
             label: (
@@ -23,7 +28,7 @@ export default function MethodSetup2() {
         { label: "Last Method", value: "lastMethod", component: LastMethod },
     ];
 
-    const [activeStep, setActiveStep] = useState(steps[1].value);
+    const [activeStep, setActiveStep] = useState(steps[0].value);
 
     const ComponentToRender = steps.find((el) => el.value == activeStep).component;
 
@@ -36,7 +41,7 @@ export default function MethodSetup2() {
                     <LeftPanel tabs={steps} activeStep={activeStep} setActiveStep={setActiveStep} />
 
                     <FormProvider {...method}>
-                        <div className="border-l border-neutral-500 pl-6 w-full overflow-auto scrollbar-style pr-2" style={{ height: windowHeight - 105 }}>
+                        <div className="border-l border-neutral-500 pl-6 w-full overflow-auto scrollbar-style pr-2" style={{ height: windowHeight - 36 }}>
                             <ComponentToRender setActiveStep={setActiveStep} />
                         </div>
                     </FormProvider>

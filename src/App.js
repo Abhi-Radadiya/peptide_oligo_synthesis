@@ -1,26 +1,23 @@
 import React, { useState } from "react";
-import { Tabs } from "./renderer/Components/Tabs/Tab";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Settings from "./renderer/modules/Settings/Settings";
 import MethodSetup2 from "./renderer/modules/MethodSetup2/MethodSetup2";
-//remove method setup if need to
+import NavigationPanel from "./renderer/Components/Navigation/NavigationPanel";
+import Methods from "./renderer/modules/Methods/Methods";
 
 export default function App() {
-    const tabs = [
-        { label: "Method Setup", value: "methodSetup", component: MethodSetup2 },
-        { label: "Settings", value: "settings", component: Settings },
-    ];
-
-    const [activeTab, setActiveTab] = useState(tabs[0].value);
-
-    const ComponentToRender = tabs.find((el) => el.value === activeTab).component;
+    const [isNavOpen, setIsNavOpen] = useState(true);
 
     return (
-        <>
-            <div className="p-4">
-                <Tabs setActiveTab={setActiveTab} activeTab={activeTab} tabs={tabs} className="mb-4 pb-4 border-b border-neutral-300" />
-
-                <ComponentToRender />
+        <Router>
+            <NavigationPanel isNavOpen={isNavOpen} setIsNavOpen={setIsNavOpen} />
+            <div className={`p-4 transition-all duration-300 ${isNavOpen ? "ml-64" : "ml-0"} overflow-auto h-screen scrollbar-style`}>
+                <Routes>
+                    <Route path="/method-setup/:id" element={<MethodSetup2 />} />
+                    <Route path="/method-setup" element={<Methods />} />
+                    <Route path="/settings" element={<Settings />} />
+                </Routes>
             </div>
-        </>
+        </Router>
     );
 }
