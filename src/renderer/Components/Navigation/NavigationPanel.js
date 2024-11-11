@@ -8,6 +8,7 @@ export default function NavigationPanel(props) {
     const links = [
         { label: "Method Setup", to: "method-setup" },
         { label: "Settings", to: "settings" },
+        { label: "Sequence", to: "sequence" },
     ];
 
     const [activeTab, setActiveTab] = useState(links[0].to);
@@ -35,7 +36,7 @@ export default function NavigationPanel(props) {
             </nav>
 
             <div
-                className={`bottom-10 ${!isNavOpen ? "left-2" : "left-60"} transition-all duration-300 cursor-pointer absolute z-[100]`}
+                className={`bottom-10 ${!isNavOpen ? "left-2" : "left-60"} transition-all duration-300 cursor-pointer absolute z-[30]`}
                 onClick={() => setIsNavOpen((prevState) => !prevState)}
             >
                 <DownIcon

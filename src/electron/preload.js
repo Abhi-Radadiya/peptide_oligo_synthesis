@@ -23,28 +23,25 @@ contextBridge.exposeInMainWorld("electron", {
 
     // UV Settings
     saveUVSettings: (details) => ipcRenderer.invoke("save-UV-setting-details", details),
+
+    // port communication
+    listPorts: () => ipcRenderer.invoke("list-ports"),
+    openPort: (port) => ipcRenderer.invoke("open-port", port),
+    sendData: (data) => ipcRenderer.invoke("send-data", data),
+    onSerialData: (callback) => {
+        ipcRenderer.on("serial-data", (event, data) => callback(data));
+        return () => ipcRenderer.removeAllListeners("serial-data");
+    },
+    getPortInfo: () => ipcRenderer.invoke("get-port-info"),
+    onPortDisconnected: (callback) => {
+        ipcRenderer.on("port-disconnected", () => callback());
+        return () => ipcRenderer.removeAllListeners("port-disconnected");
+    },
 });
 
-// // listPorts: () => ipcRenderer.invoke("list-ports"),
-// // openPort: (port) => ipcRenderer.invoke("open-port", port),
-// // sendData: (data) => ipcRenderer.invoke("send-data", data),
-// // onSerialData: (callback) => {
-// //     ipcRenderer.on("serial-data", (event, data) => callback(data));
-// //     return () => ipcRenderer.removeAllListeners("serial-data");
-// // },
-// // onPortStatus: (callback) => {
-// //     ipcRenderer.on("port-status", (event, status) => callback(status));
-// //     return () => ipcRenderer.removeAllListeners("port-status");
-// // },
-// // getPortInfo: () => ipcRenderer.invoke("get-port-info"),
-// // onPortDisconnected: (callback) => {
-// //     ipcRenderer.on("port-disconnected", () => callback());
-// //     return () => ipcRenderer.removeAllListeners("port-disconnected");
-// // },
+// // const { contextBridge, ipcRenderer } = require("electron");
 
-// const { contextBridge, ipcRenderer } = require("electron");
-
-// contextBridge.exposeInMainWorld("api", {
-//     onUpdateAvailable: (callback) => ipcRenderer.on("update_available", callback),
-//     onUpdateDownloaded: (callback) => ipcRenderer.on("update_downloaded", callback),
-// });
+// // contextBridge.exposeInMainWorld("api", {
+// //     onUpdateAvailable: (callback) => ipcRenderer.on("update_available", callback),
+// //     onUpdateDownloaded: (callback) => ipcRenderer.on("update_downloaded", callback),
+// // });

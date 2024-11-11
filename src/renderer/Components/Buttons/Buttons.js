@@ -6,7 +6,7 @@ const Button = (props) => {
 
     return (
         <button
-            className={`border font-medium border-neutral-300 rounded-lg px-5 py-1.5 ${
+            className={`border font-medium border-neutral-300 rounded-lg px-5 py-1.5 disabled:cursor-not-allowed ${
                 bgClassName ? bgClassName : active ? "bg-neutral-400 text-white" : "bg-neutral-200 hover:bg-neutral-300 hover:text-black"
             } ${className}`}
             disabled={disabled}

@@ -6,7 +6,7 @@ import { uploadData } from "./function/googleSheetConfig";
 import FileUploadComponent from "./Components/FileUpload";
 import CommandFinishedPopup from "./Components/CommandFinishedPopup";
 
-function App() {
+export default function MotorTesting() {
     const [selectedPort, setSelectedPort] = useState("");
     const [receivedMessages, setReceivedMessages] = useState([]);
     const [inputCmd, setInputCmd] = useState("");
@@ -14,9 +14,15 @@ function App() {
     const [errors, setErrors] = useState({});
     const [currentCmdIndex, setCurrentCmdIndex] = useState(0);
     const [counter, setCounter] = useState(0);
-    const timeoutRef = useRef(null);
     const pausedRef = useRef(false);
     const lastCmdIndexRef = useRef(0);
+
+    const stepperOperationRef = useRef(null);
+
+    const repeatRef = useRef(0);
+    const repeatUpdateRef = useRef(0);
+
+    const sensorRead = useRef(null);
 
     const [sensorMode, setSensorMode] = useState(1);
 
@@ -29,11 +35,22 @@ function App() {
         const unsubscribe = window.electron.onSerialData((data) => {
             setReceivedMessages((prevMessages) => [...prevMessages, data]);
 
-            if (data.indexOf("F") >= 0) {
-                setErrorMessage(sensorMode === 1 ? "No Liquid Detected.....!" : "Liquid Detected.....!");
-                setShowErrorModal(true);
+            if (sensorRead.current === true) {
+                if (data.indexOf("F") >= 0) {
+                    setErrorMessage(sensorMode === 1 ? "No Liquid Detected.....!" : "Liquid Detected.....!");
+                    setShowErrorModal(true);
+                    setCounter(0);
+                    pausedRef.current = false;
+                    sensorRead.current = false;
+                    repeatRef.current = 0;
+                } else if (data.indexOf("P") >= 0) {
+                    pausedRef.current = true;
+                    sensorRead.current = false;
+                }
+            }
+            if (data.indexOf("P") >= 0 && stepperOperationRef.current === true) {
                 pausedRef.current = true;
-                setCurrentCmdIndex(0);
+                stepperOperationRef.current = false;
             }
         });
 
@@ -43,12 +60,33 @@ function App() {
     }, [sensorMode]);
 
     const executeNextCommand = async (index) => {
+        if (counter > 0) {
+            if (sensorRead.current === false && stepperOperationRef === false) {
+                pausedRef.current = true;
+            } else {
+                pausedRef.current = false;
+            }
+        } else {
+            if (repeatUpdateRef.current === true) {
+                pausedRef.current = true;
+            } else {
+                pausedRef.current = false;
+            }
+        }
+
         if (pausedRef.current || index >= inputCmd.split("\n").length || lastCmdIndexRef.current < index) {
             setCurrentCmdIndex(0);
 
             setActiveButton(null);
 
             return;
+        }
+
+        if (counter < index) {
+            setCounter((prevState) => prevState++);
+        } else {
+            setCounter(0);
+            pausedRef.current = false;
         }
 
         let command = inputCmd.split("\n")[index].toUpperCase();
@@ -78,6 +116,8 @@ function App() {
         } catch (error) {
             console.error("Error executing command:", error);
 
+            repeatUpdateRef.current = false;
+
             uploadData({ action: `Error executing command: ${error.message}`, success: "Error" });
         }
 
@@ -95,12 +135,18 @@ function App() {
         if (!thresholdValue) {
             setErrors((prevState) => ({ ...prevState, threshold: "Please add threshold value" }));
             error = true;
+            sensorRead.current = false;
+            repeatRef.current = 0;
+            setCounter(0);
             uploadData({ action: "Run", success: "Error", error: "Threshold value is missing" });
         }
 
         if (!inputCmd?.length) {
             setErrors((prevState) => ({ ...prevState, inputCmd: "Please enter commands" }));
             error = true;
+            sensorRead.current = false;
+            repeatRef.current = 0;
+            setCounter(0);
             uploadData({ action: "Run", success: "Error", error: "Commands are missing" });
         }
 
@@ -204,19 +250,22 @@ function App() {
     const handleHoldCommand = async (command) => {
         let spa = command.indexOf(" ");
         let s = parseInt(command.substring(spa + 1));
-        await new Promise((resolve) => setTimeout(resolve, s * 1000));
+        await new Promise((resolve) => setTimeout(resolve, s));
     };
 
-    const handleRepCommand = async (command, index) => {
+    const handleRepCommand = async (command) => {
         let sep = command.indexOf(",");
         let spa = command.indexOf(" ");
 
-        if (counter === 0) {
+        if (repeatRef.current === 0) {
+            repeatUpdateRef.current = true;
             setCounter(parseInt(command.substring(spa + 1, sep - spa - 1)) - 1);
-        } else if (counter === 1) {
-            setCounter(0);
+            repeatRef.current = parseInt(command.substring(sep + 1));
+        } else if (repeatRef.current === 1) {
+            repeatUpdateRef.current = false;
+            repeatRef.current = 0;
         } else {
-            setCounter(counter - 1);
+            repeatRef.current = repeatRef.current - 1;
             setCounter(parseInt(command.substring(spa + 1, sep - spa - 1)) - 1);
         }
     };
@@ -236,6 +285,8 @@ function App() {
         } else {
             pin = `${pin}-${thresholdString}.00`;
         }
+
+        sensorRead.current = true;
 
         try {
             await window.electron.sendData(pin);
@@ -261,6 +312,8 @@ function App() {
             pin = `${pin}-${thresholdString}.00`;
         }
 
+        sensorRead.current = true;
+
         try {
             await window.electron.sendData(pin);
             console.log("Data sent:", pin);
@@ -277,6 +330,7 @@ function App() {
     };
 
     const handleMTCommand = async (command) => {
+        stepperOperationRef.current = true;
         const Reactor = command.substring(0, 2);
 
         let pin = Reactor + "T";
@@ -292,6 +346,8 @@ function App() {
     };
 
     const handleMLCommand = async (command) => {
+        stepperOperationRef.current = true;
+
         let Reactor = command.substring(0, 2);
 
         let pin = Reactor + "L";
@@ -312,26 +368,17 @@ function App() {
         pausedRef.current = true;
 
         uploadData({ action: `Pause`, success: "Success" });
-
-        if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
-            timeoutRef.current = null;
-        }
     };
 
     const handleStop = () => {
         setActiveButton("stop");
-
+        sensorRead.current = false;
         pausedRef.current = true;
         setCurrentCmdIndex(0);
         setCounter(0);
+        repeatRef.current = 0;
 
         uploadData({ action: `Stop`, success: "Success" });
-
-        if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
-            timeoutRef.current = null;
-        }
     };
 
     const handleRepeat = () => {
@@ -436,5 +483,3 @@ function App() {
         </div>
     );
 }
-
-export default App;
