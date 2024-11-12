@@ -83,7 +83,7 @@ export function ControllerDropdown(props) {
 }
 
 export function SelectionController(props) {
-    const { control, name, menuItem, rules, isDisabled, className, placeholder, width, isClearable = true, hight } = props;
+    const { control, name, menuItem, rules, isDisabled, className, placeholder, width, isClearable = true, height } = props;
 
     const customStyles = {
         control: (provided, state) => ({
@@ -96,7 +96,7 @@ export function SelectionController(props) {
             "&:hover": {
                 borderColor: "#f5f5f5",
             },
-            height: hight,
+            height: height,
         }),
         option: (provided, state) => ({
             ...provided,

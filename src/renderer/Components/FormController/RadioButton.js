@@ -2,13 +2,15 @@ import React from "react";
 import { Controller } from "react-hook-form";
 
 export default function RadioButton(props) {
-    const { header, buttons, control, name, rules, disabled, className } = props;
+    const { header, buttons, control, name, rules, disabled, className, labelClassName = "py-3", wrapperClassName } = props;
 
     return (
         <>
             <div className={`${className}`}>
                 {header && <h3 className="font-semibold text-gray-900 dark:text-white">{header}</h3>}
-                <ul className="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                <ul
+                    className={`items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white ${wrapperClassName}`}
+                >
                     <Controller
                         name={name}
                         control={control}
@@ -27,7 +29,10 @@ export default function RadioButton(props) {
                                             onChange={(e) => field.onChange(e.target.value)}
                                             disabled={disabled}
                                         />
-                                        <label htmlFor={`${name}-${index}`} className="w-full py-3 ms-2 me-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                        <label
+                                            htmlFor={`${name}-${index}`}
+                                            className={`w-full ms-2 me-2 justify-center text-sm font-medium text-gray-900 dark:text-gray-300 ${labelClassName}`}
+                                        >
                                             {el.label}
                                         </label>
                                     </div>

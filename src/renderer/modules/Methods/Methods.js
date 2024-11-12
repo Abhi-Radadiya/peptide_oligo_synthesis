@@ -64,7 +64,9 @@ export default function Methods() {
                     />
                     <div className="flex flex-row gap-6">
                         <Button label="Delete" onClick={() => setIsModalOpen(true)} disabled={!selectedRows.length} />
-                        <Button label={<Link to={`/method-setting`}>Add Method</Link>} />
+                        <Link to={`/method-setting`} className="border font-medium border-neutral-300 rounded-lg px-5 py-1.5 bg-neutral-200 hover:bg-neutral-300 hover:text-black">
+                            Add Method
+                        </Link>
                     </div>
                 </div>
 

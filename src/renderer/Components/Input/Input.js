@@ -47,6 +47,7 @@ const InputField = (props) => {
                     <>
                         <input
                             {...field}
+                            value={field.value ?? ""}
                             type={type}
                             placeholder={placeholder}
                             disabled={disabled}

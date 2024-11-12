@@ -6,8 +6,8 @@ import { testMethodData } from "../../Methods/Methods";
 import RadioButton from "../../../Components/FormController/RadioButton";
 import { Button } from "../../../Components/Buttons/Buttons";
 
-export default function SingleDropdown() {
-    const { control, watch } = useFormContext();
+export default function SingleSynthesisRun() {
+    const { control } = useFormContext();
 
     const [files, setFiles] = useState([]);
 
@@ -30,7 +30,7 @@ export default function SingleDropdown() {
         <div className="flex flex-row items-center justify-between">
             <SelectionController
                 control={control}
-                hight={45.6}
+                height={45.6}
                 name="columnNo"
                 placeholder="Select Column"
                 isClearable={false}
@@ -39,7 +39,7 @@ export default function SingleDropdown() {
             />
             <SelectionController
                 control={control}
-                hight={45.6}
+                height={45.6}
                 name="method"
                 placeholder="Select Method"
                 isClearable={false}
