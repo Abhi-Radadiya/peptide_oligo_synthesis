@@ -15,6 +15,7 @@ const InputField = (props) => {
         disabled,
         borderClass = "border",
         labelClassName = "text-gray-700 leading-[17px] font-normal",
+        rightFixItem,
     } = props;
 
     const handleKeyDown = (e) => {
@@ -44,19 +45,22 @@ const InputField = (props) => {
                 name={name}
                 rules={rules}
                 render={({ field, fieldState: { error } }) => (
-                    <>
+                    <div className="relative">
                         <input
                             {...field}
                             value={field.value ?? ""}
                             type={type}
                             placeholder={placeholder}
                             disabled={disabled}
-                            className={`px-3 py-2 ${borderClass} rounded ${error ? "border-red-500" : "border-gray-300"} ${className} ${width ?? "w-full"}`}
+                            className={`px-3 py-2 ${rightFixItem ? "pl-3 pr-12" : "px-3"} ${borderClass} rounded ${error ? "border-red-500" : "border-gray-300"} ${className} ${
+                                width ?? "w-full"
+                            }`}
                             {...(type === "number" ? numberInputProps : {})}
                             {...(type === "checkbox" ? { checked: field.value ?? false } : {})}
                         />
+                        {rightFixItem && <span className="absolute right-4 top-2">{rightFixItem}</span>}
                         {error && <p className="text-red-500 text-sm mt-1">{error.message}</p>}
-                    </>
+                    </div>
                 )}
             />
         </div>

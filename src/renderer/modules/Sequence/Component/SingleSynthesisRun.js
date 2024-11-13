@@ -60,6 +60,7 @@ export default function SingleSynthesisRun() {
             <RadioButton className="flex flex-row gap-6 items-center bg-neutral-100 pl-4 rounded-lg" buttons={radio3} control={control} name="3" header="Option" />
 
             <RadioButton header="Resin" className="flex flex-row gap-6 items-center bg-neutral-100 pl-4 rounded-lg" buttons={resinOption} control={control} name="resinOption" />
+
             <Button label="RUN" />
         </div>
     );

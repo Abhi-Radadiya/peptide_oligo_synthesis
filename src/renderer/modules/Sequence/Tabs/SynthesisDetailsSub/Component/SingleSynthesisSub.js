@@ -3,6 +3,7 @@ import { SelectionController } from "../../../../../Components/Dropdown/Dropdown
 import { useFormContext } from "react-hook-form";
 import InputField from "../../../../../Components/Input/Input";
 import RadioButton from "../../../../../Components/FormController/RadioButton";
+import { wasteMenuItems } from "../../../../MethodSetup2/Constant";
 
 export default function SingleSynthesisSub() {
     const { control } = useFormContext();
@@ -32,6 +33,19 @@ export default function SingleSynthesisSub() {
         <>
             <div className="flex flex-row justify-between gap-4 mb-6">
                 <div className="space-y-2 max-w-[200px] w-full">
+                    <label className="font-bold text-neutral-600">Column</label>
+                    <SelectionController
+                        control={control}
+                        height={45.6}
+                        name="columnNo"
+                        placeholder="Select Column"
+                        isClearable={false}
+                        menuItem={wasteMenuItems}
+                        rules={{ required: "Please select column" }}
+                    />
+                </div>
+
+                <div className="space-y-2 max-w-[200px] w-full">
                     <label className="font-bold text-neutral-600">Base</label>
                     <SelectionController control={control} menuItem={baseMenuItem} height={41.6} name="base" placeholder="Select base" />
                 </div>
@@ -58,7 +72,8 @@ export default function SingleSynthesisSub() {
                 <InputField label="Flow Rate" type="number" labelClassName="font-bold text-neutral-600" name="flowRate" placeholder="Enter flow rate" />
             </div>
 
-            <p className="font-bold">** what should be pressure setting</p>
+            {/* <p className="font-bold">Pressure setting get from setting -> pressure setting -> set value
+             and all other details get from setting based on base & process selection </p> */}
         </>
     );
 }

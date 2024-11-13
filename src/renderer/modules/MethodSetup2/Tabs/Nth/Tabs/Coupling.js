@@ -1,24 +1,10 @@
 import React from "react";
-import { SelectionController } from "../../../../../Components/Dropdown/Dropdown";
 import { useFormContext } from "react-hook-form";
-import RadioButton from "../../../../../Components/FormController/RadioButton";
-import Checkbox from "../../../../../Components/FormController/CheckBox";
-import { wasteMenuItems } from "../../../Constant";
 import InputField from "../../../../../Components/Input/Input";
+import AmediteSection, { RadioSection, WasteColumnSelection } from "../../../Components/AmediteSection/AmediteSection";
 
 export default function Coupling() {
     const { control } = useFormContext();
-
-    const testSolvents = [
-        { label: "Test Solvent 1", value: "solvent1", flowRate: 12 },
-        { label: "Test Solvent 2", value: "solvent2", flowRate: 60 },
-        { label: "Test Solvent 3", value: "solvent3", flowRate: 90 },
-    ];
-
-    const buttons = [
-        { label: "High", value: "high" },
-        { label: "Low", value: "low" },
-    ];
 
     return (
         <>
@@ -26,18 +12,12 @@ export default function Coupling() {
                 <div className="max-w-[615px] w-full">
                     <h3 className="font-bold text-xl mb-4">Coupling Settings</h3>
 
-                    <div className="flex flex-row items-center justify-between mb-4">
-                        <div className="flex flex-row items-center gap-6 w-full  justify-between">
-                            <SelectionController width={200} menuItem={testSolvents} control={control} name="coupling_solvent" placeholder="Select Solvent" />
-                        </div>
-                    </div>
+                    <AmediteSection
+                        names={{ solvent: "n_couplingSolvent", volume: "n_couplingVolume", xFactor: "n_couplingXFactor" }}
+                        className="mb-4 pb-4 border-b border-neutral-300"
+                    />
 
-                    <div className="flex flex-row items-center gap-6 justify-between border-b border-neutral-300 pb-4 mb-4">
-                        <span className="font-bold text-neutral-600">X Factor</span>
-                        <InputField name="1_x_factor" width="w-[220px]" wrapperClassName=" max-w-[220px]" control={control} type="number" placeholder="Enter X Factor" />
-                    </div>
-
-                    <span className="font-bold text-base underline underline-offset-4 text-neutral-600">Circulation</span>
+                    <span className="font-bold text-base underline underline-offset-4 text-neutral-600">Delivery System</span>
 
                     <div className="flex flex-row justify-between my-2">
                         <InputField
@@ -48,6 +28,7 @@ export default function Coupling() {
                             type="number"
                             placeholder="Enter Flow Rate"
                             label="Flow Rate"
+                            rightFixItem="ml/min"
                         />
 
                         <InputField
@@ -58,6 +39,31 @@ export default function Coupling() {
                             type="number"
                             placeholder="Enter mix time"
                             label="Mix Time"
+                            rightFixItem="min"
+                        />
+                    </div>
+
+                    <div className="flex flex-row justify-between my-2">
+                        <InputField
+                            name="n_couplingDeliveryVolume"
+                            width="w-[220px]"
+                            wrapperClassName="max-w-[220px] mt-2"
+                            control={control}
+                            type="number"
+                            placeholder="Enter delivery volume"
+                            label="Delivery volume"
+                            rightFixItem="ml"
+                        />
+
+                        <InputField
+                            name="n_couplingDeliveryWashVolume"
+                            width="w-[220px]"
+                            wrapperClassName="max-w-[220px] mt-2"
+                            control={control}
+                            type="number"
+                            placeholder="Enter delivery wash volume"
+                            label="Wash volume"
+                            rightFixItem="ml"
                         />
                     </div>
 
@@ -83,32 +89,16 @@ export default function Coupling() {
                         />
                     </div>
 
-                    <span className="font-bold text-base underline underline-offset-4 text-neutral-600">Wash Setting</span>
+                    <AmediteSection
+                        names={{ solvent: "n_couplingWashSolvent", volume: "n_couplingWashVolume", xFactor: "n_couplingWashXFactor" }}
+                        className="mb-4 pb-4 border-b border-neutral-300"
+                        title="Wash Setting"
+                    />
 
-                    <div className="flex flex-row items-center justify-between my-4">
-                        <div className="flex flex-row items-center gap-6 w-full  justify-between">
-                            <SelectionController width={200} menuItem={testSolvents} control={control} name="wash_solvent" placeholder="Select Solvent" />
-                        </div>
-                    </div>
-
-                    <div className="flex flex-row items-center gap-6 justify-between border-b border-neutral-300 pb-4 mb-4">
-                        <span className="font-bold text-neutral-600">X Factor</span>
-                        <InputField name="wash_x_factor" width="w-[220px]" wrapperClassName=" max-w-[220px]" control={control} type="number" placeholder="Enter X Factor" />
-                    </div>
-
-                    <div className="flex flex-row justify-between items-center w-full">
-                        <div className="flex flex-row items-center gap-6 justify-between">
-                            <span className="font-bold text-neutral-600">UV Setting</span>
-                            <RadioButton className="max-w-[250px]" buttons={buttons} control={control} disabled name="coupling_uv_setting" />
-                        </div>
-                        <Checkbox labelClassName="font-bold text-neutral-600" className="flex-row-reverse gap-4" label="Enabled" name="enable_coupling" control={control} />
-                    </div>
+                    <RadioSection radioName="n_couplingUVEnable" title="UV setting" control={control} checkName="n_couplingCheck" />
                 </div>
 
-                <div className="flex flex-row w-full max-w-[260px] items-center gap-3">
-                    <span className="font-bold text-base">Waste Column : </span>
-                    <SelectionController isClearable={false} width={120} menuItem={wasteMenuItems} control={control} name="coupling_block_waste" />
-                </div>
+                <WasteColumnSelection name="n_couplingWaste" control={control} />
             </div>
         </>
     );
