@@ -2,7 +2,9 @@ import React from "react";
 import { useFormContext } from "react-hook-form";
 import AmediteSection, { WasteColumnSelection } from "../../../Components/AmediteSection/AmediteSection";
 
-export default function Extra() {
+export default function Extra(props) {
+    const { disabled } = props;
+
     const { control } = useFormContext();
 
     return (
@@ -11,11 +13,19 @@ export default function Extra() {
                 <div className="max-w-[615px] w-full">
                     <h3 className="font-bold text-xl mb-4">Extra Settings</h3>
 
-                    <AmediteSection names={{ solvent: "n_extraSolvent", volume: "n_extraVolume", xFactor: "n_extraXFactor" }} className="mb-4 pb-4 border-b border-neutral-300" />
-                    <AmediteSection names={{ solvent: "n_extraWashSolvent", volume: "n_extraWashVolume", xFactor: "n_extraWashXFactor" }} title="Wash setting" />
+                    <AmediteSection
+                        disabled={disabled}
+                        names={{ solvent: "n_extraSolvent", volume: "n_extraVolume", xFactor: "n_extraXFactor" }}
+                        className="mb-4 pb-4 border-b border-neutral-300"
+                    />
+                    <AmediteSection
+                        disabled={disabled}
+                        names={{ solvent: "n_extraWashSolvent", volume: "n_extraWashVolume", xFactor: "n_extraWashXFactor" }}
+                        title="Wash setting"
+                    />
                 </div>
 
-                <WasteColumnSelection control={control} name="n_extraWaster" />
+                <WasteColumnSelection disabled={disabled} control={control} name="n_extraWaster" />
             </div>
         </>
     );

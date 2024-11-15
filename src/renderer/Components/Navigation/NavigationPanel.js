@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { ReactComponent as DownIcon } from "../../Assets/chevron-down.svg";
 
 export default function NavigationPanel(props) {
     const { isNavOpen, setIsNavOpen } = props;
+
+    const location = useLocation();
 
     const links = [
         { label: "Method Setup", to: "method-setup" },
@@ -11,7 +13,17 @@ export default function NavigationPanel(props) {
         { label: "Sequence", to: "sequence" },
     ];
 
-    const [activeTab, setActiveTab] = useState(links[0].to);
+    const [activeTab, setActiveTab] = useState(() => {
+        const currentPath = location.pathname.split("/").pop();
+        return links.find((link) => link.to === currentPath)?.to || links[0].to;
+    });
+
+    useEffect(() => {
+        const currentPath = location.pathname.split("/").pop();
+        if (links.some((link) => link.to === currentPath)) {
+            setActiveTab(currentPath);
+        }
+    }, [location.pathname]);
 
     return (
         <>
@@ -34,7 +46,6 @@ export default function NavigationPanel(props) {
                     })}
                 </ul>
             </nav>
-
             <div
                 className={`bottom-10 ${!isNavOpen ? "left-2" : "left-60"} transition-all duration-300 cursor-pointer absolute z-[30]`}
                 onClick={() => setIsNavOpen((prevState) => !prevState)}

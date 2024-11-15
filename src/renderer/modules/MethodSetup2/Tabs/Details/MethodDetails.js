@@ -3,7 +3,9 @@ import InputField from "../../../../Components/Input/Input";
 import { useFormContext } from "react-hook-form";
 import { SelectionController } from "../../../../Components/Dropdown/Dropdown";
 
-const SynthesisCalculator = () => {
+const MethodDetails = (props) => {
+    const { disabled } = props;
+
     const { control, watch, setValue } = useFormContext();
 
     const synthesisScale = watch("synthesisScale");
@@ -24,7 +26,7 @@ const SynthesisCalculator = () => {
             "1_volume",
             "n_deVolume",
             "n_couplingVolume",
-            "n_couplingDeliveryVolume",
+            "n_couplingAmediteVolume",
             "n_oxidizationVolume",
             "n_sulfurizationVolume",
             "n_extraVolume",
@@ -40,7 +42,7 @@ const SynthesisCalculator = () => {
         const washField = [
             "n_deWashVolume",
             "n_couplingWashVolume",
-            "n_couplingDeliveryWashVolume",
+            "n_couplingActVolume",
             "n_oxidizationWashVolume",
             "n_sulfurizationWashVolume",
             "n_extraWashVolume",
@@ -83,6 +85,7 @@ const SynthesisCalculator = () => {
         <>
             <div className="border-b border-neutral-300 pb-6 mb-6">
                 <InputField
+                    disabled={disabled}
                     control={control}
                     wrapperClassName="max-w-64"
                     name="method_name"
@@ -100,32 +103,62 @@ const SynthesisCalculator = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <label htmlFor="column-size">Column Size (ml)</label>
-                                <SelectionController placeholder="Select Column Size" height={41.6} control={control} name="columnSize" menuItem={columnsMenuItem} />
+                                <SelectionController
+                                    disabled={disabled}
+                                    placeholder="Select Column Size"
+                                    height={41.6}
+                                    control={control}
+                                    name="columnSize"
+                                    menuItem={columnsMenuItem}
+                                />
                             </div>
 
                             <div className="space-y-2">
                                 <label htmlFor="synthesis-scale">Synthesis Scale (μmol)</label>
-                                <InputField control={control} name="synthesisScale" placeholder="Enter synthesis scale (μmol)" type="number" className="w-full" />
+                                <InputField
+                                    disabled={disabled}
+                                    control={control}
+                                    name="synthesisScale"
+                                    placeholder="Enter synthesis scale (μmol)"
+                                    type="number"
+                                    className="w-full"
+                                />
                             </div>
 
                             <div className="space-y-2">
                                 <label htmlFor="loading-time">Loading Time (min)</label>
-                                <InputField control={control} name="loadingTime" placeholder="Enter loading time (min)" type="number" className="w-full" />
+                                <InputField disabled={disabled} control={control} name="loadingTime" placeholder="Enter loading time (min)" type="number" className="w-full" />
                             </div>
 
                             <div className="space-y-2">
                                 <label htmlFor="amedite-excess">Amedite Excess Factor</label>
-                                <InputField control={control} name="amediteExcessFactor" placeholder="Enter amedite excess factor" type="number" step="0.1" className="w-full" />
+                                <InputField
+                                    disabled={disabled}
+                                    control={control}
+                                    name="amediteExcessFactor"
+                                    placeholder="Enter amedite excess factor"
+                                    type="number"
+                                    step="0.1"
+                                    className="w-full"
+                                />
                             </div>
 
                             <div className="space-y-2">
                                 <label htmlFor="act-excess">ACT Excess Factor (%)</label>
-                                <InputField control={control} name="actExcessFactor" placeholder="Enter act excess factor (%)" type="number" className="w-full" />
+                                <InputField
+                                    disabled={disabled}
+                                    control={control}
+                                    name="actExcessFactor"
+                                    placeholder="Enter act excess factor (%)"
+                                    type="number"
+                                    className="w-full"
+                                />
                             </div>
 
                             <div className="space-y-2">
                                 <label htmlFor="amedite-concentration">Amedite Concentration (mmol)</label>
                                 <InputField
+                                    disabled={disabled}
                                     name="amediteConcentration"
                                     control={control}
                                     placeholder="Enter amedite concentration (mmol)"
@@ -142,24 +175,24 @@ const SynthesisCalculator = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <p className="text-sm text-gray-600">Amedite Volume</p>
-                                    <p className="font-medium">{watch("amediteVolume")} ml</p>
+                                    <p className="font-medium">{watch("amediteVolume") ?? "______"} ml</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-gray-600">Delivery Time Amedite</p>
-                                    <p className="font-medium">{watch("deliveryTimeAmedite")} ml/min</p>
+                                    <p className="font-medium">{watch("deliveryTimeAmedite") ?? "______"} ml/min</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-gray-600">ACT Volume</p>
-                                    <p className="font-medium">{watch("actVolume")} ml</p>
+                                    <p className="font-medium">{watch("actVolume") ?? "______"} ml</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-gray-600">Delivery Time ACT</p>
-                                    <p className="font-medium">{watch("deliveryTimeAct")} ml/min</p>
+                                    <p className="font-medium">{watch("deliveryTimeAct") ?? "______"} ml/min</p>
                                 </div>
 
                                 <div>
                                     <p className="text-sm text-gray-600">Total Coupling Volume</p>
-                                    <p className="font-medium">{watch("totalCouplingVolume")} ml</p>
+                                    <p className="font-medium">{watch("totalCouplingVolume") ?? "______"} ml</p>
                                 </div>
                             </div>
                         </div>
@@ -170,4 +203,4 @@ const SynthesisCalculator = () => {
     );
 };
 
-export default SynthesisCalculator;
+export default MethodDetails;

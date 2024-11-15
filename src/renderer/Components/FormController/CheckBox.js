@@ -2,7 +2,7 @@ import React from "react";
 import { Controller } from "react-hook-form";
 
 export default function Checkbox(props) {
-    const { control, name, label, rules, className, labelClassName = "text-sm font-medium text-gray-900", onChange } = props;
+    const { control, name, label, rules, className, labelClassName = "text-sm font-medium text-gray-900", onChange, disabled } = props;
 
     return (
         <Controller
@@ -19,6 +19,7 @@ export default function Checkbox(props) {
                             field.onChange(e.target.checked);
                             onChange?.(e.target.checked);
                         }}
+                        disabled={disabled}
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-2xl cursor-pointer"
                     />
                     {label && (

@@ -11,6 +11,7 @@ export default function AmediteSection(props) {
         names: { solvent, volume, xFactor },
         title,
         className,
+        disabled,
     } = props;
 
     const { control, watch } = useFormContext();
@@ -30,7 +31,7 @@ export default function AmediteSection(props) {
                     <div className="flex flex-row items-center gap-6 w-full justify-between">
                         <div className="flex flex-row items-center gap-2">
                             <span className="font-bold text-neutral-600">Solvent</span>
-                            <SelectionController width={220} menuItem={testSolvents} control={control} name={solvent} placeholder="Select Solvent" />
+                            <SelectionController isDisabled={disabled} width={220} menuItem={testSolvents} control={control} name={solvent} placeholder="Select Solvent" />
                         </div>
 
                         <div className="flex flex-row items-center gap-2">
@@ -54,12 +55,21 @@ export default function AmediteSection(props) {
                             control={control}
                             type="number"
                             placeholder="Enter X Factor"
+                            disabled={disabled}
                         />
                     </div>
 
                     <div className="flex flex-row items-center gap-2">
                         <span className="font-bold text-neutral-600">X Factor</span>
-                        <InputField name={xFactor} width="w-[220px]" wrapperClassName="max-w-[220px]" control={control} type="number" placeholder="Enter X Factor" />
+                        <InputField
+                            disabled={disabled}
+                            name={xFactor}
+                            width="w-[220px]"
+                            wrapperClassName="max-w-[220px]"
+                            control={control}
+                            type="number"
+                            placeholder="Enter X Factor"
+                        />
                     </div>
                 </div>
             </div>
@@ -68,18 +78,18 @@ export default function AmediteSection(props) {
 }
 
 export const WasteColumnSelection = (props) => {
-    const { name, control } = props;
+    const { name, control, disabled } = props;
 
     return (
         <div className="flex flex-row w-full max-w-[260px] items-center gap-3">
             <span className="font-bold text-base">Waste Column : </span>
-            <SelectionController isClearable={false} width={120} menuItem={wasteMenuItems} control={control} name={name} />
+            <SelectionController isDisabled={disabled} isClearable={false} width={120} menuItem={wasteMenuItems} control={control} name={name} />
         </div>
     );
 };
 
 export const RadioSection = (props) => {
-    const { radioName, title, control, checkName, disabled = true } = props;
+    const { radioName, title, control, checkName, disabled } = props;
 
     const buttons = [
         { label: "High", value: "high" },
@@ -90,10 +100,10 @@ export const RadioSection = (props) => {
         <div className="flex flex-row justify-between items-center w-full">
             <div className="flex flex-row items-center gap-6 justify-between">
                 <span className="font-bold text-neutral-600">{title}</span>
-                <RadioButton className="max-w-[250px]" disabled={disabled} buttons={buttons} control={control} name={radioName} />
+                <RadioButton className="max-w-[250px]" disabled={true} buttons={buttons} control={control} name={radioName} />
             </div>
 
-            <Checkbox labelClassName="font-bold text-neutral-600" className="flex-row-reverse gap-4" label="Enabled" name={checkName} control={control} />
+            <Checkbox labelClassName="font-bold text-neutral-600" className="flex-row-reverse gap-4" label="Enabled" disabled={disabled} name={checkName} control={control} />
         </div>
     );
 };

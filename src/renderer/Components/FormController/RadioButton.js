@@ -2,14 +2,14 @@ import React from "react";
 import { Controller } from "react-hook-form";
 
 export default function RadioButton(props) {
-    const { header, buttons, control, name, rules, disabled, className, labelClassName = "py-3", wrapperClassName } = props;
+    const { header, buttons, control, name, rules, disabled, className, labelClassName = "py-3", wrapperClassName = "w-full", optionWidth = "w-full" } = props;
 
     return (
         <>
             <div className={`${className}`}>
                 {header && <h3 className="font-semibold text-gray-900 dark:text-white">{header}</h3>}
                 <ul
-                    className={`items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white ${wrapperClassName}`}
+                    className={`items-center text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white ${wrapperClassName}`}
                 >
                     <Controller
                         name={name}
@@ -18,7 +18,7 @@ export default function RadioButton(props) {
                         disabled={disabled}
                         render={({ field }) =>
                             buttons.map((el, index) => (
-                                <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600" key={index}>
+                                <li className={`border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600 ${optionWidth}`} key={index}>
                                     <div className="flex items-center ps-3">
                                         <input
                                             id={`${name}-${index}`}

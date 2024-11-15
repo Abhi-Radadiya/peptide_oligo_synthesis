@@ -11,7 +11,7 @@ import MethodDetails from "./Tabs/Details/MethodDetails";
 export default function MethodSetting() {
     const { id } = useParams();
 
-    const method = useForm({ defaultValues: { "1_waste": { label: 1, value: 1 } } });
+    const method = useForm({ defaultValues: { "1_waste": { label: 1, value: 1 }, hasOxidization: true } });
 
     const steps = [
         { label: "Details", value: "detail", component: MethodDetails },
@@ -91,3 +91,59 @@ export default function MethodSetting() {
 // };
 
 // export default MyComponent;
+
+const flags = {
+    n: {
+        deBlock: ["n_deSolvent", "n_deVolume", "n_deXFactor", "n_deWashSolvent", "n_deWashVolume", "n_deWashXFactor", "n_deUVEnable", "n_deCheck", "n_deWaste"],
+        amedite: [
+            "n_couplingSolvent",
+            "n_couplingVolume",
+            "n_couplingXFactor",
+            "n_couplingFlowRate",
+            "n_couplingMixTime",
+            "n_couplingAmediteVolume",
+            "n_couplingActVolume",
+            "n_couplingWashSolvent",
+            "n_couplingWashVolume",
+            "n_couplingWashXFactor",
+            "n_couplingUVEnable",
+            "n_couplingCheck",
+            "n_couplingWaste",
+        ],
+        oxidization: [
+            "n_oxidizationSolvent",
+            "n_oxidizationVolume",
+            "n_oxidizationXFactor",
+            "n_oxidizationWashSolvent",
+            "n_oxidizationWashVolume",
+            "n_oxidizationWashXFactor",
+            "n_oxidizationConductivity",
+            "n_oxidizationCheck",
+            "n_oxidizationWaste",
+        ],
+        sulfurization: [
+            "n_sulfurizationSolvent",
+            "n_sulfurizationVolume",
+            "n_sulfurizationXFactor",
+            "n_sulfurizationWashSolvent",
+            "n_sulfurizationWashVolume",
+            "n_sulfurizationWashXFactor",
+            "n_sulfurizationConductivityEnable",
+            "n_sulfurizationCheck",
+            "n_sulfurizationWaste",
+        ],
+        extra: ["n_extraSolvent", "n_extraVolume", "n_extraXFactor", "n_extraWashSolvent", "n_extraWashVolume", "n_extraWashXFactor", "n_extraWaster"],
+        capping: [
+            "n_cappingASolvent",
+            "n_cappingAVolume",
+            "n_cappingAXFactor",
+            "n_cappingBSolvent",
+            "n_cappingBVolume",
+            "n_cappingBXFactor",
+            "n_cappingWashSolvent",
+            "n_cappingWashVolume",
+            "n_cappingWashXFactor",
+            "n_cappingWaste",
+        ],
+    },
+};

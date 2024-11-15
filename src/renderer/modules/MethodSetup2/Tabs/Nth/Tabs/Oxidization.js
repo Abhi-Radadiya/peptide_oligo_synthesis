@@ -2,7 +2,9 @@ import React from "react";
 import { useFormContext } from "react-hook-form";
 import AmediteSection, { RadioSection, WasteColumnSelection } from "../../../Components/AmediteSection/AmediteSection";
 
-export default function Oxidization() {
+export default function Oxidization(props) {
+    const { disabled } = props;
+
     const { control } = useFormContext();
 
     return (
@@ -12,19 +14,21 @@ export default function Oxidization() {
                     <h3 className="font-bold text-xl mb-4">Oxidization Settings</h3>
 
                     <AmediteSection
-                        names={{ solvent: "n_OxidizationSolvent", volume: "n_oxidizationVolume", xFactor: "n_oxidizationXFactor" }}
+                        disabled={disabled}
+                        names={{ solvent: "n_oxidizationSolvent", volume: "n_oxidizationVolume", xFactor: "n_oxidizationXFactor" }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                     />
 
                     <AmediteSection
-                        names={{ solvent: "n_OxidizationWashSolvent", volume: "n_oxidizationWashVolume", xFactor: "n_oxidizationWashXFactor" }}
+                        disabled={disabled}
+                        names={{ solvent: "n_oxidizationWashSolvent", volume: "n_oxidizationWashVolume", xFactor: "n_oxidizationWashXFactor" }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                     />
 
-                    <RadioSection radioName="n_oxidizationConductivity" title="Conductivity" control={control} checkName="n_oxidizationCheck" />
+                    <RadioSection disabled={disabled} radioName="n_oxidizationConductivity" title="Conductivity" control={control} checkName="n_oxidizationCheck" />
                 </div>
 
-                <WasteColumnSelection name="n_oxidizationWaste" control={control} />
+                <WasteColumnSelection disabled={disabled} name="n_oxidizationWaste" control={control} />
             </div>
         </>
     );

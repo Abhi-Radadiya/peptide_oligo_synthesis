@@ -16,10 +16,15 @@ export default function NthMethod() {
             <CheckAdditionComponent />
 
             <DeBlock />
+
             <Coupling />
+
             {watch("hasOxidization") && <Oxidization />}
+
             {watch("hasSulfurization") && <Sulfurization />}
+
             {watch("hasExtra") && <Extra />}
+
             <Capping />
         </>
     );
