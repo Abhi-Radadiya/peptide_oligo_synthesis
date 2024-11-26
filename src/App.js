@@ -5,6 +5,7 @@ import NavigationPanel from "./renderer/Components/Navigation/NavigationPanel";
 import Methods from "./renderer/modules/Methods/Methods";
 import MotorTesting from "./renderer/modules/MotorTesting/MotorTesting";
 import Sequence from "./renderer/modules/Sequence/Sequence";
+import SequenceCreation from "./renderer/modules/SequenceCreation/SequenceCreation";
 import MethodSetting from "./renderer/modules/MethodSetup2/MethodSetting";
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
                     <Route path="/motor-testing" element={<MotorTesting />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/sequence" element={<Sequence />} />
+                    <Route path="/sequence-creation" element={<SequenceCreation />} />
                     <Route index element={<Methods />} />
                 </Routes>
             </div>

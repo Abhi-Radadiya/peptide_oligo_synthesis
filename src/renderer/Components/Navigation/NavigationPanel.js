@@ -11,6 +11,7 @@ export default function NavigationPanel(props) {
         { label: "Method Setup", to: "method-setup" },
         { label: "Settings", to: "settings" },
         { label: "Sequence", to: "sequence" },
+        { label: "Sequence Creation", to: "sequence-creation" },
     ];
 
     const [activeTab, setActiveTab] = useState(() => {

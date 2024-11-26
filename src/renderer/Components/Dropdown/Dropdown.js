@@ -133,3 +133,45 @@ export function SelectionController(props) {
         />
     );
 }
+
+export const Selection = (props) => {
+    const { onChange, menuItem, value, isDisabled, className, placeholder, width, isClearable = true, height } = props;
+
+    const customStyles = {
+        control: (provided, state) => ({
+            ...provided,
+            background: "#f4f4f4",
+            color: "#333",
+            width,
+            borderColor: state.isFocused ? "#dedcdc" : "#f4f4f4",
+            boxShadow: state.isFocused ? "0 0 0 1px #333" : "none",
+            "&:hover": {
+                borderColor: "#f5f5f5",
+            },
+            height: height,
+        }),
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: state.isSelected ? "#dedcdc" : "white",
+            color: "#333",
+            "&:hover": {
+                backgroundColor: "#f5f5f5",
+            },
+        }),
+    };
+
+    return (
+        <Select
+            value={value}
+            isSearchable
+            className={`basic-single ${className}`}
+            classNamePrefix="select"
+            isDisabled={isDisabled}
+            isClearable={isClearable}
+            options={menuItem}
+            placeholder={placeholder}
+            styles={customStyles}
+            onChange={onChange}
+        />
+    );
+};

@@ -6,3 +6,10 @@ export const wasteMenuItems = [
     { label: 5, value: 5 },
     { label: 6, value: 6 },
 ];
+
+export const amedites = [
+    { label: "A", value: "a" },
+    { label: "C", value: "c" },
+    { label: "mA", value: "mA" },
+    { label: "fC", value: "fC" },
+];
