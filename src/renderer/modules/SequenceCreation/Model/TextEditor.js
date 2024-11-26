@@ -65,7 +65,6 @@ export default function TextEditor(props) {
 
                 <Selection width={200} value={selectedAmedite} onChange={onSelectAmedite} height={41.6} placeholder="Select Amedite" menuItem={amedites} />
             </div>
-
             <textarea value={text} onChange={handleTextChange} rows="10" className="w-full p-2 border border-gray-300 rounded" placeholder="Enter sequence here..." />
 
             <div className="flex gap-4 mt-4">
