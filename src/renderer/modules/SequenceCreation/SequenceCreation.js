@@ -5,7 +5,7 @@ import { FormProvider, useForm } from "react-hook-form";
 
 const FileTable = () => {
     const [files, setFiles] = useState([]);
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState(true);
     const [currentFile, setCurrentFile] = useState(null);
 
     const method = useForm();
@@ -26,15 +26,17 @@ const FileTable = () => {
         setFiles(newFiles);
     };
 
-    const handleSave = (text, fileName, amedite) => {
-        console.log(`text, fileName, amedite : `, text, fileName, amedite);
+    const handleSave = (text, fileName) => {
         if (currentFile) {
-            const newFiles = files.map((file, index) => (index === currentFile.index ? { ...file, content: text, name: fileName, amedite: amedite } : file));
+            const newFiles = files.map((file, index) => (index === currentFile.index ? { ...file, content: text, name: fileName } : file));
             setFiles(newFiles);
         } else {
-            setFiles([...files, { content: text, name: fileName, amedite: amedite }]);
+            setFiles([...files, { content: text, name: fileName }]);
         }
     };
+
+    const initialSequence =
+        "ACG ATG TGC GCA ACG ATG A T G C G CT A GTC AGC GCT GCA CT ACG ATG TGC GCA ACG ATG A T G C G CT A GTC AGC GCT GCA CT ACG ATG TGC GCA ACG ATG A T G C G CT A GTC AGC GCT GCA CT ACG ATG TGC GCA ACG ATG A T G C G CT A GTC AGC GCT GCA CT ACG ATG TGC GCA ACG ATG A T G C G CT A GTC AGC GCT GCA CT ACG ATG TGC GCA ACG ATG A T G C G CT A GTC AGC GCT GCA CT ACG ATG TGC GCA ACG ATG A T G C G CT A GTC AGC GCT GCA CT ACG ATG TGC GCA ACG ATG A T G C G CT A GTC AGC GCT GCA CT ACG ATG TGC GCA ACG ATG A T G C G CT A GTC AGC GCT GCA CT ACG ATG TGC GCA ACG ATG A T G C G CT A GTC AGC GCT GCA CT";
 
     const handleCloseModal = () => {
         setShowModal(false);
@@ -53,7 +55,6 @@ const FileTable = () => {
                         <tr>
                             <th className="border p-2 text-left">No.</th>
                             <th className="border p-2 text-left">File Name</th>
-                            <th className="border p-2 text-left">Amedite</th>
                             <th className="border p-2 text-left">Actions</th>
                         </tr>
                     </thead>
@@ -62,7 +63,6 @@ const FileTable = () => {
                             <tr key={index}>
                                 <td className="border p-2 text-left">{index + 1}</td>
                                 <td className="border p-2 text-left">{file.name}</td>
-                                <td className="border p-2 text-left">{file.amedite.label}</td>
                                 <td className="border p-2 text-left">
                                     <button onClick={() => handleEdit({ ...file, index })} className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 mr-2">
                                         Edit
