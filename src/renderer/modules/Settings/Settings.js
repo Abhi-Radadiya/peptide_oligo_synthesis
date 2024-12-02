@@ -27,9 +27,11 @@ export default function Settings() {
 
     return (
         <>
-            <Tabs setActiveTab={setActiveTab} activeTab={activeTab} tabs={tabs} className="mb-4 pb-4 border-b border-neutral-300" />
+            <div className="p-4">
+                <Tabs setActiveTab={setActiveTab} activeTab={activeTab} tabs={tabs} className="mb-4 pb-4 border-b border-neutral-300" />
 
-            <ComponentToRender />
+                <ComponentToRender />
+            </div>
         </>
     );
 }

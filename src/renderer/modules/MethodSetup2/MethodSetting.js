@@ -36,7 +36,7 @@ export default function MethodSetting() {
 
     return (
         <>
-            <div className="relative">
+            <div className="relative p-4">
                 <div className="flex flex-row">
                     <LeftPanel tabs={steps} activeStep={activeStep} setActiveStep={setActiveStep} />
 

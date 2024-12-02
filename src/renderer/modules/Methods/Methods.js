@@ -53,7 +53,7 @@ export default function Methods() {
 
     return (
         <>
-            <div className="px-4">
+            <div className="p-4">
                 <div className="flex justify-between items-center mb-6 pb-6 border-b border-neutral-300">
                     <input
                         type="text"

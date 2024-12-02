@@ -5,6 +5,7 @@ import NavigationPanel from "./renderer/Components/Navigation/NavigationPanel";
 import Methods from "./renderer/modules/Methods/Methods";
 import MotorTesting from "./renderer/modules/MotorTesting/MotorTesting";
 import Sequence from "./renderer/modules/Sequence/Sequence";
+import AvailableSequence from "./renderer/modules/AvailableSequence/AvailableSequence";
 import SequenceCreation from "./renderer/modules/SequenceCreation/SequenceCreation";
 import MethodSetting from "./renderer/modules/MethodSetup2/MethodSetting";
 
@@ -14,7 +15,7 @@ export default function App() {
     return (
         <Router>
             <NavigationPanel isNavOpen={isNavOpen} setIsNavOpen={setIsNavOpen} />
-            <div className={`p-4 transition-all duration-300 ${isNavOpen ? "ml-64" : "ml-0"} overflow-auto h-screen scrollbar-style`}>
+            <div className={`transition-all duration-300 ${isNavOpen ? "ml-64" : "ml-0"} overflow-auto h-screen scrollbar-style`}>
                 <Routes>
                     <Route path="/method-setting/:id" element={<MethodSetting />} />
                     <Route path="/method-setting" element={<MethodSetting />} />
@@ -22,7 +23,9 @@ export default function App() {
                     <Route path="/motor-testing" element={<MotorTesting />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/sequence" element={<Sequence />} />
-                    <Route path="/sequence-creation" element={<SequenceCreation />} />
+                    <Route path="/sequence-creation/new" element={<SequenceCreation />} />
+                    <Route path="/sequence-creation/:id" element={<SequenceCreation />} />
+                    <Route path="/available-sequence" element={<AvailableSequence />} />
                     <Route index element={<Methods />} />
                 </Routes>
             </div>

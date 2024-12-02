@@ -13,7 +13,7 @@ const Tabs = (props) => {
 
     useEffect(() => {
         setActiveTab(props.activeTab);
-    }, []);
+    }, [props.activeTab]);
 
     return (
         <>

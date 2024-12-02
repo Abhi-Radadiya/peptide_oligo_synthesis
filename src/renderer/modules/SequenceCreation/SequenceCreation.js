@@ -1,85 +1,79 @@
-import React, { useState } from "react";
-import TextEditor from "./Model/TextEditor";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { Button } from "../../Components/Buttons/Buttons";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider } from "react-hook-form";
+import SequenceEditing from "./Tabs/SequenceEditing/SequenceEditing";
+import MethodAssign from "./Tabs/MethodAssign/MethodAssign";
+import { useDispatch, useSelector } from "react-redux";
+import { addSequence, editSequence } from "../../../redux/actions";
+import { useNavigate, useParams } from "react-router-dom";
 
-const FileTable = () => {
-    const [files, setFiles] = useState([]);
-    const [showModal, setShowModal] = useState(true);
-    const [currentFile, setCurrentFile] = useState(null);
+export default function SequenceCreation() {
+    const { id } = useParams();
 
     const method = useForm();
 
-    const handleCreate = () => {
-        setCurrentFile(null);
-        setShowModal(true);
-    };
+    const tabs = [
+        { label: "Sequence Editing", value: "sequence-editing", component: SequenceEditing },
+        { label: "Method Assign", value: "method-assign", component: MethodAssign },
+    ];
 
-    const handleEdit = (file) => {
-        setCurrentFile(file);
-        setShowModal(true);
-    };
+    const { watch, setValue } = method;
 
-    const handleDelete = (index) => {
-        const newFiles = [...files];
-        newFiles.splice(index, 1);
-        setFiles(newFiles);
-    };
+    const [activeTab, setActiveTab] = useState(tabs[0].value);
 
-    const handleSave = (text, fileName) => {
-        if (currentFile) {
-            const newFiles = files.map((file, index) => (index === currentFile.index ? { ...file, content: text, name: fileName } : file));
-            setFiles(newFiles);
-        } else {
-            setFiles([...files, { content: text, name: fileName }]);
+    const ComponentToRender = tabs.find((el) => el.value === activeTab).component;
+
+    const dispatch = useDispatch();
+
+    const navigate = useNavigate();
+
+    const sequence = useSelector((state) => state.sequence);
+
+    const handleAddSequence = async () => {
+        const newSequence = {
+            id: Date.now(),
+            name: watch("logFile"),
+            block: watch("block"),
+        };
+
+        try {
+            id ? await dispatch(editSequence(id, { name: watch("logFile"), block: watch("block") })) : await dispatch(addSequence(newSequence));
+
+            navigate("/available-sequence");
+        } catch (error) {
+            console.log(`error : `, error);
+            alert(error.message);
         }
     };
 
-    const initialSequence =
-        "ACG ATG TGC GCA ACG ATG A T G C G CT A GTC AGC GCT GCA CT ACG ATG TGC GCA ACG ATG A T G C G CT A GTC AGC GCT GCA CT ACG ATG TGC GCA ACG ATG A T G C G CT A GTC AGC GCT GCA CT ACG ATG TGC GCA ACG ATG A T G C G CT A GTC AGC GCT GCA CT ACG ATG TGC GCA ACG ATG A T G C G CT A GTC AGC GCT GCA CT ACG ATG TGC GCA ACG ATG A T G C G CT A GTC AGC GCT GCA CT ACG ATG TGC GCA ACG ATG A T G C G CT A GTC AGC GCT GCA CT ACG ATG TGC GCA ACG ATG A T G C G CT A GTC AGC GCT GCA CT ACG ATG TGC GCA ACG ATG A T G C G CT A GTC AGC GCT GCA CT ACG ATG TGC GCA ACG ATG A T G C G CT A GTC AGC GCT GCA CT";
+    useEffect(() => {
+        if (!id) return;
 
-    const handleCloseModal = () => {
-        setShowModal(false);
-        setCurrentFile(null);
-    };
+        const selectedSequence = sequence.find((el) => el.id == id);
+
+        setValue("sequence", selectedSequence?.block?.map((item) => item.block).join(" "));
+
+        setValue("logFile", selectedSequence.name);
+        setValue("block", selectedSequence.block);
+    }, []);
 
     return (
-        <FormProvider {...method}>
-            <div className="p-4">
-                <div className="justify-end flex mb-4">
-                    <Button label="Create New Sequence" onClick={handleCreate} />
+        <>
+            <FormProvider {...method}>
+                <div className="px-4">
+                    <div className="flex flex-row justify-between items-center border-b border-neutral-300 sticky top-0 z-10 bg-white">
+                        <div className={`flex flex-row gap-4 py-4 w-full`}>
+                            <Button label="Sequence Editing" active={activeTab === "sequence-editing"} onClick={() => setActiveTab("sequence-editing")} />
+                            {!!watch("sequence") && <Button label="Method Assign" active={activeTab === "method-assign"} onClick={() => setActiveTab("method-assign")} />}
+                        </div>
+
+                        {activeTab !== tabs[0].value && <Button label="Save" onClick={handleAddSequence} />}
+                    </div>
+
+                    <ComponentToRender setActiveTab={setActiveTab} />
                 </div>
-
-                <table className="w-full border-collapse">
-                    <thead>
-                        <tr>
-                            <th className="border p-2 text-left">No.</th>
-                            <th className="border p-2 text-left">File Name</th>
-                            <th className="border p-2 text-left">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {files.map((file, index) => (
-                            <tr key={index}>
-                                <td className="border p-2 text-left">{index + 1}</td>
-                                <td className="border p-2 text-left">{file.name}</td>
-                                <td className="border p-2 text-left">
-                                    <button onClick={() => handleEdit({ ...file, index })} className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 mr-2">
-                                        Edit
-                                    </button>
-                                    <button onClick={() => handleDelete(index)} className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-
-                {showModal && <TextEditor initialText={currentFile ? currentFile.content : ""} currentFile={currentFile} onSave={handleSave} onClose={handleCloseModal} />}
-            </div>
-        </FormProvider>
+            </FormProvider>
+        </>
     );
-};
-
-export default FileTable;
+}
