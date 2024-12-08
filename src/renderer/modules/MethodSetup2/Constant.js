@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 export const wasteMenuItems = [
     { label: 1, value: 1 },
     { label: 2, value: 2 },
@@ -13,3 +15,5 @@ export const amedites = [
     { label: "mA", value: "mA" },
     { label: "fC", value: "fC" },
 ];
+
+export const getUniqueId = () => uuidv4();

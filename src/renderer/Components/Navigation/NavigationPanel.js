@@ -11,7 +11,7 @@ export default function NavigationPanel(props) {
         { label: "Method Setup", to: "method-setup" },
         { label: "Settings", to: "settings" },
         { label: "Sequence", to: "sequence" },
-        { label: "Available Sequence", to: "available-sequence" },
+        { label: "Available Sequence", to: "available-sequence", isShowSubLink: true, subLink: [{ label: "Sequence Editor", to: "sequence-editor/new" }] },
     ];
 
     const [activeTab, setActiveTab] = useState(() => {
@@ -33,15 +33,38 @@ export default function NavigationPanel(props) {
                     {links.map((el, index) => {
                         return (
                             <li key={index}>
-                                <Link
-                                    className={`font-bold text-xl hover:tracking-wider transition-all duration-300 ${
-                                        activeTab === el.to && "border-b-2 tracking-wider border-neutral-500"
-                                    }`}
-                                    to={el.to}
-                                    onClick={() => setActiveTab(el.to)}
-                                >
-                                    {el.label}
-                                </Link>
+                                <div className="flex flex-row items-center">
+                                    {activeTab === el.to && (
+                                        <span>
+                                            <DownIcon className="-rotate-90 -ml-4" />
+                                        </span>
+                                    )}
+                                    <Link
+                                        className={`font-bold text-lg hover:tracking-wider transition-all duration-300 ${
+                                            activeTab === el.to && !el?.subLink?.length && "border-b-2 tracking-wider border-neutral-500"
+                                        }`}
+                                        to={el.to}
+                                        onClick={() => setActiveTab(el.to)}
+                                    >
+                                        {el.label}
+                                    </Link>
+                                </div>
+
+                                {!!el.isShowSubLink &&
+                                    el?.subLink?.map((subLinkEl, subLinkIndex) => (
+                                        <div className="mt-3 ml-4" key={subLinkIndex}>
+                                            -
+                                            <Link
+                                                className={`font-medium ml-1 text-base hover:tracking-wider transition-all duration-300 ${
+                                                    location.pathname.includes(subLinkEl.to) && "border-b-2 tracking-wider border-neutral-500"
+                                                }`}
+                                                to={subLinkEl.to}
+                                                onClick={() => setActiveTab(el.to)}
+                                            >
+                                                {subLinkEl.label}
+                                            </Link>
+                                        </div>
+                                    ))}
                             </li>
                         );
                     })}

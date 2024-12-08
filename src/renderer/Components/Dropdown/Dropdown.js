@@ -135,7 +135,7 @@ export function SelectionController(props) {
 }
 
 export const Selection = (props) => {
-    const { onChange, menuItem, value, isDisabled, className, placeholder, width, isClearable = true, height } = props;
+    const { onChange, menuItem, value, isDisabled, className, placeholder, width, isClearable = true, height, isMulti = false } = props;
 
     const customStyles = {
         control: (provided, state) => ({
@@ -172,6 +172,7 @@ export const Selection = (props) => {
             placeholder={placeholder}
             styles={customStyles}
             onChange={onChange}
+            isMulti={isMulti}
         />
     );
 };

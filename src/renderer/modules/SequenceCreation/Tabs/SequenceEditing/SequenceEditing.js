@@ -1,84 +1,74 @@
-import React, { useRef } from "react";
-import { Button } from "../../../../Components/Buttons/Buttons";
+import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import InputField from "../../../../Components/Input/Input";
+import { useWindowSize } from "@uidotdev/usehooks";
 
 const se =
     "A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG A G TGCT A CGA T GCACTG GCTAGC G G G T T T T TTTT GCGA T CAACT TG ";
 
 export default function SequenceEditing(props) {
-    const { setActiveTab } = props;
+    const { index } = props;
 
-    const { clearErrors, handleSubmit, setValue, control, watch } = useFormContext();
+    const { control, setValue, watch } = useFormContext();
 
-    const onSubmit = () => {
-        setActiveTab("method-assign");
-        const blocksArray = watch("sequence")
-            ?.trim()
-            ?.split(/\s+/)
-            ?.map((block) => ({ block, method: null }));
+    const setSelectedBlocks = (blocks) => setValue("selectedBlock", blocks);
 
-        setValue("block", blocksArray);
-    };
+    const handleSelection = (event) => {
+        const textarea = event.target;
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const selectedText = textarea.value.substring(start, end);
 
-    const fileInputRef = useRef(null);
-
-    const handleFileButtonClick = () => {
-        fileInputRef.current.click();
-    };
-
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const fileContent = event.target.result;
-                setValue("sequence", fileContent);
-            };
-            setValue("logFile", file?.name?.split(".txt")?.[0]);
-            clearErrors("sequence");
-            reader.readAsText(file);
+        if (selectedText.trim() === "") {
+            setSelectedBlocks([]);
+            return;
         }
+
+        const selectedBlocks = [];
+        let currentIndex = 0;
+        let currentBlock = "";
+
+        for (let i = 0; i < textarea.value.length; i++) {
+            if (i >= start && i < end) {
+                currentBlock += textarea.value[i];
+            }
+            if (textarea.value[i] === " " || i === textarea.value.length - 1) {
+                if (currentBlock.trim() !== "") {
+                    selectedBlocks.push(currentIndex);
+                }
+                currentIndex++;
+                currentBlock = "";
+            }
+        }
+
+        setSelectedBlocks(selectedBlocks);
     };
 
-    const saveTextFile = () => {
-        const blob = new Blob([watch("sequence")], { type: "text/plain" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `logFile.txt`;
-        a.click();
-        URL.revokeObjectURL(url);
-    };
+    const { height: windowHeight } = useWindowSize();
 
     return (
         <>
-            <div className="mb-4 mt-4">
-                <div className="flex justify-between flex-row mb-4">
-                    <div className="flex flex-row item-center gap-4">
-                        <Button label="Import sequence" onClick={handleFileButtonClick} bgClassName="bg-indigo-200 hover:bg-indigo-300" />
-                        <input type="file" accept=".txt" onChange={handleFileChange} ref={fileInputRef} className="hidden" />
-                        <Button label="Export sequence" onClick={saveTextFile} bgClassName="bg-green-200 hover:bg-green-300" />
-                    </div>
-
-                    <Button label="Generate Blocks" bgClassName="bg-amber-200 hover:bg-amber-300" onClick={() => handleSubmit(onSubmit)()} />
-                </div>
+            <div className="w-1/2 pr-4 border-r border-neutral-300 overflow-auto no-scrollbar" style={{ height: windowHeight - (index !== undefined ? 172 : 100) }}>
+                <label className="block text-gray-700 text-sm font-bold">Log File</label>
+                <p className="italic text-neutral-500 text-sm mb-2">(It will be name of below sequence)</p>
 
                 <InputField
                     control={control}
-                    labelClassName="text-neutral-700 text-base font-medium"
-                    name="logFile"
-                    label="Log File"
+                    name={index !== undefined ? `sequence.${index}.name` : "name"}
                     borderClass="border border-neutral-400"
                     placeholder="Enter log file"
                     wrapperClassName="mb-4"
+                    rules={{ required: "Please enter log file" }}
+                    key={`${index}.name`}
                 />
 
-                <label className="mb-2 block text-neutral-700 text-base font-medium">Sequence</label>
+                <label className="block text-gray-700 text-sm font-bold">Sequence</label>
+                <p className="italic text-neutral-500 text-sm mb-2">(Enter Sequence Here)</p>
 
                 <Controller
+                    key={index}
                     control={control}
-                    name="sequence"
+                    name={index !== undefined ? `sequence.${index}.sequenceString` : "sequenceString"}
                     rules={{ required: "Sequence can't be empty, enter sequence" }}
                     render={({ field, fieldState: { error } }) => (
                         <div className="relative">
@@ -86,11 +76,13 @@ export default function SequenceEditing(props) {
                                 {...field}
                                 value={field.value ?? ""}
                                 placeholder="Enter sequence here"
-                                rows="21"
+                                rows={index !== undefined ? 20 : 22}
                                 className={`shadow appearance-none border border-neutral-400 scrollbar-style rounded-lg w-full py-2 px-3 text-neutral-700 focus:outline-none focus:shadow-outline ${
                                     error ? "border-red-500 placeholder:text-red-500" : "border-gray-300"
                                 }`}
+                                onSelect={handleSelection}
                             />
+
                             {error && <p className="text-red-500 text-sm mt-1">{error.message}</p>}
                         </div>
                     )}

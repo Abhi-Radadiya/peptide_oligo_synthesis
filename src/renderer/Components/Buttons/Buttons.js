@@ -2,17 +2,18 @@ import { useState } from "react";
 import ConfirmationPopup from "../Popup/ConfirmationPopup";
 
 const Button = (props) => {
-    const { label, active, disabled, className, onClick, bgClassName } = props;
+    const { label, active, disabled, className, onClick, bgClassName, rightIcon } = props;
 
     return (
         <button
-            className={`border font-medium border-neutral-300 rounded-lg px-5 py-1.5 disabled:cursor-not-allowed ${
+            className={`border font-medium border-neutral-300 rounded-lg px-5 py-1.5 disabled:cursor-not-allowed focus:ring-2 focus:ring-neutral-600 ring-offset-1 flex flex-row items-center gap-4 ${
                 bgClassName ? bgClassName : active ? "bg-neutral-400 text-white" : "bg-neutral-200 hover:bg-neutral-300 hover:text-black"
             } ${className}`}
             disabled={disabled}
             onClick={onClick}
         >
             {label}
+            {rightIcon}
         </button>
     );
 };
