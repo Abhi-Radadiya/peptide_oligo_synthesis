@@ -1,5 +1,5 @@
 import React from "react";
-import { Tab } from "../Tabs/Tab";
+import { Button } from "../Buttons/Buttons";
 
 export default function LeftPanel(props) {
     const { tabs, setActiveStep, activeStep } = props;
@@ -7,10 +7,12 @@ export default function LeftPanel(props) {
     return (
         <div className="flex flex-col gap-6 max-w-[224px] w-full">
             {tabs.map((el, index) => {
+                const isActive = activeStep === index;
+
                 return (
-                    <React.Fragment key={index}>
-                        <Tab label={el.label} onClick={() => setActiveStep(el.value)} isActive={activeStep == el.value} />
-                    </React.Fragment>
+                    <div className="w-[176px]" key={index}>
+                        <Button className="w-full justify-center" {...el} bgClassName={isActive && "bg-amber-200"} onClick={() => setActiveStep(index)} isActive={isActive} />
+                    </div>
                 );
             })}
         </div>

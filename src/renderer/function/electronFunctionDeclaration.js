@@ -37,7 +37,6 @@ const getPrimePosition = async (primeOption) => {
 };
 
 // liquid detection
-
 const saveLiquidDetectionDetails = async (details) => {
     return await window.electron.saveLiquidDetectionDetails(details);
 };

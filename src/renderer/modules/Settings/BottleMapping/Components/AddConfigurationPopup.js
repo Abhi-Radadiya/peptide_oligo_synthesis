@@ -4,12 +4,7 @@ import { useForm } from "react-hook-form";
 import _ from "lodash";
 
 export default function AddConfigurationPopup(props) {
-    const { editingData, onSubmit, togglePopup } = props;
-    // const { editingData, togglePopup } = props;
-
-    // const onSubmit = (data) => {
-    //     console.log(`data : `, data);
-    // };
+    const { editingData, onSubmit, togglePopup, data, type = "amedite" } = props;
 
     const getDefaultValue = () => {
         return !_.isEmpty(editingData) ? editingData : { full_name: "", wm: "", case_no: "", msds: "", concentration: "" };
@@ -21,7 +16,7 @@ export default function AddConfigurationPopup(props) {
         <>
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">
                 <div className="bg-white p-8 rounded-lg w-[600px] shadow-lg">
-                    <h2 className="text-xl mb-4">{editingData ? "Edit amedite" : "Create amedite"}</h2>
+                    <h2 className="text-xl mb-4">{editingData ? `Edit ${type}` : `Create ${type}`}</h2>
 
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <InputField
@@ -29,7 +24,12 @@ export default function AddConfigurationPopup(props) {
                             control={control}
                             name="full_name"
                             label="Full name"
-                            rules={{ required: "Please enter full name" }}
+                            rules={{
+                                required: "Please enter full name",
+                                validate: {
+                                    uniqueName: (value) => !data.some((item) => item.full_name === value) || "Name already exists",
+                                },
+                            }}
                             placeholder="Enter full name"
                         />
 
@@ -68,10 +68,10 @@ export default function AddConfigurationPopup(props) {
                         </div>
 
                         <div className="flex justify-end">
-                            <button type="button" className="bg-gray-500 text-white px-4 py-2 rounded mr-2" onClick={() => togglePopup()}>
+                            <button type="button" className="bg-gray-500 text-white px-4 py-2 rounded mr-2 focus:ring-2 ring-offset-2" onClick={() => togglePopup()}>
                                 Cancel
                             </button>
-                            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+                            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded focus:ring-2 ring-offset-2">
                                 {editingData ? "Update" : "Create"}
                             </button>
                         </div>

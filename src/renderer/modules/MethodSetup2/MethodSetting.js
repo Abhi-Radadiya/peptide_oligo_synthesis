@@ -5,22 +5,71 @@ import LastMethod from "./Tabs/Last/LastMethod";
 import { FormProvider, useForm } from "react-hook-form";
 import LeftPanel from "../../Components/LeftPanel/LeftPanel";
 import { useWindowSize } from "@uidotdev/usehooks";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import MethodDetails from "./Tabs/Details/MethodDetails";
+import Footer from "./Components/Footer";
+import { useDispatch, useSelector } from "react-redux";
+import { addMethodSetup, updateMethodSetup } from "../../../redux/reducers/methodSetup/methodSetup";
+
+// kindly please check if module :==> modules\MethodSetup\MethodSetup.js is important or not
 
 export default function MethodSetting() {
     const { id } = useParams();
 
-    const method = useForm({ defaultValues: { "1_waste": { label: 1, value: 1 }, hasOxidization: true } });
+    const methods = useSelector((state) => state.methodSetup.method);
+
+    const initialState = {
+        "1_waste": { label: 1, value: 1 },
+        n_deWaste: { label: 1, value: 1 },
+        n_couplingWaste: { label: 1, value: 1 },
+        n_oxidizationWaste: { label: 1, value: 1 },
+        n_sulfurizationWaste: { label: 1, value: 1 },
+        n_extraWaster: { label: 1, value: 1 },
+        n_cappingWaste: { label: 1, value: 1 },
+        last_deWaste: { label: 1, value: 1 },
+
+        last_deaWaste: { label: 1, value: 1 },
+        last_deaXFactor: 1,
+        last_deaWashXFactor: 1,
+
+        last_deXFactor: 1,
+        last_deWashXFactor: 1,
+        "1_XFactor": 1,
+        n_deXFactor: 1,
+        n_deWashXFactor: 1,
+        n_couplingXFactor: 1,
+        n_couplingWashXFactor: 1,
+        n_oxidizationXFactor: 1,
+        n_oxidizationWashXFactor: 1,
+        n_sulfurizationXFactor: 1,
+        n_sulfurizationWashXFactor: 1,
+        n_extraXFactor: 1,
+        n_extraWashXFactor: 1,
+        n_cappingAXFactor: 1,
+        n_cappingBXFactor: 1,
+        n_cappingWashXFactor: 1,
+        hasOxidization: true,
+    };
+
+    const getDefaultValue = () => {
+        if (id) {
+            return methods.find((el) => el.id === id);
+        }
+        return initialState;
+    };
+
+    const method = useForm({
+        defaultValues: getDefaultValue(),
+    });
 
     const steps = [
         { label: "Details", value: "detail", component: MethodDetails },
         { label: "First Method", value: "firstMethod", component: FirstMethod },
         {
             label: (
-                <>
+                <span>
                     N<sup>th</sup> Method
-                </>
+                </span>
             ),
             value: "nThMethod",
             component: NthMethod,
@@ -28,69 +77,52 @@ export default function MethodSetting() {
         { label: "Last Method", value: "lastMethod", component: LastMethod },
     ];
 
-    const [activeStep, setActiveStep] = useState(steps[0].value);
+    const [activeStep, setActiveStep] = useState(0);
 
-    const ComponentToRender = steps.find((el) => el.value == activeStep).component;
+    const ComponentToRender = steps.find((_, index) => index === activeStep).component;
 
     const { height: windowHeight } = useWindowSize();
+
+    const { handleSubmit } = method;
+
+    const dispatch = useDispatch();
+
+    const navigate = useNavigate();
+
+    const saveMethod = (data) => {
+        dispatch(addMethodSetup(data));
+        navigate("/method-setup");
+    };
+
+    const editMethod = (data) => {
+        dispatch(updateMethodSetup(data));
+        navigate("/method-setup");
+    };
+
+    const handleSave = (data) => {
+        console.log(`const data_xx = `, JSON.stringify(data));
+
+        activeStep === 3 ? (!!id ? editMethod(data) : saveMethod(data)) : setActiveStep(activeStep + 1);
+    };
 
     return (
         <>
             <div className="relative p-4">
-                <div className="flex flex-row">
+                <div className="flex flex-row relative">
                     <LeftPanel tabs={steps} activeStep={activeStep} setActiveStep={setActiveStep} />
 
                     <FormProvider {...method}>
-                        <div className="border-l border-neutral-500 pl-6 w-full overflow-auto scrollbar-style pr-2" style={{ height: windowHeight - 36 }}>
+                        <div className="border-l relative border-neutral-500 pl-6 w-full pb-12 overflow-auto scrollbar-style pr-2" style={{ height: windowHeight - 36 }}>
                             <ComponentToRender setActiveStep={setActiveStep} />
                         </div>
+
+                        <Footer onClick={handleSubmit(handleSave)} label={activeStep === 3 ? "Save" : "Save & Next"} />
                     </FormProvider>
                 </div>
             </div>
         </>
     );
 }
-
-// import { useRef, useEffect } from "react";
-
-// const useLoggedRef = (initialValue) => {
-//     const ref = useRef(initialValue);
-
-//     // Create a proxy to intercept changes to ref.current
-//     const proxy = new Proxy(ref, {
-//         set(target, property, value) {
-//             if (property === "current") {
-//                 // console.log(`dummyRef: ${value}`);
-//             }
-//             target[property] = value;
-//             return true;
-//         },
-//     });
-
-//     return proxy;
-// };
-
-// const MyComponent = () => {
-//     const dummyRef = useLoggedRef(0);
-
-//     const rrr = () => {
-//         console.log("log 1");
-//         dummyRef.current = 200; // Proxy logs automatically
-//         console.log("log 2");
-//         dummyRef.current = 2; // Proxy logs automatically
-//         console.log("log 3");
-//     };
-
-//     console.log(`xxxxxx : `, dummyRef);
-
-//     useEffect(() => {
-//         rrr();
-//     }, []);
-
-//     return null;
-// };
-
-// export default MyComponent;
 
 const flags = {
     n: {

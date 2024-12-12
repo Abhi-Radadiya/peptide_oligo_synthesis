@@ -5,10 +5,10 @@ import { FormProvider } from "react-hook-form";
 import SequenceEditing from "./Tabs/SequenceEditing/SequenceEditing";
 import MethodAssign from "./Tabs/MethodAssign/MethodAssign";
 import { useDispatch, useSelector } from "react-redux";
-import { addSequence, editSequence } from "../../../redux/actions";
 import { useNavigate, useParams } from "react-router-dom";
 import ImportSequenceModel from "./Model/ImportSequenceModel/ImportSequenceModel";
 import SequenceTab from "./SequenceTab/SequenceTab";
+import { addSequence, editSequence } from "../../../redux/reducers/sequenceReducer";
 
 export default function SequenceCreation() {
     const { id } = useParams();
@@ -20,7 +20,7 @@ export default function SequenceCreation() {
     const generateBlock = () => {
         setValue(
             "block",
-            watch("sequence")
+            watch("sequenceString")
                 .split(" ")
                 .filter(Boolean)
                 .map((block, index) => ({ block, index }))
@@ -62,16 +62,16 @@ export default function SequenceCreation() {
     const handleAddSequence = async () => {
         const newSequence = {
             id: Date.now(),
-            name: watch("logFile"),
+            name: watch("name"),
             block: watch("block"),
         };
 
         try {
-            id ? await dispatch(editSequence(id, { name: watch("logFile"), block: watch("block") })) : await dispatch(addSequence(newSequence));
+            id ? await dispatch(editSequence(id, { name: watch("name"), block: watch("block") })) : await dispatch(addSequence(newSequence));
 
             navigate("/available-sequence");
         } catch (error) {
-            console.log(`error : `, error);
+            console.log(`error handleAddSequence : `, error);
             alert(error.message);
         }
     };
@@ -79,15 +79,16 @@ export default function SequenceCreation() {
     useEffect(() => {
         if (!id) return;
 
-        const selectedSequence = sequence.find((el) => el.id == id);
+        const selectedSequence = sequence.find((el) => el.id === id);
 
         if (!selectedSequence) return;
 
-        setValue("sequence", selectedSequence?.block?.map((item) => item.block).join(" "));
+        setValue("sequenceString", selectedSequence?.block?.map((item) => item.block).join(" "));
 
-        setValue("logFile", selectedSequence.name);
+        setValue("name", selectedSequence.name);
 
         setValue("block", selectedSequence.block);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const [isShowImportModel, setIsShowImportModel] = useState(false);
@@ -112,13 +113,14 @@ export default function SequenceCreation() {
                         )}
                     </div>
 
-                    {!!watch("sequence")?.length && <SequenceTab />}
-                    {/* : (
+                    {!!watch("sequence")?.length ? (
+                        <SequenceTab />
+                    ) : (
                         <div className="flex flex-row w-full relative mt-4">
                             <SequenceEditing />
                             <MethodAssign />
                         </div>
-                    )} */}
+                    )}
 
                     {/* {fields.map((el, index) => {
                         return (

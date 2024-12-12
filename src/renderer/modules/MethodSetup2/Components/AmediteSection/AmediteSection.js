@@ -5,6 +5,7 @@ import InputField from "../../../../Components/Input/Input";
 import { wasteMenuItems } from "../../Constant";
 import RadioButton from "../../../../Components/FormController/RadioButton";
 import Checkbox from "../../../../Components/FormController/CheckBox";
+import { useSelector } from "react-redux";
 
 export default function AmediteSection(props) {
     const {
@@ -16,11 +17,19 @@ export default function AmediteSection(props) {
 
     const { control, watch } = useFormContext();
 
-    const testSolvents = [
-        { label: "Test Solvent 1", value: "solvent1", flowRate: 12 },
-        { label: "Test Solvent 2", value: "solvent2", flowRate: 60 },
-        { label: "Test Solvent 3", value: "solvent3", flowRate: 90 },
-    ];
+    const flowRates = useSelector((state) => state.flowRate.items);
+
+    const chemicals = useSelector((state) => state.amedite.amediteList);
+
+    const chemicalFlowRates = chemicals.map((chemical) => {
+        const flowRateEntry = flowRates.find((flow) => flow.chemical === chemical.id);
+
+        return {
+            label: chemical.full_name,
+            value: chemical.id,
+            flowRate: flowRateEntry ? flowRateEntry.flowRate : "0",
+        };
+    });
 
     return (
         <>
@@ -28,10 +37,18 @@ export default function AmediteSection(props) {
                 {title && <span className="font-bold text-base underline underline-offset-4 text-neutral-600">{title}</span>}
 
                 <div className="flex flex-row items-center justify-between my-4">
-                    <div className="flex flex-row items-center gap-6 w-full justify-between">
+                    <div className="flex flex-row items-start gap-6 w-full justify-between">
                         <div className="flex flex-row items-center gap-2">
                             <span className="font-bold text-neutral-600">Solvent</span>
-                            <SelectionController isDisabled={disabled} width={220} menuItem={testSolvents} control={control} name={solvent} placeholder="Select Solvent" />
+                            <SelectionController
+                                rules={{ required: "Please select solvent" }}
+                                isDisabled={disabled}
+                                width={220}
+                                menuItem={chemicalFlowRates}
+                                control={control}
+                                name={solvent}
+                                placeholder="Select Solvent"
+                            />
                         </div>
 
                         <div className="flex flex-row items-center gap-2">
@@ -54,7 +71,7 @@ export default function AmediteSection(props) {
                             wrapperClassName="max-w-[220px]"
                             control={control}
                             type="number"
-                            placeholder="Enter X Factor"
+                            placeholder="Enter volume"
                             disabled={disabled}
                         />
                     </div>
@@ -68,7 +85,7 @@ export default function AmediteSection(props) {
                             wrapperClassName="max-w-[220px]"
                             control={control}
                             type="number"
-                            placeholder="Enter X Factor"
+                            placeholder="Enter X factor"
                         />
                     </div>
                 </div>

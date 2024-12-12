@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import InputField from "../../../../Components/Input/Input";
 import { useFormContext } from "react-hook-form";
 import { SelectionController } from "../../../../Components/Dropdown/Dropdown";
+import { useSelector } from "react-redux";
 
 const MethodDetails = (props) => {
     const { disabled } = props;
@@ -14,11 +15,16 @@ const MethodDetails = (props) => {
     const amediteConcentration = watch("amediteConcentration");
     const actExcessFactor = watch("actExcessFactor");
 
+    const columnEditor = useSelector((state) => state.columnEditor.positions)?.map((el) => ({
+        label: el.name,
+        value: { id: el.id, volume: el.liquidVolume, flowRate: el.maxFlowRate },
+    }));
+
     const columnsMenuItem = [
-        { label: "10", value: { volume: 10, flowRate: 2 } },
-        { label: "20", value: { volume: 20, flowRate: 4 } },
-        { label: "30", value: { volume: 30, flowRate: 6 } },
-        { label: "40", value: { volume: 40, flowRate: 8 } },
+        { label: "10", value: { volume: 10 } },
+        { label: "20", value: { volume: 20 } },
+        { label: "30", value: { volume: 30 } },
+        { label: "40", value: { volume: 40 } },
     ];
 
     const setFieldValues = (amediteVolume, washVolume) => {
@@ -109,7 +115,7 @@ const MethodDetails = (props) => {
                                     height={41.6}
                                     control={control}
                                     name="columnSize"
-                                    menuItem={columnsMenuItem}
+                                    menuItem={columnEditor}
                                 />
                             </div>
 
@@ -170,7 +176,7 @@ const MethodDetails = (props) => {
                             </div>
                         </div>
 
-                        <div className="mt-6 p-4 bg-gray-50 rounded-lg space-y-2">
+                        <div className="mt-6 p-4 bg-gray-100 rounded-lg space-y-2">
                             <h3 className="font-semibold text-lg mb-4">Calculated Results</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>

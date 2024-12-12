@@ -4,6 +4,7 @@ import ConfirmationPopup from "../../Components/Popup/ConfirmationPopup";
 import { ReactComponent as EditIcon } from "../../Assets/edit.svg";
 import { useWindowSize } from "@uidotdev/usehooks";
 import { Button } from "../../Components/Buttons/Buttons";
+import { useSelector } from "react-redux";
 
 export const testMethodData = [
     { name: "Test1", id: "test1", details: {} },
@@ -28,11 +29,11 @@ export default function Methods() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedRows, setSelectedRows] = useState([]);
 
-    const { height: windowHeight } = useWindowSize();
-
     const [searchTerm, setSearchTerm] = useState("");
 
-    const filteredData = useMemo(() => testMethodData.filter((item) => item.name.toLowerCase().includes(searchTerm.toLowerCase())), [searchTerm]);
+    const methods = useSelector((state) => state.methodSetup.method);
+
+    const filteredData = useMemo(() => methods.filter((item) => item?.method_name?.toLowerCase().includes(searchTerm.toLowerCase())), [searchTerm]);
 
     const handleSelectAll = (e) => {
         if (e.target.checked) {
@@ -54,7 +55,7 @@ export default function Methods() {
     return (
         <>
             <div className="p-4">
-                <div className="flex justify-between items-center mb-6 pb-6 border-b border-neutral-300">
+                <div className="flex justify-end items-center mb-6 pb-6 border-b border-neutral-300">
                     <input
                         type="text"
                         placeholder="Search..."
@@ -72,7 +73,8 @@ export default function Methods() {
 
                 <div
                     className="overflow-x-auto border border-neutral-300 rounded-lg shadow-lg overflow-auto scrollbar-style"
-                    style={{ height: filteredData.length > 11 ? windowHeight - 140 : "auto" }}
+                    style={{ height: "auto" }}
+                    // style={{ height: filteredData.length > 11 ? windowHeight - 140 : "auto" }}
                 >
                     <table className="min-w-full divide-y divide-gray-200 overflow-auto">
                         <thead className="bg-gray-50">
@@ -87,13 +89,13 @@ export default function Methods() {
                         </thead>
 
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {filteredData.map((item, index) => (
+                            {methods.map((item, index) => (
                                 <tr key={index}>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <input type="checkbox" className="w-4 h-4" onChange={(e) => handleSelectRow(e, item.id)} checked={selectedRows.includes(item.id)} />
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">{index + 1}.</td>
-                                    <td className="px-6 py-4 whitespace-nowrap">{item.name}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{item.method_name}</td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex flex-row items-center">
                                             <Link to={`/method-setting/${item.id}`} state={item} className="text-indigo-600 hover:text-indigo-900 mr-2">

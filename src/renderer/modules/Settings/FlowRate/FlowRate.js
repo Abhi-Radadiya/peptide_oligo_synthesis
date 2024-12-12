@@ -1,118 +1,131 @@
-import React from "react";
-import { ControllerDropdown } from "../../../Components/Dropdown/Dropdown";
-import { useFieldArray, useForm } from "react-hook-form";
-import InputField from "../../../Components/Input/Input";
-import { Button, SaveButton } from "../../../Components/Buttons/Buttons";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Button } from "../../../Components/Buttons/Buttons";
+import ToggleSwitch from "../../../Components/FormController/Switch";
+import FlowRateModal from "./Component/FlowRateMeodel";
+import ConfirmationPopup from "../../../Components/Popup/ConfirmationPopup";
+import { addFlowRate, deleteFlowRates, updateFlowRate } from "../../../../redux/reducers/settings/flowRate";
 
 export default function FlowRate() {
-    const chemicals = [
-        { label: "chemical1", value: "chemical1" },
-        { label: "chemical2", value: "chemical2" },
-        { label: "chemical3", value: "chemical3" },
-        { label: "chemical4", value: "chemical4" },
-    ];
+    const dispatch = useDispatch();
+    const flowRates = useSelector((state) => state.flowRate.items);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedPositions, setSelectedPositions] = useState([]);
+    const [editingItem, setEditingItem] = useState(null);
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
-    const { control, handleSubmit } = useForm({
-        defaultValues: {
-            items: [{ value: "", checked: false }],
-        },
-    });
-
-    const { fields, append, remove } = useFieldArray({
-        control,
-        name: "items",
-    });
-
-    const addRow = () => {
-        append({ value: "", checked: false });
+    const handleAdd = () => {
+        setEditingItem(null);
+        setIsModalOpen(true);
     };
 
-    const onSubmit = (data) => {
-        return true;
+    const handleEdit = (item) => {
+        setEditingItem(item);
+        setIsModalOpen(true);
     };
+
+    const handleSave = (data) => {
+        if (editingItem) {
+            dispatch(updateFlowRate(data));
+        } else {
+            dispatch(addFlowRate(data));
+        }
+        setIsModalOpen(false);
+    };
+
+    const handleDelete = () => {
+        dispatch(deleteFlowRates(selectedPositions));
+        setSelectedPositions([]);
+        setShowConfirmation(false);
+    };
+
+    const amedite = useSelector((state) => state.amedite.amediteList);
 
     return (
         <>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="flex flex-row gap-4 justify-end mb-4">
-                    <Button label="Add Chemical" onClick={addRow} bgClassName="bg-amber-200 hover:bg-amber-300 border-amber-300" />
-                    <SaveButton label="Save" onClick={onSubmit} bgClassName="bg-green-200 hover:bg-green-300 border-green-300" header="Saved Successfully" />
+            <div className="justify-between flex mb-4 items-center border-b border-neutral-300 pb-4">
+                <div className="flex flex-row items-center">
+                    <Button
+                        label={`${selectedPositions.length === flowRates.length ? "Unselect All" : "Select All"}`}
+                        onClick={() => setSelectedPositions((prevState) => (!prevState?.length ? flowRates.map((el) => el.id) : []))}
+                    />
+                    <Button
+                        disabled={!selectedPositions.length}
+                        label="Delete Selected"
+                        onClick={() => setShowConfirmation(true)}
+                        bgClassName="ml-2 bg-[#fa5757] text-white disabled:bg-red-200 disabled:text-neutral-500"
+                    />
                 </div>
+                <Button label="Add position" onClick={handleAdd} />
+            </div>
 
-                <table className="min-w-full bg-white shadow-md rounded-lg">
-                    <thead className="bg-gray-200">
-                        <tr>
-                            <th className="py-3 px-6 text-left text-gray-600 font-semibold">Index</th>
-                            <th className="py-3 px-6 text-left text-gray-600 font-semibold">Chemical</th>
-                            <th className="py-3 px-6 text-left text-gray-600 font-semibold">Flow Rate</th>
-                            <th className="py-3 px-6 text-left text-gray-600 font-semibold">Disable</th>
-                            <th className="py-3 px-6 text-left text-gray-600 font-semibold">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {fields.map((field, index) => (
-                            <tr key={index} className="border-b hover:bg-gray-100 even:bg-neutral-50">
+            <table className="min-w-full bg-white shadow-md rounded-lg">
+                <thead className="bg-gray-200">
+                    <tr>
+                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Index</th>
+                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Chemical</th>
+                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Flow Rate</th>
+                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Enable</th>
+                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {flowRates.map((item, index) => {
+                        const chemical = amedite.find((el) => el.id === item.chemical)?.full_name;
+
+                        return (
+                            <tr key={item.id} className="border-b hover:bg-gray-100 even:bg-neutral-50">
                                 <td className="py-3 px-6">
                                     <span>{index + 1}.</span>
                                 </td>
-
                                 <td className="py-3 px-6">
-                                    <ControllerDropdown control={control} name={`${field.id}.value`} menuItem={chemicals} label={`Select Chemical`} className="max-w-[200px]" />
+                                    <div className="flex flex-row items-center gap-2">
+                                        <input
+                                            type="checkbox"
+                                            className="h-4 w-4"
+                                            checked={selectedPositions.includes(item.id)}
+                                            onChange={(e) => {
+                                                if (e.target.checked) {
+                                                    setSelectedPositions([...selectedPositions, item.id]);
+                                                } else {
+                                                    setSelectedPositions(selectedPositions.filter((id) => id !== item.id));
+                                                }
+                                            }}
+                                        />
+                                        <span>{chemical}</span>
+                                    </div>
                                 </td>
 
                                 <td className="py-3 px-6">
-                                    <InputField width="w-[200px]" control={control} name={`${field.id}.flowRate`} type="number" />
-                                </td>
-
-                                <td className="py-3 px-6">
-                                    <InputField width="w-5" className="h-5" control={control} name={`${field.id}.checked`} type={"checkbox"} />
+                                    <span>{item.flowRate}</span>
                                 </td>
                                 <td className="py-3 px-6">
-                                    <button
-                                        type="button"
-                                        onClick={() => remove(index)} // Remove row
-                                        className="text-red-500 hover:text-red-700 font-bold"
-                                    >
-                                        Delete
-                                    </button>
+                                    <ToggleSwitch checked={item.enable} disabled />
                                 </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-
-                {/* Button to add new row */}
-            </form>
-
-            {/* <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-                <thead className="bg-gray-200">
-                    <tr>
-                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Position</th>
-                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">UV Value</th>
-                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">*</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {chemicals.map((el, index) => {
-                        return (
-                            <tr key={index} className="border-b hover:bg-gray-100 even:bg-neutral-50">
                                 <td className="py-3 px-6">
-                                    <span>{index}.</span>
-                                </td>
-
-                                <td className="py-3 px-6">
-                                    <ControllerDropdown name={`${el.value}.value`} control={control} placeholder={`Enter flow rates`} type={"number"} />
-                                </td>
-
-                                <td className="py-3 px-6">
-                                    <InputField width="w-5" className="h-5" control={control} name={`${el.value}.checked`} type={"checkbox"} />
+                                    <Button
+                                        bgClassName="bg-amber-200 hover:bg-amber-300"
+                                        label="Edit"
+                                        onClick={() => {
+                                            handleEdit(item);
+                                        }}
+                                    />
                                 </td>
                             </tr>
                         );
                     })}
                 </tbody>
-            </table> */}
+            </table>
+
+            {!!isModalOpen && <FlowRateModal onClose={() => setIsModalOpen(false)} onSave={handleSave} initialData={editingItem} />}
+
+            <ConfirmationPopup
+                header="Delete flow rate!"
+                isOpen={showConfirmation}
+                desc="Are you sure you want to delete the selected flow rate?"
+                handleConfirm={handleDelete}
+                closePopup={() => setShowConfirmation(false)}
+            />
         </>
     );
 }

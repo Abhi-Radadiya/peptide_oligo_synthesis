@@ -106,6 +106,12 @@ export function SelectionController(props) {
                 backgroundColor: "#f5f5f5",
             },
         }),
+        placeholder: (defaultStyles) => {
+            return {
+                ...defaultStyles,
+                color: "#c4c0c0",
+            };
+        },
     };
 
     return (
@@ -118,7 +124,7 @@ export function SelectionController(props) {
                     <Select
                         value={value}
                         isSearchable
-                        className={`basic-single ${className}`}
+                        className={`basic-single placeholder:text-neutral-200 ${className}`}
                         classNamePrefix="select"
                         isDisabled={isDisabled}
                         isClearable={isClearable}
@@ -155,6 +161,9 @@ export const Selection = (props) => {
             backgroundColor: state.isSelected ? "#dedcdc" : "white",
             color: "#333",
             "&:hover": {
+                backgroundColor: "#f5f5f5",
+            },
+            "&:focus": {
                 backgroundColor: "#f5f5f5",
             },
         }),

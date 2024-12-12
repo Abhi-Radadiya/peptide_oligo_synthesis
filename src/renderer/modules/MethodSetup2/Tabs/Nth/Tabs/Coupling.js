@@ -33,6 +33,7 @@ export default function Coupling(props) {
                             placeholder="Enter Flow Rate"
                             label="Flow Rate"
                             rightFixItem="ml/min"
+                            rules={{ required: "Please enter flow rate" }}
                         />
 
                         <InputField
@@ -45,6 +46,7 @@ export default function Coupling(props) {
                             placeholder="Enter mix time"
                             label="Mix Time"
                             rightFixItem="min"
+                            rules={{ required: "Please enter mix time" }}
                         />
                     </div>
 
@@ -59,6 +61,7 @@ export default function Coupling(props) {
                             placeholder="Enter amedite volume"
                             label="Amedite volume"
                             rightFixItem="ml"
+                            rules={{ required: "Please enter amedite volume" }}
                         />
 
                         <InputField
@@ -71,6 +74,7 @@ export default function Coupling(props) {
                             placeholder="Enter act volume"
                             label="Act volume"
                             rightFixItem="ml"
+                            rules={{ required: "Please enter act volume" }}
                         />
                     </div>
 

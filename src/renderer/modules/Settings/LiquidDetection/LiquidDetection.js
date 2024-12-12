@@ -1,42 +1,36 @@
-import React, { useEffect, useState } from "react";
-import InputField from "../../../Components/Input/Input";
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
-import { getLiquidDetection, saveLiquidDetectionDetails } from "../../../function/electronFunctionDeclaration";
+import InputField from "../../../Components/Input/Input";
+import { setDetectors } from "../../../../redux/reducers/settings/liquidDetection";
 
 export default function LiquidDetection() {
-    const [detector] = useState([{ position: "R1" }, { position: "R2" }, { position: "R3" }, { position: "R4" }, { position: "R5" }, { position: "A1" }]);
+    const dispatch = useDispatch();
+    const detectors = useSelector((state) => state.liquidDetection.detectors);
 
-    const { control, handleSubmit, setValue } = useForm({
-        defaultValues: detector.reduce((form, item) => {
-            form[`${item.position}`] = { threshold: "" };
+    const { control, handleSubmit } = useForm({
+        defaultValues: detectors.reduce((form, item) => {
+            form[item.position] = {
+                threshold: item.threshold,
+                checked: item.checked,
+            };
             return form;
         }, {}),
     });
 
     const saveThreshold = async (data) => {
         try {
-            const response = await saveLiquidDetectionDetails(data);
-            console.log(`response : `, response);
+            const detectorSettings = detectors.map((detector) => ({
+                position: detector.position,
+                threshold: data[detector.position]?.threshold || "",
+                checked: data[detector.position]?.checked || false,
+            }));
+
+            dispatch(setDetectors(detectorSettings));
         } catch (error) {
-            console.log(`error saveThreshold : `, error);
+            console.error("Failed to save liquid detection settings:", error);
         }
     };
-
-    const fetchThreshold = async () => {
-        try {
-            const response = await getLiquidDetection();
-            response.data.forEach((el) => {
-                setValue(`${el.position}.threshold`, el.threshold);
-                setValue(`${el.position}.checked`, !!el.checked);
-            });
-        } catch (error) {
-            console.log(`error fetchThreshold : `, error);
-        }
-    };
-
-    useEffect(() => {
-        fetchThreshold();
-    }, []);
 
     return (
         <>
@@ -59,7 +53,7 @@ export default function LiquidDetection() {
                     </thead>
 
                     <tbody>
-                        {detector.map((el, index) => {
+                        {detectors.map((el, index) => {
                             return (
                                 <tr key={index} className="border-b hover:bg-gray-100 even:bg-neutral-50">
                                     <td className="py-3 px-6">

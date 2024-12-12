@@ -1,117 +1,131 @@
 import React, { useState } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
-import { ControllerDropdown } from "../../../Components/Dropdown/Dropdown";
-import { Button, SaveButton } from "../../../Components/Buttons/Buttons";
+import { Button } from "../../../Components/Buttons/Buttons";
 import ColumnDetailsModel from "./Component/ColumnDetailsModel";
-import InputField from "../../../Components/Input/Input";
-
-const positionDetails = {
-    fullName: "",
-    unit: "",
-    maxPressure: "",
-    maxFlowRate: "",
-    diameter: "",
-    height: "",
-    liquidVolume: "",
-    loadingVolume: "",
-};
+import { useSelector, useDispatch } from "react-redux";
+import ConfirmationPopup from "../../../Components/Popup/ConfirmationPopup";
+import { deletePositions } from "../../../../redux/reducers/settings/columnEditor";
 
 const ColumnEditor = () => {
-    const {
-        control,
-        reset,
-        register,
-        control: formControl,
-    } = useForm({
-        defaultValues: {
-            positions: [
-                { name: "10 Barrel", chemical: "" },
-                { name: "50 Barrel", chemical: "" },
-                { name: "5 MLS", chemical: "" },
-                { name: "20 MLS", chemical: "" },
-            ],
-        },
-    });
+    const columnEditor = useSelector((state) => state.columnEditor.positions);
+    const dispatch = useDispatch();
 
-    const { fields, append, remove } = useFieldArray({
-        control: formControl,
-        name: "positions",
-    });
+    const [showModel, setShowModel] = useState(false);
+    const [editingDetails, setEditingDetails] = useState({});
+    const [selectedRows, setSelectedRows] = useState([]);
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
-    const chemicals = [
-        { label: "Chm. 1", value: "chm1" },
-        { label: "Chm. 2", value: "chm2" },
-        { label: "Chm. 3", value: "chm3" },
-    ];
-
-    const [isOpen, setIsOpen] = useState(false);
-    const [isViewMode, setIsViewMode] = useState(true);
-    const [selectedPosition, setSelectedPosition] = useState(null);
-
-    const openModal = (position, mode) => {
-        setSelectedPosition(position);
-        setIsViewMode(mode === "view");
-        setIsOpen(true);
-        reset(positionDetails);
+    const handleRowSelect = (id) => {
+        setSelectedRows((prevSelected) => (prevSelected.includes(id) ? prevSelected.filter((rowId) => rowId !== id) : [...prevSelected, id]));
     };
 
-    const closeModal = () => {
-        setIsOpen(false);
+    const handleBulkDelete = () => {
+        dispatch(deletePositions(selectedRows));
+        setSelectedRows([]);
+        setShowConfirmation(false);
     };
-
-    const addRow = () => {
-        append({ name: "", chemical: "" });
-    };
-
-    const onSubmit = () => {};
 
     return (
-        <div className="container w-full mt-4">
-            <div className="flex flex-row gap-4 justify-end mb-4">
-                <Button label="Add Chemical" onClick={addRow} bgClassName="bg-amber-200 hover:bg-amber-300 border-amber-300" />
-                <SaveButton label="Save" onClick={onSubmit} bgClassName="bg-green-200 hover:bg-green-300 border-green-300" header="Saved Successfully" />
+        <div className="w-full mt-4">
+            <div className="justify-between flex mb-4 items-center border-b border-neutral-300 pb-4">
+                <div className="flex flex-row items-center">
+                    <Button
+                        label={`${selectedRows.length === columnEditor.length ? "Unselect All" : "Select All"}`}
+                        onClick={() => setSelectedRows((prevState) => (!prevState?.length ? columnEditor.map((el) => el.id) : []))}
+                    />
+                    <Button
+                        disabled={!selectedRows.length}
+                        label="Delete Selected"
+                        onClick={() => setShowConfirmation(true)}
+                        bgClassName="ml-2 bg-[#fa5757] text-white disabled:bg-red-200 disabled:text-neutral-500"
+                    />
+                </div>
+                <Button label="Add position" onClick={() => setShowModel(true)} />
             </div>
 
             <table className="min-w-full bg-white shadow-md rounded-lg">
                 <thead className="bg-gray-200">
                     <tr>
-                        <th className="py-3 px-6 w-[10%] text-left text-gray-600 font-semibold">Index</th>
-                        <th className="py-3 px-6 w-[30%] text-left text-gray-600 font-semibold">Name</th>
-                        <th className="py-3 px-6 w-[30%] text-left text-gray-600 font-semibold">Chemical</th>
-                        <th className="py-3 px-6 w-[30%] text-left text-gray-600 font-semibold">Actions</th>
+                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Index</th>
+                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Name</th>
+                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Unit</th>
+                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Max pressure</th>
+                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Max flow rate</th>
+                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Diameter</th>
+                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Height</th>
+                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Liquid Volume</th>
+                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Loading Volume</th>
+                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Actions</th>
                     </tr>
                 </thead>
 
-                <tbody>
-                    {fields.map((position, index) => (
-                        <tr key={index} className="border-b hover:bg-gray-100 even:bg-neutral-50">
-                            <td className="py-3 px-6">{index + 1}.</td>
-                            <td className="py-3 px-6">
-                                {index < 4 ? position.name : <InputField control={control} name={`positions.${index}.name`} />}
-                                {/* need to add this one in database */}
-                            </td>
+                {columnEditor?.length ? (
+                    <tbody>
+                        {columnEditor?.map((el, index) => {
+                            return (
+                                <tr key={el.id} className="border-b hover:bg-gray-100 even:bg-neutral-50">
+                                    <td className="py-3 px-6">{index + 1}.</td>
 
-                            <td className="py-3 px-6">
-                                <ControllerDropdown
-                                    control={formControl}
-                                    name={`positions.${index}.chemical`}
-                                    menuItem={chemicals}
-                                    label={`Select Chemical`}
-                                    className="max-w-[200px]"
-                                />
-                            </td>
+                                    <td className="py-3 px-6">
+                                        <div className="flex flex-row items-center gap-2">
+                                            <input type="checkbox" className="h-4 w-4" checked={selectedRows.includes(el.id)} onChange={() => handleRowSelect(el.id)} />
+                                            {el.name}
+                                        </div>
+                                    </td>
 
-                            <td className="py-3 px-6 space-x-4">
-                                <Button bgClassName="bg-sky-300 hover:bg-sky-400" label="View" onClick={() => openModal(position, "view")} />
-                                <Button bgClassName="bg-amber-200 hover:bg-amber-300" label="Edit" onClick={() => openModal(position, "edit")} />
-                                <Button bgClassName="bg-red-300 hover:bg-red-400" label="Remove" onClick={() => remove(index)} />
+                                    <td className="py-3 px-6">{el.unit}</td>
+
+                                    <td className="py-3 px-6">{el.maxPressure}</td>
+
+                                    <td className="py-3 px-6">{el.maxFlowRate}</td>
+
+                                    <td className="py-3 px-6">{el.diameter}</td>
+
+                                    <td className="py-3 px-6">{el.height}</td>
+                                    <td className="py-3 px-6">{el.liquidVolume}</td>
+                                    <td className="py-3 px-6">{el.loadingVolume}</td>
+                                    <td className="py-3 px-6 space-x-4 flex flex-row gap-4">
+                                        <Button
+                                            bgClassName="bg-amber-200 hover:bg-amber-300"
+                                            label="Edit"
+                                            onClick={() => {
+                                                setEditingDetails(el);
+                                                setShowModel(true);
+                                            }}
+                                        />
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                ) : (
+                    <tbody>
+                        <tr className="border-b hover:bg-gray-100 even:bg-neutral-50">
+                            <td colSpan={10} className="py-10 text-neutral-500 font-bold px-6 text-center">
+                                No positions available at this moment !
                             </td>
                         </tr>
-                    ))}
-                </tbody>
+                    </tbody>
+                )}
             </table>
 
-            {isOpen && <ColumnDetailsModel isViewMode={isViewMode} selectedPosition={selectedPosition} closeModal={closeModal} positionDetails={positionDetails} />}
+            {showModel && (
+                <ColumnDetailsModel
+                    editingDetails={editingDetails}
+                    columnEditor={columnEditor}
+                    closeModal={() => {
+                        setShowModel(false);
+                        setEditingDetails({});
+                    }}
+                />
+            )}
+
+            <ConfirmationPopup
+                header="Delete sequence !"
+                isOpen={showConfirmation}
+                desc="Are you sure you want to delete the selected position?"
+                handleConfirm={handleBulkDelete}
+                closePopup={() => setShowConfirmation(false)}
+            />
         </div>
     );
 };

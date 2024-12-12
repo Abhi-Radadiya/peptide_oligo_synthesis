@@ -85,8 +85,6 @@ export default function FileUploader() {
         generateBlock(selectedFile);
     };
 
-    console.log(`sequences : `, sequences);
-
     return (
         <div className="w-full p-6 bg-white rounded-lg scrollbar-style overflow-auto">
             <div className="flex items-center justify-center w-full">

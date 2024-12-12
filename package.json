@@ -6,6 +6,7 @@
     "author": "Abhishek Radadiya",
     "main": "./src/electron/main.js",
     "dependencies": {
+        "@reduxjs/toolkit": "^2.4.0",
         "@serialport/parser-byte-length": "^12.0.0",
         "@testing-library/jest-dom": "^5.17.0",
         "@testing-library/react": "^13.4.0",
@@ -14,6 +15,7 @@
         "date-fns": "^3.6.0",
         "detect-port": "^1.6.1",
         "electron-updater": "^6.3.9",
+        "localforage": "^1.10.0",
         "lodash": "^4.17.21",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
@@ -24,6 +26,7 @@
         "react-select": "^5.8.2",
         "react-window": "^1.8.10",
         "redux": "^5.0.1",
+        "redux-persist": "^6.0.0",
         "redux-thunk": "^3.1.0",
         "serialport": "^12.0.0",
         "sqlite3": "5.1.6",

@@ -1,7 +1,64 @@
-import { applyMiddleware, createStore } from "redux";
-import sequenceReducer from "./reducers";
-import { thunk } from "redux-thunk";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
-const store = createStore(sequenceReducer, applyMiddleware(thunk));
+import sequenceReducer from "./reducers/sequenceReducer";
+import amediteReducer from "./reducers/settings/amedite";
+import bottleMappingReducer from "./reducers/settings/bottleMapping";
+import primeAmediteReducer from "./reducers/settings/prime/primeAmedite";
+import primeSolventReducer from "./reducers/settings/prime/primeSolvent";
+import liquidDetectionReduce from "./reducers/settings/liquidDetection";
+import uvSettingReduce from "./reducers/settings/uvSetting";
+import pressureSettingReduce from "./reducers/settings/pressure";
+import columnEditorReduce from "./reducers/settings/columnEditor";
+import reagentReducer from "./reducers/settings/reagent";
+import flowRateReducer from "./reducers/settings/flowRate";
+import methodSetupReducer from "./reducers/methodSetup/methodSetup";
 
-export default store;
+const rootReducer = combineReducers({
+    // setting
+    sequence: sequenceReducer,
+    amedite: amediteReducer,
+    bottleMapping: bottleMappingReducer,
+    primeAmedite: primeAmediteReducer,
+    primeSolvent: primeSolventReducer,
+    liquidDetection: liquidDetectionReduce,
+    uvSetting: uvSettingReduce,
+    pressure: pressureSettingReduce,
+    columnEditor: columnEditorReduce,
+    reagent: reagentReducer,
+    flowRate: flowRateReducer,
+    // method setup
+    methodSetup: methodSetupReducer,
+});
+
+const persistConfig = {
+    key: "root",
+    version: 1,
+    storage,
+    whitelist: [
+        "sequence",
+        "amedite",
+        "bottleMapping",
+        "primeAmedite",
+        "primeSolvent",
+        "liquidDetection",
+        "uvSetting",
+        "pressure",
+        "columnEditor",
+        "reagent",
+        "flowRate",
+        "methodSetup",
+    ],
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+const store = configureStore({
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: { ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER] } }),
+});
+
+const persistor = persistStore(store);
+
+export { store, persistor };

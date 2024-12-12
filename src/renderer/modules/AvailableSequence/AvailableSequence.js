@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Button } from "../../Components/Buttons/Buttons";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteSequence } from "../../../redux/actions";
 import { ReactComponent as EditIcon } from "../../Assets/edit.svg";
 import ConfirmationPopup from "../../Components/Popup/ConfirmationPopup";
+import { deleteSequence } from "../../../redux/reducers/sequenceReducer";
 
 export default function AvailableSequence() {
     const navigate = useNavigate();
@@ -54,7 +54,7 @@ export default function AvailableSequence() {
                             <th className="border p-2 text-left">No.</th>
                             <th className="border p-2 text-left">No. Block</th>
                             <th className="border p-2 text-left">File Name</th>
-                            {/* <th className="border p-2 text-left">Actions</th> */}
+                            <th className="border p-2 text-left">Actions</th>
                         </tr>
                     </thead>
 
@@ -70,11 +70,11 @@ export default function AvailableSequence() {
                                     </div>
                                 </td>
                                 <td className="border p-2 text-left">{el.name}</td>
-                                {/* <td className="border p-2 text-left">
+                                <td className="border p-2 text-left">
                                     <div className="w-fit cursor-pointer hover:border-b hover:-mb-1 border-[#433db8]" onClick={() => navigate(`/sequence-editor/${el.id}`)}>
                                         <EditIcon stroke="#433db8" />
                                     </div>
-                                </td> */}
+                                </td>
                             </tr>
                         ))}
                     </tbody>

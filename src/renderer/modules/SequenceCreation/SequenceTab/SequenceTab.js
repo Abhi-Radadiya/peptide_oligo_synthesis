@@ -3,44 +3,19 @@ import { useFormContext, useWatch } from "react-hook-form";
 import SequenceEditing from "../Tabs/SequenceEditing/SequenceEditing";
 import MethodAssign from "../Tabs/MethodAssign/MethodAssign";
 import { Button } from "../../../Components/Buttons/Buttons";
-import { ReactComponent as TrashIcon } from "../../../Assets/trash.svg";
-import ConfirmationPopup from "../../../Components/Popup/ConfirmationPopup";
 import { Selection } from "../../../Components/Dropdown/Dropdown";
 import { useDispatch } from "react-redux";
-import { addSequence } from "../../../../redux/actions";
+import { addSequence } from "../../../../redux/reducers/sequenceReducer";
 
 export default function SequenceTab() {
     const { watch, handleSubmit, setValue } = useFormContext();
-
-    const [deleteSelectedTab, setDeleteSelectedTab] = useState(null);
-
-    const handleRemove = () => {
-        setValue(
-            "sequence",
-            watch("sequence").filter((el, idx) => deleteSelectedTab !== idx)
-        );
-        setShowConfirmDeleteModel(false);
-    };
 
     const [activeTab, setActiveTab] = useState(null);
 
     const sequence = useWatch({ name: "sequence" });
 
     const tabs = useMemo(() => {
-        return sequence.map((el, index) => ({
-            label: el.name,
-            value: index,
-            className: "w-[40%]",
-            rightIcon: (
-                <TrashIcon
-                    stroke={activeTab !== index ? "red" : "white"}
-                    onClick={() => {
-                        setDeleteSelectedTab(index);
-                        setShowConfirmDeleteModel(true);
-                    }}
-                />
-            ),
-        }));
+        return sequence.map((el, index) => ({ label: el.name, value: index }));
     }, [sequence, activeTab]);
 
     useEffect(() => {
@@ -48,8 +23,6 @@ export default function SequenceTab() {
     }, [sequence]);
 
     const activeTabIndex = useMemo(() => tabs?.findIndex((el) => el.value === activeTab?.value), [activeTab]);
-
-    const [showConfirmDeleteModel, setShowConfirmDeleteModel] = useState(false);
 
     const generateBlock = () => {
         const selectedSequence = watch("sequence").find((_, index) => index === activeTabIndex)?.sequenceString;
@@ -74,12 +47,14 @@ export default function SequenceTab() {
         try {
             await dispatch(addSequence(selectedSequence));
 
+            const newSequence = sequence.filter((_, index) => index !== activeTabIndex);
+
             setValue(
                 "sequence",
                 sequence.filter((_, index) => index !== activeTabIndex)
             );
 
-            setActiveTab(tabs[0]);
+            setActiveTab({ label: newSequence[0].name, value: 0 });
         } catch (error) {
             console.log(`error : `, error);
             alert(JSON.stringify(error.message));
@@ -109,15 +84,6 @@ export default function SequenceTab() {
                 <SequenceEditing index={activeTabIndex} />
                 <MethodAssign index={activeTabIndex} />
             </div>
-
-            <ConfirmationPopup
-                isOpen={showConfirmDeleteModel}
-                header="Delete sequence !"
-                desc={`Are you sure want to delete ${watch("sequence")[deleteSelectedTab]?.name} ?`}
-                width="w-[35%]"
-                handleConfirm={handleRemove}
-                closePopup={() => setShowConfirmDeleteModel(false)}
-            />
         </>
     );
 }

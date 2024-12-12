@@ -15,7 +15,7 @@ export default function MethodSetup() {
 
     const [activeStep, setActiveStep] = useState(steps[0].value);
 
-    const ComponentToRender = steps.find((el) => el.value == activeStep).component;
+    const ComponentToRender = steps.find((el) => el.value === activeStep).component;
 
     return (
         <>
