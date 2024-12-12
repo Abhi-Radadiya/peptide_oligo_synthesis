@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { SelectionController } from "../../../../Components/Dropdown/Dropdown";
 import { useDispatch, useSelector } from "react-redux";
 import { isEmpty } from "lodash";
-import { addPosition } from "../../../../../redux/reducers/settings/columnEditor";
+import { addPosition, updatePosition } from "../../../../../redux/reducers/settings/columnEditor";
 
 export default function ColumnDetailsModel(props) {
     const { editingDetails, closeModal, columnEditor } = props;
@@ -32,7 +32,7 @@ export default function ColumnDetailsModel(props) {
     const dispatch = useDispatch();
 
     const handleSave = (data) => {
-        dispatch(addPosition(data));
+        isEditing?        dispatch(updatePosition(data)):       dispatch(addPosition(data));
         closeModal();
     };
 
