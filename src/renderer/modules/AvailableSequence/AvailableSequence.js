@@ -25,14 +25,12 @@ export default function AvailableSequence() {
         setSelectedIds((prevSelectedIds) => (prevSelectedIds.includes(id) ? prevSelectedIds.filter((selectedId) => selectedId !== id) : [...prevSelectedIds, id]));
     };
 
-    const sequence = useSelector((state) => state.sequence);
-
-    const sortedSequence = sequence?.sort((a, b) => b.id - a.id);
+    const sequence = useSelector((state) => state.sequence.sequence);
 
     return (
         <>
-            <div className="p-4">
-                <div className="justify-between flex mb-4 items-center border-b border-neutral-300 pb-4">
+            <div className="px-4 relative">
+                <div className="justify-between flex mb-4 items-center border-b border-neutral-300 py-4 sticky top-0 -mx-4 px-4 bg-neutral-50 z-10">
                     <div className="flex flex-row items-center">
                         <Button
                             label={`${sequence.length === selectedIds.length ? "Unselect All" : "Select All"}`}
@@ -48,7 +46,7 @@ export default function AvailableSequence() {
                     <Button label="Create New Sequence" onClick={() => navigate("/sequence-editor/new")} />
                 </div>
 
-                <table className="w-full border-collapse">
+                <table className="w-full border-collapse mb-6">
                     <thead>
                         <tr>
                             <th className="border p-2 text-left">No.</th>
@@ -59,7 +57,7 @@ export default function AvailableSequence() {
                     </thead>
 
                     <tbody>
-                        {sortedSequence?.map((el, index) => (
+                        {sequence?.map((el, index) => (
                             <tr key={index}>
                                 <td className="border p-2 text-left">{index + 1}</td>
                                 <td className="border p-2 text-left">

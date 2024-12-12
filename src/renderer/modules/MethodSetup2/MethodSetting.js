@@ -100,8 +100,6 @@ export default function MethodSetting() {
     };
 
     const handleSave = (data) => {
-        console.log(`const data_xx = `, JSON.stringify(data));
-
         activeStep === 3 ? (!!id ? editMethod(data) : saveMethod(data)) : setActiveStep(activeStep + 1);
     };
 
@@ -115,8 +113,7 @@ export default function MethodSetting() {
                         <div className="border-l relative border-neutral-500 pl-6 w-full pb-12 overflow-auto scrollbar-style pr-2" style={{ height: windowHeight - 36 }}>
                             <ComponentToRender setActiveStep={setActiveStep} />
                         </div>
-
-                        <Footer onClick={handleSubmit(handleSave)} label={activeStep === 3 ? "Save" : "Save & Next"} />
+                        <Footer onClick={handleSubmit(handleSave)} label={activeStep === 3 ? "Save" : "Next"} />
                     </FormProvider>
                 </div>
             </div>

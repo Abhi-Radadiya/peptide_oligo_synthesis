@@ -8,7 +8,7 @@ export default function NavigationPanel(props) {
     const location = useLocation();
 
     const links = [
-        { label: "Method Setup", to: "method-setup" },
+        { label: "Method Setup", to: "method-setup", isShowSubLink: true, subLink: [{ label: "Method Editor", to: "method-setting" }] },
         { label: "Settings", to: "settings" },
         { label: "Sequence", to: "sequence" },
         { label: "Available Sequence", to: "available-sequence", isShowSubLink: true, subLink: [{ label: "Sequence Editor", to: "sequence-editor/new" }] },

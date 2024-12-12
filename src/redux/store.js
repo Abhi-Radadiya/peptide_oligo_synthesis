@@ -17,7 +17,6 @@ import methodSetupReducer from "./reducers/methodSetup/methodSetup";
 
 const rootReducer = combineReducers({
     // setting
-    sequence: sequenceReducer,
     amedite: amediteReducer,
     bottleMapping: bottleMappingReducer,
     primeAmedite: primeAmediteReducer,
@@ -30,6 +29,8 @@ const rootReducer = combineReducers({
     flowRate: flowRateReducer,
     // method setup
     methodSetup: methodSetupReducer,
+    // sequence
+    sequence: sequenceReducer,
 });
 
 const persistConfig = {

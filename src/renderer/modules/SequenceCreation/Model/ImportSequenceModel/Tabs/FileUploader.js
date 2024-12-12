@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { ReactComponent as TrashIcon } from "../../../../../Assets/trash.svg";
 import { getUniqueId } from "../../../../MethodSetup2/Constant";
@@ -10,7 +10,24 @@ export default function FileUploader() {
 
     const [selectedFiles, setSelectedFiles] = useState([]);
 
-    const { register, setValue } = useFormContext();
+    const { register, setValue, watch } = useFormContext();
+
+    const blockOption = watch("blockOption");
+
+    const formatSequenceString = (sequenceString) => {
+        const cleanedSequenceString = sequenceString.replace(/\s+/g, "");
+
+        let optionSeparatedSequenceString;
+
+        if (blockOption === "3") {
+            const blocks = cleanedSequenceString.match(/.{1,3}/g);
+            optionSeparatedSequenceString = blocks.join(" ");
+        } else {
+            optionSeparatedSequenceString = cleanedSequenceString.split("").join(" ");
+        }
+
+        return optionSeparatedSequenceString;
+    };
 
     const processFile = (file) => {
         return new Promise((resolve, reject) => {
@@ -23,8 +40,11 @@ export default function FileUploader() {
                 const processedSequences = lines.some((line) => line.startsWith("NEW ~"))
                     ? lines
                           .filter((line) => line.startsWith("NEW ~"))
-                          .map((line, index) => ({ fileName: file.name, name: `${file.name.split(".txt")[0]} Sequence ${index + 1}`, sequence: line.replace("NEW ~", "").trim() }))
-                    : [{ fileName: file.name, name: file.name.split(".txt")[0], sequence: lines?.[0]?.trim() }];
+                          .map((line, index) => ({
+                              name: `${file.name.split(".txt")[0]} Sequence ${index + 1}`,
+                              sequenceString: line.replace("NEW ~", "").trim(),
+                          }))
+                    : [{ name: file.name.split(".txt")[0], sequenceString: lines?.[0]?.trim() }];
 
                 resolve(processedSequences);
             };
@@ -55,18 +75,14 @@ export default function FileUploader() {
                     return {
                         id: getUniqueId(),
                         name: el.name,
-                        sequenceString: el.sequence,
-                        block: el.sequence
-                            ?.split(" ")
-                            ?.filter(Boolean)
-                            ?.map((block, index) => ({ block, index })),
+                        sequenceString: formatSequenceString(el.sequenceString),
                     };
                 });
 
                 setValue("sequenceTemp", processedSequence);
 
-                if (allSequences.length > 0) {
-                    setSequences(allSequences);
+                if (processedSequence.length > 0) {
+                    setSequences(processedSequence);
                 } else {
                     setUploadError("No valid sequences found in the uploaded files");
                 }
@@ -78,6 +94,25 @@ export default function FileUploader() {
             setSequences([]);
         }
     };
+
+    useEffect(() => {
+        if (!watch("sequenceTemp")?.length) {
+            return;
+        }
+
+        const processedSequence = watch("sequenceTemp").map((el) => {
+            return {
+                id: getUniqueId(),
+                name: el.name,
+                sequenceString: formatSequenceString(el.sequenceString),
+            };
+        });
+
+        setValue("sequenceTemp", processedSequence);
+        setSequences(processedSequence);
+
+        // formatSequenceString
+    }, [blockOption]);
 
     const removeFile = (fileToRemove) => {
         const selectedFile = selectedFiles.filter((file) => file.name !== fileToRemove.name);
@@ -147,10 +182,8 @@ export default function FileUploader() {
                     <h3 className="text-lg font-semibold mb-2">{sequences.length === 1 ? "Sequence" : "Sequences"}</h3>
                     {sequences.map((seq, index) => (
                         <div key={index} className="bg-gray-100 p-3 rounded-md mb-2 break-words">
-                            <p className="font-medium">
-                                {seq.fileName} - {seq.name} :
-                            </p>
-                            <p className="text-sm text-gray-700">{seq.sequence}</p>
+                            <p className="font-medium">{seq.name} :</p>
+                            <p className="text-sm text-gray-700">{seq.sequenceString}</p>
                         </div>
                     ))}
                 </div>

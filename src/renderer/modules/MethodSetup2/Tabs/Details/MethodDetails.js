@@ -3,11 +3,12 @@ import InputField from "../../../../Components/Input/Input";
 import { useFormContext } from "react-hook-form";
 import { SelectionController } from "../../../../Components/Dropdown/Dropdown";
 import { useSelector } from "react-redux";
+import Footer from "../../Components/Footer";
 
 const MethodDetails = (props) => {
-    const { disabled } = props;
+    const { disabled, setActiveStep } = props;
 
-    const { control, watch, setValue } = useFormContext();
+    const { handleSubmit, control, watch, setValue } = useFormContext();
 
     const synthesisScale = watch("synthesisScale");
     const loadingTime = watch("loadingTime");
@@ -82,6 +83,7 @@ const MethodDetails = (props) => {
 
         return () => {
             if (numberAmediteVolume && numberActVolume) {
+                console.log(`numberAmediteVolume && numberActVolume : `, numberAmediteVolume && numberActVolume);
                 setFieldValues(numberAmediteVolume, numberActVolume);
             }
         };
@@ -116,6 +118,7 @@ const MethodDetails = (props) => {
                                     control={control}
                                     name="columnSize"
                                     menuItem={columnEditor}
+                                    rules={{ required: "Please select column size" }}
                                 />
                             </div>
 
@@ -128,12 +131,21 @@ const MethodDetails = (props) => {
                                     placeholder="Enter synthesis scale (μmol)"
                                     type="number"
                                     className="w-full"
+                                    rules={{ required: "Please enter synthesis scale" }}
                                 />
                             </div>
 
                             <div className="space-y-2">
                                 <label htmlFor="loading-time">Loading Time (min)</label>
-                                <InputField disabled={disabled} control={control} name="loadingTime" placeholder="Enter loading time (min)" type="number" className="w-full" />
+                                <InputField
+                                    disabled={disabled}
+                                    control={control}
+                                    name="loadingTime"
+                                    placeholder="Enter loading time (min)"
+                                    type="number"
+                                    className="w-full"
+                                    rules={{ required: "Please enter loading time" }}
+                                />
                             </div>
 
                             <div className="space-y-2">
@@ -146,6 +158,7 @@ const MethodDetails = (props) => {
                                     type="number"
                                     step="0.1"
                                     className="w-full"
+                                    rules={{ required: "Please enter amedite excess factor" }}
                                 />
                             </div>
 
@@ -158,6 +171,7 @@ const MethodDetails = (props) => {
                                     placeholder="Enter act excess factor (%)"
                                     type="number"
                                     className="w-full"
+                                    rules={{ required: "Please enter act excess factor" }}
                                 />
                             </div>
 
@@ -172,6 +186,7 @@ const MethodDetails = (props) => {
                                     type="number"
                                     value={amediteConcentration}
                                     className="w-full"
+                                    rules={{ required: "Please enter amedite concentration " }}
                                 />
                             </div>
                         </div>

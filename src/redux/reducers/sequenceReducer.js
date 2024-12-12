@@ -7,7 +7,7 @@ const sequenceSlice = createSlice({
     },
     reducers: {
         addSequence: (state, action) => {
-            const existingSequence = state.sequence.find((seq) => seq.name.toLowerCase() === action.payload.name.toLowerCase());
+            const existingSequence = state?.sequence?.find((seq) => seq.name.toLowerCase() === action.payload.name.toLowerCase());
 
             if (!existingSequence) {
                 state.sequence.unshift(action.payload);
@@ -16,12 +16,20 @@ const sequenceSlice = createSlice({
             }
         },
         editSequence: (state, action) => {
-            const { id, updatedSequence } = action.payload;
-            const sequenceToUpdate = state.sequence.find((sequence) => sequence.id === id);
+            console.log(`action.payload : `, action.payload);
 
-            if (sequenceToUpdate) {
-                sequenceToUpdate.block = updatedSequence.block;
-                sequenceToUpdate.name = updatedSequence.name;
+            const { id, name } = action.payload;
+
+            const nameConflict = state.sequence.find((sequence) => sequence.name.toLowerCase() === name.toLowerCase() && sequence.id !== id);
+
+            if (nameConflict) {
+                throw new Error("Sequence with the same name already exists.");
+            }
+
+            const sequenceToUpdateIndex = state.sequence.findIndex((sequence) => sequence.id === id);
+
+            if (sequenceToUpdateIndex !== -1) {
+                state.sequence[sequenceToUpdateIndex] = { ...state.sequence[sequenceToUpdateIndex], ...action.payload };
             }
         },
         deleteSequence: (state, action) => {

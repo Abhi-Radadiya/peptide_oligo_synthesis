@@ -57,7 +57,7 @@ export default function SequenceEditing(props) {
                     name={index !== undefined ? `sequence.${index}.name` : "name"}
                     borderClass="border border-neutral-400"
                     placeholder="Enter log file"
-                    wrapperClassName="mb-4"
+                    wrapperClassName="mb-4 pl-1"
                     rules={{ required: "Please enter log file" }}
                     key={`${index}.name`}
                 />

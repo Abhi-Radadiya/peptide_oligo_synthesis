@@ -2,7 +2,7 @@ import { useState } from "react";
 import ConfirmationPopup from "../Popup/ConfirmationPopup";
 
 const Button = (props) => {
-    const { label, active, disabled, className, onClick, bgClassName, rightIcon } = props;
+    const { label, active, disabled, className, onClick, bgClassName, rightIcon, leftIcon } = props;
 
     return (
         <button
@@ -12,6 +12,7 @@ const Button = (props) => {
             disabled={disabled}
             onClick={onClick}
         >
+            {leftIcon}
             {label}
             {rightIcon}
         </button>

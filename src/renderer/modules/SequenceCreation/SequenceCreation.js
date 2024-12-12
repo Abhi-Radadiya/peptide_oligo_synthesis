@@ -9,23 +9,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import ImportSequenceModel from "./Model/ImportSequenceModel/ImportSequenceModel";
 import SequenceTab from "./SequenceTab/SequenceTab";
 import { addSequence, editSequence } from "../../../redux/reducers/sequenceReducer";
+import ConfirmGenerateBlock from "./Model/ConfirmGenerateBlock/ConfirmGenerateBlock";
+import { getUniqueId } from "../MethodSetup2/Constant";
 
 export default function SequenceCreation() {
     const { id } = useParams();
 
-    const method = useForm();
+    const method = useForm({ defaultValues: { blockOption: "1" } });
 
-    const { watch, setValue, clearErrors, handleSubmit } = method;
+    const { watch, setValue, clearErrors, handleSubmit, setError } = method;
 
-    const generateBlock = () => {
-        setValue(
-            "block",
-            watch("sequenceString")
-                .split(" ")
-                .filter(Boolean)
-                .map((block, index) => ({ block, index }))
-        );
-    };
+    const [showGenerateBlockModel, setShowGenerateBlockModel] = useState(false);
 
     const fileInputRef = useRef(null);
 
@@ -57,22 +51,32 @@ export default function SequenceCreation() {
 
     const navigate = useNavigate();
 
-    const sequence = useSelector((state) => state.sequence);
+    const sequence = useSelector((state) => state.sequence.sequence);
 
     const handleAddSequence = async () => {
         const newSequence = {
-            id: Date.now(),
+            id: getUniqueId(),
             name: watch("name"),
             block: watch("block"),
+            sequenceString: watch("sequenceString"),
         };
 
         try {
-            id ? await dispatch(editSequence(id, { name: watch("name"), block: watch("block") })) : await dispatch(addSequence(newSequence));
+            id
+                ? await dispatch(editSequence({ id: id, name: watch("name"), block: watch("block"), sequenceString: watch("sequenceString") }))
+                : await dispatch(addSequence(newSequence));
 
             navigate("/available-sequence");
         } catch (error) {
+            if (error.message === "Sequence with the same name already exists.") {
+                setError(`name`, {
+                    type: "manual",
+                    message: "Name already exists!",
+                });
+            } else {
+                console.log(`error : `, error);
+            }
             console.log(`error handleAddSequence : `, error);
-            alert(error.message);
         }
     };
 
@@ -83,7 +87,7 @@ export default function SequenceCreation() {
 
         if (!selectedSequence) return;
 
-        setValue("sequenceString", selectedSequence?.block?.map((item) => item.block).join(" "));
+        setValue("sequenceString", selectedSequence.sequenceString);
 
         setValue("name", selectedSequence.name);
 
@@ -93,6 +97,31 @@ export default function SequenceCreation() {
 
     const [isShowImportModel, setIsShowImportModel] = useState(false);
 
+    const setSequenceString = () => {
+        const cleanedSequenceString = watch("sequenceString").replace(/\s+/g, "");
+
+        const blockOption = watch("blockOption");
+
+        let optionSeparatedSequenceString;
+
+        if (blockOption === "3") {
+            const blocks = cleanedSequenceString.match(/.{1,3}/g);
+            optionSeparatedSequenceString = blocks.join(" ");
+        } else {
+            optionSeparatedSequenceString = cleanedSequenceString.split("").join(" ");
+        }
+
+        setValue("sequenceString", optionSeparatedSequenceString);
+
+        setValue(
+            "block",
+            optionSeparatedSequenceString
+                .split(" ")
+                .filter(Boolean)
+                .map((block, index) => ({ block, index }))
+        );
+    };
+
     return (
         <>
             <FormProvider {...method}>
@@ -101,12 +130,16 @@ export default function SequenceCreation() {
                         <div className="flex flex-row item-center gap-4">
                             <Button label="Import sequence" onClick={() => setIsShowImportModel(true)} bgClassName="bg-indigo-200 hover:bg-indigo-300" />
                             <input type="file" accept=".txt" onChange={handleFileChange} ref={fileInputRef} className="hidden" />
-                            <Button label="Export sequence" onClick={saveTextFile} bgClassName="bg-green-200 hover:bg-green-300" />
+                            {/* <Button label="Export sequence" onClick={saveTextFile} bgClassName="bg-green-200 hover:bg-green-300" /> */}
                         </div>
 
                         {!watch("sequence")?.length && (
                             <div className="flex flex-row item-center gap-4">
-                                <Button label="Generate Blocks" bgClassName="bg-amber-200 hover:bg-amber-300" onClick={() => handleSubmit(generateBlock)()} />
+                                <Button
+                                    label="Generate Blocks"
+                                    bgClassName="bg-amber-200 hover:bg-amber-300"
+                                    onClick={() => handleSubmit(() => setShowGenerateBlockModel(true))()}
+                                />
 
                                 <Button label="Save" onClick={() => handleSubmit(handleAddSequence)()} />
                             </div>
@@ -121,15 +154,6 @@ export default function SequenceCreation() {
                             <MethodAssign />
                         </div>
                     )}
-
-                    {/* {fields.map((el, index) => {
-                        return (
-                            <div className="flex flex-row w-full relative mb-4 pb-2 border-b border-neutral-900" key={index}>
-                                <SequenceEditing id={el.id} index={index} />
-                                <MethodAssign id={el.id} index={index} />
-                            </div>
-                        );
-                    })} */}
                 </div>
 
                 {isShowImportModel && (
@@ -139,6 +163,7 @@ export default function SequenceCreation() {
                         }}
                     />
                 )}
+                {showGenerateBlockModel && <ConfirmGenerateBlock setSequenceString={setSequenceString} onClose={() => setShowGenerateBlockModel(false)} />}
             </FormProvider>
         </>
     );

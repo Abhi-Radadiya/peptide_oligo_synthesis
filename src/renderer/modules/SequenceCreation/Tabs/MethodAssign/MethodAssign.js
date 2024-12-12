@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import { useFormContext } from "react-hook-form";
 import Select from "react-select";
 import { useWindowSize } from "@uidotdev/usehooks";
+import { useSelector } from "react-redux";
 
 export default function MethodAssign(props) {
     const { index } = props;
@@ -19,6 +20,7 @@ export default function MethodAssign(props) {
     const blockContainerRef = useRef(null);
 
     const selectedBlocks = watch("selectedBlock");
+
     const setSelectedBlocks = (blocks) => setValue("selectedBlock", blocks);
 
     const handleMethodSelect = (selectedOption) => {
@@ -54,14 +56,7 @@ export default function MethodAssign(props) {
 
     const { height: windowHeight } = useWindowSize();
 
-    const methods = useMemo(
-        () => [
-            { value: "method1", label: "Method 1" },
-            { value: "method2", label: "Method 2" },
-            { value: "method3", label: "Method 3" },
-        ],
-        []
-    );
+    const methods = useSelector((state) => state.methodSetup.method).map((el) => ({ label: el.method_name, value: el.id }));
 
     const colorCode = { A: "#65b330", T: "#cf5140", G: "#cfbe69", C: "#6078d6" };
 
