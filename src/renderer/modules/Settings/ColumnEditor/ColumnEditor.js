@@ -7,7 +7,12 @@ import { deletePositions } from "../../../../redux/reducers/settings/columnEdito
 
 const ColumnEditor = () => {
     const columnEditor = useSelector((state) => state.columnEditor.positions);
+    const zcolumnEditor = useSelector((state) => state.columnEditor);
+    console.log(`zcolumnEditor : `, zcolumnEditor);
+
     const dispatch = useDispatch();
+
+    console.log(`columnEditor : `, columnEditor);
 
     const [showModel, setShowModel] = useState(false);
     const [editingDetails, setEditingDetails] = useState({});

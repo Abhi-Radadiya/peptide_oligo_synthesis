@@ -18,10 +18,10 @@ const columnSlice = createSlice({
             state.positions = [{ id: getUniqueId(), ...action.payload }, ...state.positions];
         },
         updatePosition: (state, action) => {
-            const { id, data } = action.payload;
+            const { id } = action.payload;
             state.positions = state.positions.map((el) => {
                 if (el.id === id) {
-                    return { ...el, ...data };
+                    return { ...el, ...action.payload };
                 }
                 return el;
             });

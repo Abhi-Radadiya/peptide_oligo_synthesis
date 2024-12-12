@@ -31,8 +31,11 @@ export default function ColumnDetailsModel(props) {
 
     const dispatch = useDispatch();
 
+    console.log(`isEditing : `, isEditing);
+
     const handleSave = (data) => {
-        isEditing?        dispatch(updatePosition(data)):       dispatch(addPosition(data));
+        isEditing ? dispatch(updatePosition(data)) : dispatch(addPosition(data));
+        console.log(`isEditing : `, isEditing);
         closeModal();
     };
 
@@ -46,7 +49,7 @@ export default function ColumnDetailsModel(props) {
                         <InputField
                             wrapperClassName="col-span-2"
                             rules={{
-                                validate: { uniqueName: (value) => !columnEditor?.some((item) => item.name === value) || "Name already exists" },
+                                ...(!isEditing ? { validate: { uniqueName: (value) => !columnEditor?.some((item) => item.name === value) || "Name already exists" } } : {}),
                                 required: "Please enter name",
                             }}
                             control={control}
