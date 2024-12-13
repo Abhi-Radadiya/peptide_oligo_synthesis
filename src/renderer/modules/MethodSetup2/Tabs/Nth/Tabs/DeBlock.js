@@ -15,13 +15,13 @@ export default function DeBlock(props) {
 
                     <AmediteSection
                         disabled={disabled}
-                        names={{ solvent: "n_deSolvent", volume: "n_deVolume", xFactor: "n_deXFactor" }}
+                        names={{ solvent: "n_deSolvent", volume: "n_deVolume", xFactor: "n_deXFactor", flowRate: "n_deFlowRate" }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                     />
 
                     <AmediteSection
                         disabled={disabled}
-                        names={{ solvent: "n_deWashSolvent", volume: "n_deWashVolume", xFactor: "n_deWashXFactor" }}
+                        names={{ solvent: "n_deWashSolvent", volume: "n_deWashVolume", xFactor: "n_deWashXFactor", flowRate: "n_deWashFlowRate" }}
                         title="Wash Setting"
                         className="mb-4 pb-4 border-b border-neutral-300"
                     />

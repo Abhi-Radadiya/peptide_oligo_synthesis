@@ -15,19 +15,19 @@ export default function Capping(props) {
 
                     <AmediteSection
                         disabled={disabled}
-                        names={{ solvent: "n_cappingASolvent", volume: "n_cappingAVolume", xFactor: "n_cappingAXFactor" }}
+                        names={{ solvent: "n_cappingASolvent", volume: "n_cappingAVolume", xFactor: "n_cappingAXFactor", flowRate: "n_cappingAFlowRate" }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                         title="Capping A"
                     />
                     <AmediteSection
                         disabled={disabled}
-                        names={{ solvent: "n_cappingBSolvent", volume: "n_cappingBVolume", xFactor: "n_cappingBXFactor" }}
+                        names={{ solvent: "n_cappingBSolvent", volume: "n_cappingBVolume", xFactor: "n_cappingBXFactor", flowRate: "n_cappingBFlowRate" }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                         title="Capping B"
                     />
                     <AmediteSection
                         disabled={disabled}
-                        names={{ solvent: "n_cappingWashSolvent", volume: "n_cappingWashVolume", xFactor: "n_cappingWashXFactor" }}
+                        names={{ solvent: "n_cappingWashSolvent", volume: "n_cappingWashVolume", xFactor: "n_cappingWashXFactor", flowRate: "n_cappingWashFlowRate" }}
                         title="Wash setting"
                     />
                 </div>

@@ -15,12 +15,12 @@ export default function Extra(props) {
 
                     <AmediteSection
                         disabled={disabled}
-                        names={{ solvent: "n_extraSolvent", volume: "n_extraVolume", xFactor: "n_extraXFactor" }}
+                        names={{ solvent: "n_extraSolvent", volume: "n_extraVolume", xFactor: "n_extraXFactor", flowRate: "n_extraFlowRate" }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                     />
                     <AmediteSection
                         disabled={disabled}
-                        names={{ solvent: "n_extraWashSolvent", volume: "n_extraWashVolume", xFactor: "n_extraWashXFactor" }}
+                        names={{ solvent: "n_extraWashSolvent", volume: "n_extraWashVolume", xFactor: "n_extraWashXFactor", flowRate: "n_extraWashFlowRate" }}
                         title="Wash setting"
                     />
                 </div>

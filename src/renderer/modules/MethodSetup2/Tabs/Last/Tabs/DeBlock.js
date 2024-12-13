@@ -11,9 +11,12 @@ export default function DeBlock() {
                 <div className="max-w-[615px] w-full">
                     <h3 className="font-bold text-xl mb-4">De - Block Settings</h3>
 
-                    <AmediteSection names={{ solvent: "last_deSolvent", volume: "last_deVolume", xFactor: "last_deXFactor" }} className="mb-4 pb-4 border-b border-neutral-300" />
                     <AmediteSection
-                        names={{ solvent: "last_deWashSolvent", volume: "last_deWashVolume", xFactor: "last_deWashXFactor" }}
+                        names={{ solvent: "last_deSolvent", volume: "last_deVolume", xFactor: "last_deXFactor", flowRate: "last_deFlowRate" }}
+                        className="mb-4 pb-4 border-b border-neutral-300"
+                    />
+                    <AmediteSection
+                        names={{ solvent: "last_deWashSolvent", volume: "last_deWashVolume", xFactor: "last_deWashXFactor", flowRate: "last_deWashFlowRate" }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                         title="Wash Setting"
                     />

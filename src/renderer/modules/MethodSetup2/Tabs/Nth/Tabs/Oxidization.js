@@ -15,13 +15,18 @@ export default function Oxidization(props) {
 
                     <AmediteSection
                         disabled={disabled}
-                        names={{ solvent: "n_oxidizationSolvent", volume: "n_oxidizationVolume", xFactor: "n_oxidizationXFactor" }}
+                        names={{ solvent: "n_oxidizationSolvent", volume: "n_oxidizationVolume", xFactor: "n_oxidizationXFactor", flowRate: "n_oxidizationFlowRate" }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                     />
 
                     <AmediteSection
                         disabled={disabled}
-                        names={{ solvent: "n_oxidizationWashSolvent", volume: "n_oxidizationWashVolume", xFactor: "n_oxidizationWashXFactor" }}
+                        names={{
+                            solvent: "n_oxidizationWashSolvent",
+                            volume: "n_oxidizationWashVolume",
+                            xFactor: "n_oxidizationWashXFactor",
+                            flowRate: "n_oxidizationWashFlowRate",
+                        }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                     />
 

@@ -9,27 +9,30 @@ import { useSelector } from "react-redux";
 
 export default function AmediteSection(props) {
     const {
-        names: { solvent, volume, xFactor },
+        names: { solvent, volume, xFactor, flowRate },
         title,
         className,
         disabled,
     } = props;
 
-    const { control, watch } = useFormContext();
+    const { control, setValue } = useFormContext();
 
     const flowRates = useSelector((state) => state.flowRate.items);
 
     const chemicals = useSelector((state) => state.amedite.amediteList);
 
     const chemicalFlowRates = chemicals.map((chemical) => {
-        const flowRateEntry = flowRates.find((flow) => flow.chemical === chemical.id);
-
         return {
             label: chemical.full_name,
             value: chemical.id,
-            flowRate: flowRateEntry ? flowRateEntry.flowRate : "0",
         };
     });
+
+    const handleSelectSolvent = (option) => {
+        const flowRateEntry = flowRates.find((flow) => flow.chemical === option.value);
+
+        setValue(flowRate, flowRateEntry.flowRate);
+    };
 
     return (
         <>
@@ -48,15 +51,22 @@ export default function AmediteSection(props) {
                                 control={control}
                                 name={solvent}
                                 placeholder="Select Solvent"
+                                handleChange={handleSelectSolvent}
                             />
                         </div>
 
                         <div className="flex flex-row items-center gap-2">
                             <span className="font-bold text-neutral-600">Flow Rate</span>
-                            <p className={`w-[220px] px-3 py-2 rounded border-gray-300 border flex justify-between`}>
-                                <span className={`${!watch(solvent)?.flowRate && "text-neutral-300"}`}>{watch(solvent)?.flowRate ?? "Flow rate"}</span>
-                                <span className="justify-end flex">ml/min</span>
-                            </p>
+                            <InputField
+                                rightFixItem="ml/min"
+                                name={flowRate}
+                                width="w-[220px]"
+                                wrapperClassName="max-w-[220px]"
+                                control={control}
+                                type="number"
+                                placeholder="Enter flow rate"
+                                disabled={disabled}
+                            />
                         </div>
                     </div>
                 </div>

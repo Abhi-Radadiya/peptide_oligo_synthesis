@@ -11,7 +11,7 @@ export default function FirstMethod() {
                 <div className="max-w-[650px] w-full">
                     <h3 className="font-bold text-xl mb-6">Column Wash Settings</h3>
 
-                    <AmediteSection names={{ solvent: "1_solvent", volume: "1_volume", xFactor: "1_XFactor" }} />
+                    <AmediteSection names={{ solvent: "1_solvent", volume: "1_volume", xFactor: "1_XFactor", flowRate: "1_flowRate" }} />
                 </div>
 
                 <WasteColumnSelection name="1_waste" control={control} />

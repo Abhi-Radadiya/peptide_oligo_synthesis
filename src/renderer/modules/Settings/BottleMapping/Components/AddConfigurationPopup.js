@@ -7,7 +7,7 @@ export default function AddConfigurationPopup(props) {
     const { editingData, onSubmit, togglePopup, data, type = "amedite" } = props;
 
     const getDefaultValue = () => {
-        return !_.isEmpty(editingData) ? editingData : { full_name: "", wm: "", case_no: "", msds: "", concentration: "" };
+        return !_.isEmpty(editingData) ? editingData : { full_name: "", mw: "", case_no: "", msds: "", concentration: "" };
     };
 
     const { control, handleSubmit } = useForm({ defaultValues: getDefaultValue() });
@@ -34,7 +34,7 @@ export default function AddConfigurationPopup(props) {
                         />
 
                         <div className="flex flex-row items-start gap-4 w-full">
-                            <InputField control={control} wrapperClassName="mb-4 w-1/2" name="wm" label="WM" rules={{ required: "Please enter WM" }} placeholder="Enter WM" />
+                            <InputField control={control} wrapperClassName="mb-4 w-1/2" name="mw" label="MW" rules={{ required: "Please enter MW" }} placeholder="Enter MW" />
 
                             <InputField
                                 control={control}

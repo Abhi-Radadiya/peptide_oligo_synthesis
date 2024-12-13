@@ -7,12 +7,8 @@ import { deletePositions } from "../../../../redux/reducers/settings/columnEdito
 
 const ColumnEditor = () => {
     const columnEditor = useSelector((state) => state.columnEditor.positions);
-    const zcolumnEditor = useSelector((state) => state.columnEditor);
-    console.log(`zcolumnEditor : `, zcolumnEditor);
 
     const dispatch = useDispatch();
-
-    console.log(`columnEditor : `, columnEditor);
 
     const [showModel, setShowModel] = useState(false);
     const [editingDetails, setEditingDetails] = useState({});
@@ -52,7 +48,6 @@ const ColumnEditor = () => {
                     <tr>
                         <th className="py-3 px-6 text-left text-gray-600 font-semibold">Index</th>
                         <th className="py-3 px-6 text-left text-gray-600 font-semibold">Name</th>
-                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Unit</th>
                         <th className="py-3 px-6 text-left text-gray-600 font-semibold">Max pressure</th>
                         <th className="py-3 px-6 text-left text-gray-600 font-semibold">Max flow rate</th>
                         <th className="py-3 px-6 text-left text-gray-600 font-semibold">Diameter</th>
@@ -76,8 +71,6 @@ const ColumnEditor = () => {
                                             {el.name}
                                         </div>
                                     </td>
-
-                                    <td className="py-3 px-6">{el.unit}</td>
 
                                     <td className="py-3 px-6">{el.maxPressure}</td>
 

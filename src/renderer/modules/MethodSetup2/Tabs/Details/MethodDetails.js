@@ -1,14 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import InputField from "../../../../Components/Input/Input";
 import { useFormContext } from "react-hook-form";
 import { SelectionController } from "../../../../Components/Dropdown/Dropdown";
 import { useSelector } from "react-redux";
-import Footer from "../../Components/Footer";
+import PickColor from "./Component/ColorPickerModel";
+import { Button } from "../../../../Components/Buttons/Buttons";
 
 const MethodDetails = (props) => {
-    const { disabled, setActiveStep } = props;
+    const { disabled } = props;
 
-    const { handleSubmit, control, watch, setValue } = useFormContext();
+    const { control, watch, setValue } = useFormContext();
 
     const synthesisScale = watch("synthesisScale");
     const loadingTime = watch("loadingTime");
@@ -21,44 +22,9 @@ const MethodDetails = (props) => {
         value: { id: el.id, volume: el.liquidVolume, flowRate: el.maxFlowRate },
     }));
 
-    const columnsMenuItem = [
-        { label: "10", value: { volume: 10 } },
-        { label: "20", value: { volume: 20 } },
-        { label: "30", value: { volume: 30 } },
-        { label: "40", value: { volume: 40 } },
-    ];
-
-    const setFieldValues = (amediteVolume, washVolume) => {
-        const amediteFields = [
-            "1_volume",
-            "n_deVolume",
-            "n_couplingVolume",
-            "n_couplingAmediteVolume",
-            "n_oxidizationVolume",
-            "n_sulfurizationVolume",
-            "n_extraVolume",
-            "last_deVolume",
-            "last_deaVolume",
-        ];
-
+    const setFieldValues = (amediteVolume) => {
         setValue("n_cappingAVolume", amediteVolume / 2);
         setValue("n_cappingBVolume", amediteVolume / 2);
-
-        amediteFields.forEach((field) => setValue(field, amediteVolume));
-
-        const washField = [
-            "n_deWashVolume",
-            "n_couplingWashVolume",
-            "n_couplingActVolume",
-            "n_oxidizationWashVolume",
-            "n_sulfurizationWashVolume",
-            "n_extraWashVolume",
-            "n_cappingWashVolume",
-            "last_deWashVolume",
-            "last_deaWashVolume",
-        ];
-
-        washField.forEach((field) => setValue(field, washVolume));
     };
 
     useEffect(() => {
@@ -83,15 +49,45 @@ const MethodDetails = (props) => {
 
         return () => {
             if (numberAmediteVolume && numberActVolume) {
-                console.log(`numberAmediteVolume && numberActVolume : `, numberAmediteVolume && numberActVolume);
-                setFieldValues(numberAmediteVolume, numberActVolume);
+                setFieldValues(numberAmediteVolume);
             }
         };
     }, [synthesisScale, loadingTime, amediteExcessFactor, amediteConcentration, actExcessFactor]);
 
+    const volumeNames = [
+        "1_volume",
+        "n_deVolume",
+        "n_deWashVolume",
+        "n_couplingVolume",
+        "n_couplingAmediteVolume",
+        "n_couplingActVolume",
+        "n_couplingWashVolume",
+        "n_oxidizationVolume",
+        "n_oxidizationWashVolume",
+        "n_sulfurizationVolume",
+        "n_sulfurizationWashVolume",
+        "n_extraVolume",
+        "n_extraWashVolume",
+        "n_cappingAVolume",
+        "n_cappingBVolume",
+        "n_cappingWashVolume",
+        "last_deVolume",
+        "last_deWashVolume",
+        "last_deaVolume",
+        "last_deaWashVolume",
+    ];
+
+    const handleColumnSizeSelection = (option) => {
+        volumeNames.forEach((el) => setValue(el, option.value.volume));
+    };
+
+    const [showColorPicker, setShowColorPicker] = useState(false);
+
+    console.log(`watch("color") : `, watch("color"));
+
     return (
         <>
-            <div className="border-b border-neutral-300 pb-6 mb-6">
+            <div className="border-b border-neutral-300 pb-6 mb-6 flex flex-row justify-between items-end max-w-2xl">
                 <InputField
                     disabled={disabled}
                     control={control}
@@ -102,6 +98,18 @@ const MethodDetails = (props) => {
                     labelClassName="text-lg text-neutral-500 font-bold"
                     placeholder="Enter Method Name"
                 />
+                {watch("color") ? (
+                    <div className="flex flex-row items-center gap-6">
+                        <span>Assigned color</span>
+                        <div
+                            className={`w-28 h-12 rounded-lg border border-neutral-300 cursor-pointer bg-[${watch("color")}]`}
+                            style={{ background: watch("color") }}
+                            onClick={() => setShowColorPicker(true)}
+                        />
+                    </div>
+                ) : (
+                    <Button label="Assign color" onClick={() => setShowColorPicker(true)} />
+                )}
             </div>
 
             <div className="w-full max-w-2xl mt-4">
@@ -119,6 +127,7 @@ const MethodDetails = (props) => {
                                     name="columnSize"
                                     menuItem={columnEditor}
                                     rules={{ required: "Please select column size" }}
+                                    handleChange={handleColumnSizeSelection}
                                 />
                             </div>
 
@@ -220,6 +229,8 @@ const MethodDetails = (props) => {
                     </div>
                 </div>
             </div>
+
+            {showColorPicker && <PickColor selectedColor={watch("color")} setSelectedColor={(color) => setValue("color", color)} onClose={() => setShowColorPicker(false)} />}
         </>
     );
 };

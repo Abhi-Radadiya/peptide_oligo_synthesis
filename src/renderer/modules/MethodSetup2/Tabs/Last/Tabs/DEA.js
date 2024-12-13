@@ -12,10 +12,13 @@ export default function DEA() {
                     <h3 className="font-bold text-xl mb-4">DEA Settings</h3>
 
                     <AmediteSection
-                        names={{ solvent: "last_deaSolvent", volume: "last_deaVolume", xFactor: "last_deaXFactor" }}
+                        names={{ solvent: "last_deaSolvent", volume: "last_deaVolume", xFactor: "last_deaXFactor", flowRate: "last_deaFlowRate" }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                     />
-                    <AmediteSection names={{ solvent: "last_deaWashSolvent", volume: "last_deaWashVolume", xFactor: "last_deaWashXFactor" }} title="Wash Setting" />
+                    <AmediteSection
+                        names={{ solvent: "last_deaWashSolvent", volume: "last_deaWashVolume", xFactor: "last_deaWashXFactor", flowRate: "last_deaWashFlowRate" }}
+                        title="Wash Setting"
+                    />
                 </div>
 
                 <WasteColumnSelection name="last_deaWaste" control={control} />

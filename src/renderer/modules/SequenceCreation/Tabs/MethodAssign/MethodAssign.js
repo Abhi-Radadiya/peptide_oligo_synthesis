@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useFormContext } from "react-hook-form";
 import Select from "react-select";
 import { useWindowSize } from "@uidotdev/usehooks";
@@ -56,13 +56,15 @@ export default function MethodAssign(props) {
 
     const { height: windowHeight } = useWindowSize();
 
-    const methods = useSelector((state) => state.methodSetup.method).map((el) => ({ label: el.method_name, value: el.id }));
+    const methods = useSelector((state) => state.methodSetup.method);
 
-    const colorCode = { A: "#65b330", T: "#cf5140", G: "#cfbe69", C: "#6078d6" };
+    const methodMenuItem = methods.map((el) => ({ label: el.method_name, value: el.id }));
 
     const [hoveredBlock, setHoveredBlock] = useState(null);
 
     const isSelectDisabled = !blocks?.length || selectedBlocks?.length === 0 || selectedBlocks === undefined;
+
+    console.log(`blocks : `, blocks);
 
     return (
         <>
@@ -71,13 +73,31 @@ export default function MethodAssign(props) {
                 className="relative w-1/2 overflow-y-auto ml-4 scrollbar-style overflow-x-hidden -mr-2 pr-2"
                 style={{ height: windowHeight - (index !== undefined ? 172 : 100) }}
             >
-                <div className="flex flex-row justify-between sticky top-0 bg-white z-10 border-b border-neutral-300 pr-2">
-                    <div className="">
-                        <label className="block text-gray-700 text-sm font-bold">Method Selection</label>
-                        <p className="italic text-neutral-500 text-sm mb-2">(Apply method to selected blocks)</p>
-                    </div>
-                    <div className="pt-1">
-                        <Select isDisabled={isSelectDisabled} options={methods} placeholder="Select method" value={selectedMethod} onChange={handleMethodSelect} />
+                <div className="sticky top-0 z-10 border-b border-neutral-300 pr-2 py-2 bg-[#fbfaf4]">
+                    <div className="max-w-7xl mx-auto px-4 flex flex-row justify-between items-center">
+                        <div className="">
+                            <label className="block text-gray-700 text-sm font-bold">Method Selection</label>
+                            <p className="italic text-neutral-500 text-sm mb-2">(Apply method to selected blocks)</p>
+                        </div>
+                        <div className="pt-1 w-1/3">
+                            <Select
+                                isDisabled={isSelectDisabled}
+                                options={methodMenuItem}
+                                placeholder="Select method"
+                                value={selectedMethod}
+                                onChange={handleMethodSelect}
+                                // Additional styling to match your design
+                                styles={{
+                                    control: (base) => ({
+                                        ...base,
+                                        borderColor: "#d1d5db", // Tailwind gray-300
+                                        "&:hover": {
+                                            borderColor: "#6b7280", // Tailwind gray-500
+                                        },
+                                    }),
+                                }}
+                            />
+                        </div>
                     </div>
                 </div>
 
@@ -86,7 +106,7 @@ export default function MethodAssign(props) {
                         const isHovered = index === hoveredBlock;
 
                         const tooltipClasses = [
-                            "absolute z-10 flex flex-row items-center justify-center gap-4 transition-all",
+                            "absolute z-10 flex flex-row items-center justify-center gap-4",
                             isHovered ? "-top-10 opacity-100 group-hover:opacity-100" : "top-0 opacity-0",
                             "bg-neutral-200 border rounded-xl p-2 border-neutral-300",
                         ]
@@ -94,6 +114,8 @@ export default function MethodAssign(props) {
                             .join(" ");
 
                         const hasMethod = Boolean(block.method);
+
+                        const selectedColor = methods.find((el) => el.id === block?.method?.value)?.color;
 
                         return (
                             <div
@@ -104,19 +126,16 @@ export default function MethodAssign(props) {
                                 className={`inline-block px-2 py-1 m-1 border relative group rounded ${
                                     selectedBlocks?.includes(index)
                                         ? "bg-yellow-200 border-yellow-500"
-                                        : !!block?.method
-                                        ? "bg-green-300 border-green-400"
-                                        : "bg-gray-100 border-gray-300"
+                                        : // : !!block?.method
+                                          // ? "bg-green-300 border-green-400"
+                                          "bg-gray-100 border-gray-300"
                                 }`}
+                                style={{ ...(!!selectedColor && !selectedBlocks?.includes(index) ? { background: selectedColor } : {}) }}
                             >
-                                {block.block.split("").map((char, charIndex) => (
-                                    <span key={charIndex} style={{ color: colorCode[char] }}>
-                                        {char}
-                                    </span>
-                                ))}
+                                {block.block}
 
                                 {hasMethod && (
-                                    <div className={`${tooltipClasses} left-1/2 transform -translate-x-1/2`}>
+                                    <div className={`${tooltipClasses} left-1/2`}>
                                         {hasMethod && <div className="text-sm text-neutral-700 whitespace-nowrap">{block.method.label}</div>}
                                     </div>
                                 )}

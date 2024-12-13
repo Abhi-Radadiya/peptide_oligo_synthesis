@@ -83,25 +83,25 @@ export function ControllerDropdown(props) {
 }
 
 export function SelectionController(props) {
-    const { control, name, menuItem, rules, isDisabled, className, placeholder, width, isClearable = true, height } = props;
+    const { control, name, menuItem, rules, isDisabled, className, placeholder, width, isClearable = true, height, handleChange } = props;
 
     const customStyles = {
         control: (provided, state) => ({
             ...provided,
-            background: "#f4f4f4",
-            color: "#333",
+            background: "#fff",
+            color: "#fff",
             width,
-            borderColor: state.isFocused ? "#dedcdc" : "#f4f4f4",
+            borderColor: state.isFocused ? "#d4d4d4" : "#d4d4d4",
             boxShadow: state.isFocused ? "0 0 0 1px #333" : "none",
             "&:hover": {
-                borderColor: "#f5f5f5",
+                borderColor: "#d4d4d4",
             },
             height: height,
         }),
         option: (provided, state) => ({
             ...provided,
             backgroundColor: state.isSelected ? "#dedcdc" : "white",
-            color: "#333",
+            color: "#000",
             "&:hover": {
                 backgroundColor: "#f5f5f5",
             },
@@ -131,7 +131,10 @@ export function SelectionController(props) {
                         options={menuItem}
                         placeholder={placeholder}
                         styles={customStyles}
-                        onChange={onChange}
+                        onChange={(option) => {
+                            onChange(option);
+                            handleChange?.(option);
+                        }}
                     />
                     {error && <p className="text-red-500 text-xs">*{error.message}</p>}
                 </div>

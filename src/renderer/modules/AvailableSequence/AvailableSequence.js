@@ -3,8 +3,10 @@ import { Button } from "../../Components/Buttons/Buttons";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ReactComponent as EditIcon } from "../../Assets/edit.svg";
+import { ReactComponent as ViewIcon } from "../../Assets/pos.svg";
 import ConfirmationPopup from "../../Components/Popup/ConfirmationPopup";
 import { deleteSequence } from "../../../redux/reducers/sequenceReducer";
+import SequenceStringPopup from "./Model/SequenceStringPopup";
 
 export default function AvailableSequence() {
     const navigate = useNavigate();
@@ -26,6 +28,8 @@ export default function AvailableSequence() {
     };
 
     const sequence = useSelector((state) => state.sequence.sequence);
+
+    const [selectedSequence, setSelectedSequence] = useState(null);
 
     return (
         <>
@@ -69,8 +73,13 @@ export default function AvailableSequence() {
                                 </td>
                                 <td className="border p-2 text-left">{el.name}</td>
                                 <td className="border p-2 text-left">
-                                    <div className="w-fit cursor-pointer hover:border-b hover:-mb-1 border-[#433db8]" onClick={() => navigate(`/sequence-editor/${el.id}`)}>
-                                        <EditIcon stroke="#433db8" />
+                                    <div className="flex flex-row gap-4">
+                                        <div className="w-fit cursor-pointer hover:border-b hover:-mb-1 border-[#433db8]" onClick={() => navigate(`/sequence-editor/${el.id}`)}>
+                                            <EditIcon stroke="#433db8" />
+                                        </div>
+                                        <div className="w-fit cursor-pointer hover:border-b hover:-mb-1 border-[#433db8]" onClick={() => setSelectedSequence(el.sequenceString)}>
+                                            <ViewIcon stroke="#433db8" />
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -86,6 +95,8 @@ export default function AvailableSequence() {
                 desc="Are you sure want to delete selected sequence?"
                 header="Delete sequence !"
             />
+
+            {!!selectedSequence && <SequenceStringPopup selectedSequence={selectedSequence} onClose={() => setSelectedSequence(null)} />}
         </>
     );
 }

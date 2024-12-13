@@ -20,8 +20,8 @@ export default function Footer(props) {
 
     return (
         <>
-            <div className="absolute bottom-0 right-0 border-t pt-4 border-neutral-700 bg-white" style={{ width: width }}>
-                <div className="w-full flex justify-between flex-row px-4 ml-4">
+            <div className="absolute -bottom-4 right-0 border-t py-4 px-4 -mr-4 border-neutral-700 bg-white" style={{ width: width }}>
+                <div className="w-full flex justify-between flex-row ml-4 pr-4">
                     <Button
                         leftIcon={<BackIcon className="rotate-90" />}
                         label="Back to method"

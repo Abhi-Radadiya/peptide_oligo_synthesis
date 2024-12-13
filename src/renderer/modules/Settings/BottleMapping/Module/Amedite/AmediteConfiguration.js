@@ -67,7 +67,7 @@ const AmediteConfiguration = () => {
                     <tr>
                         <th className="py-3 px-6 text-left text-gray-600 font-semibold">Index</th>
                         <th className="py-3 px-6 text-left text-gray-600 font-semibold">Full Name</th>
-                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">WM</th>
+                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">MW</th>
                         <th className="py-3 px-6 text-left text-gray-600 font-semibold">Case No.</th>
                         <th className="py-3 px-6 text-left text-gray-600 font-semibold">MSDS</th>
                         <th className="py-3 px-6 text-left text-gray-600 font-semibold">Concentration</th>
@@ -88,7 +88,7 @@ const AmediteConfiguration = () => {
                                     </div>
                                 </td>
 
-                                <td className="py-3 px-6">{item.wm}</td>
+                                <td className="py-3 px-6">{item.mw}</td>
                                 <td className="py-3 px-6">{item.case_no}</td>
                                 <td className="py-3 px-6">{item.msds}</td>
                                 <td className="py-3 px-6">{item.concentration}</td>

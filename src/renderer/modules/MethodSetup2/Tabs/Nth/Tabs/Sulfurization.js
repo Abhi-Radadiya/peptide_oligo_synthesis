@@ -15,13 +15,18 @@ export default function Sulfurization(props) {
 
                     <AmediteSection
                         disabled={disabled}
-                        names={{ solvent: "n_sulfurizationSolvent", volume: "n_sulfurizationVolume", xFactor: "n_sulfurizationXFactor" }}
+                        names={{ solvent: "n_sulfurizationSolvent", volume: "n_sulfurizationVolume", xFactor: "n_sulfurizationXFactor", flowRate: "n_sulfurizationFlowRate" }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                     />
 
                     <AmediteSection
                         disabled={disabled}
-                        names={{ solvent: "n_sulfurizationWashSolvent", volume: "n_sulfurizationWashVolume", xFactor: "n_sulfurizationWashXFactor" }}
+                        names={{
+                            solvent: "n_sulfurizationWashSolvent",
+                            volume: "n_sulfurizationWashVolume",
+                            xFactor: "n_sulfurizationWashXFactor",
+                            flowRate: "n_sulfurizationWashFlowRate",
+                        }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                         title="Wash Setting"
                     />
