@@ -64,8 +64,6 @@ export default function MethodAssign(props) {
 
     const isSelectDisabled = !blocks?.length || selectedBlocks?.length === 0 || selectedBlocks === undefined;
 
-    console.log(`blocks : `, blocks);
-
     return (
         <>
             <div

@@ -5,7 +5,7 @@ import { FormProvider, useForm } from "react-hook-form";
 // remove SynthesisDetailsSub while not needed
 
 export default function Settings() {
-    const method = useForm({ defaultValues: { option: "3", resinOption: "standard" } });
+    const method = useForm({ defaultValues: { option: "3", resinOption: "standard", mode: "auto" } });
 
     return (
         <>

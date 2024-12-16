@@ -126,8 +126,8 @@ export const RadioSection = (props) => {
     return (
         <div className="flex flex-row justify-between items-center w-full">
             <div className="flex flex-row items-center gap-6 justify-between">
-                <span className="font-bold text-neutral-600">{title}</span>
-                <RadioButton className="max-w-[250px]" disabled={true} buttons={buttons} control={control} name={radioName} />
+                {/* <span className="font-bold text-neutral-600">{title}</span>
+                <RadioButton className="max-w-[250px]" disabled={true} buttons={buttons} control={control} name={radioName} /> */}
             </div>
 
             <Checkbox labelClassName="font-bold text-neutral-600" className="flex-row-reverse gap-4" label="Enabled" disabled={disabled} name={checkName} control={control} />

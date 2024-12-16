@@ -14,7 +14,7 @@ export default function Prime() {
     return (
         <>
             <Tabs setActiveTab={setActiveTab} activeTab={activeTab} tabs={tabs} className="mb-4" />
-            {activeTab == tabs[0].value ? <Amedites /> : <Solvents />}
+            {activeTab === tabs[0].value ? <Amedites /> : <Solvents />}
         </>
     );
 }

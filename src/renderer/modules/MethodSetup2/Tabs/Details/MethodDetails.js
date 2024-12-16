@@ -83,8 +83,6 @@ const MethodDetails = (props) => {
 
     const [showColorPicker, setShowColorPicker] = useState(false);
 
-    console.log(`watch("color") : `, watch("color"));
-
     return (
         <>
             <div className="border-b border-neutral-300 pb-6 mb-6 flex flex-row justify-between items-end max-w-2xl">
@@ -236,3 +234,9 @@ const MethodDetails = (props) => {
 };
 
 export default MethodDetails;
+
+// import React from "react";
+
+// export default function MethodDetails() {
+//     return <div></div>;
+// }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FirstMethod from "./Tabs/First/FirstMethod";
 import NthMethod from "./Tabs/Nth/NthMethod";
 import LastMethod from "./Tabs/Last/LastMethod";
@@ -10,6 +10,7 @@ import MethodDetails from "./Tabs/Details/MethodDetails";
 import Footer from "./Components/Footer";
 import { useDispatch, useSelector } from "react-redux";
 import { addMethodSetup, updateMethodSetup } from "../../../redux/reducers/methodSetup/methodSetup";
+import { updateFormState } from "../../../redux/reducers/formState/formState";
 
 // kindly please check if module :==> modules\MethodSetup\MethodSetup.js is important or not
 
@@ -49,6 +50,23 @@ export default function MethodSetting() {
         n_cappingBXFactor: 1,
         n_cappingWashXFactor: 1,
         hasOxidization: true,
+        method_name: "",
+        columnSize: "",
+        synthesisScale: "",
+        loadingTime: "",
+        amediteExcessFactor: "",
+        actExcessFactor: "",
+        amediteConcentration: "",
+        last_deVolume: "",
+        last_deWashVolume: "",
+        last_deaVolume: "",
+        last_deaWashVolume: "",
+        last_deaFlowRate: "",
+        last_deaWashFlowRate: "",
+        last_deFlowRate: "",
+        last_deWashFlowRate: "",
+        last_deUVEnable: "",
+        last_deCheck: false,
     };
 
     const getDefaultValue = () => {
@@ -59,7 +77,7 @@ export default function MethodSetting() {
     };
 
     const method = useForm({
-        defaultValues: getDefaultValue(),
+        defaultValues: { ...getDefaultValue(), method_name: "" },
     });
 
     const steps = [
@@ -83,7 +101,14 @@ export default function MethodSetting() {
 
     const { height: windowHeight } = useWindowSize();
 
-    const { handleSubmit } = method;
+    const {
+        handleSubmit,
+        formState: { isDirty, isSubmitSuccessful },
+    } = method;
+
+    useEffect(() => {
+        dispatch(updateFormState(isDirty));
+    }, [isDirty, isSubmitSuccessful]);
 
     const dispatch = useDispatch();
 

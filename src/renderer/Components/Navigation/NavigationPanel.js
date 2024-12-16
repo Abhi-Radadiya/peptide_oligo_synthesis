@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ReactComponent as DownIcon } from "../../Assets/chevron-down.svg";
+import { useDispatch, useSelector } from "react-redux";
+import ConfirmationPopup from "../Popup/ConfirmationPopup";
+import { updateFormState } from "../../../redux/reducers/formState/formState";
 
 export default function NavigationPanel(props) {
     const { isNavOpen, setIsNavOpen } = props;
-
     const location = useLocation();
+    const navigate = useNavigate();
+    const isFormDirty = useSelector((state) => state.formState.formState)?.isDirty;
 
     const links = [
         { label: "Method Setup", to: "method-setup", isShowSubLink: true, subLink: [{ label: "Method Editor", to: "method-setting" }] },
@@ -16,15 +20,50 @@ export default function NavigationPanel(props) {
 
     const [activeTab, setActiveTab] = useState(() => {
         const currentPath = location.pathname.split("/").pop();
-        return links.find((link) => link.to === currentPath)?.to || links[0].to;
+        const foundLink = links.find((link) => link.to === currentPath);
+        if (foundLink) return foundLink.to;
+
+        for (const link of links) {
+            if (link.isShowSubLink) {
+                const foundSubLink = link.subLink.find((subLink) => subLink.to === currentPath);
+                if (foundSubLink) return link.to;
+            }
+        }
+
+        return links[0].to;
     });
 
     useEffect(() => {
         const currentPath = location.pathname.split("/").pop();
-        if (links.some((link) => link.to === currentPath)) {
+        const foundLink = links.find((link) => link.to === currentPath);
+        if (foundLink) {
             setActiveTab(currentPath);
+            return;
+        }
+
+        for (const link of links) {
+            if (link.isShowSubLink) {
+                const foundSubLink = link.subLink.find((subLink) => subLink.to === currentPath);
+                if (foundSubLink) {
+                    setActiveTab(link.to);
+                    return;
+                }
+            }
         }
     }, [location.pathname]);
+
+    const [showConfirmationPopup, setShowConfirmationPopup] = useState(null);
+
+    const handleNavigation = (to) => {
+        if (isFormDirty) {
+            setShowConfirmationPopup(to);
+        } else {
+            navigate(to);
+            setActiveTab(to);
+        }
+    };
+
+    const dispatch = useDispatch();
 
     return (
         <>
@@ -44,7 +83,10 @@ export default function NavigationPanel(props) {
                                             activeTab === el.to && !el?.subLink?.length && "border-b-2 tracking-wider border-neutral-500"
                                         }`}
                                         to={el.to}
-                                        onClick={() => setActiveTab(el.to)}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            handleNavigation(el.to);
+                                        }}
                                     >
                                         {el.label}
                                     </Link>
@@ -59,7 +101,10 @@ export default function NavigationPanel(props) {
                                                     location.pathname.includes(subLinkEl.to) && "border-b-2 tracking-wider border-neutral-500"
                                                 }`}
                                                 to={subLinkEl.to}
-                                                onClick={() => setActiveTab(el.to)}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    handleNavigation(subLinkEl.to);
+                                                }}
                                             >
                                                 {subLinkEl.label}
                                             </Link>
@@ -78,6 +123,19 @@ export default function NavigationPanel(props) {
                     className={`${isNavOpen ? "rotate-90" : "-rotate-90"} rounded-full border-2 cursor-pointer bg-neutral-200 transition-all duration-300 border-neutral-500`}
                 />
             </div>
+
+            <ConfirmationPopup
+                isOpen={!!showConfirmationPopup}
+                closePopup={() => setShowConfirmationPopup(null)}
+                handleConfirm={() => {
+                    navigate(showConfirmationPopup);
+                    setActiveTab(showConfirmationPopup);
+                    setShowConfirmationPopup(null);
+                    dispatch(updateFormState(false));
+                }}
+                desc="Are you sure to change module? you will lose unsaved work!"
+                header="Change module!"
+            />
         </>
     );
 }

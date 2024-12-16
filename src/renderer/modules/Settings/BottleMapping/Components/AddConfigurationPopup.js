@@ -26,9 +26,13 @@ export default function AddConfigurationPopup(props) {
                             label="Full name"
                             rules={{
                                 required: "Please enter full name",
-                                validate: {
-                                    uniqueName: (value) => !data.some((item) => item.full_name === value) || "Name already exists",
-                                },
+                                ...(_.isEmpty(editingData)
+                                    ? {
+                                          validate: {
+                                              uniqueName: (value) => !data.some((item) => item.full_name === value) || "Name already exists",
+                                          },
+                                      }
+                                    : {}),
                             }}
                             placeholder="Enter full name"
                         />

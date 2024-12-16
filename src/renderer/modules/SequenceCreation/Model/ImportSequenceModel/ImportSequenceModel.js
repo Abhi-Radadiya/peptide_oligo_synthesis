@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import FileUploader from "./Tabs/FileUploader";
 import SequenceImporter from "./Tabs/SequenceImporter";
 import { Tabs } from "../../../../Components/Tabs/Tab";

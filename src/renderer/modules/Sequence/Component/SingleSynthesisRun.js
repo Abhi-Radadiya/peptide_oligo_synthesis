@@ -3,11 +3,12 @@ import { SelectionController } from "../../../Components/Dropdown/Dropdown";
 import { useFormContext } from "react-hook-form";
 import { wasteMenuItems } from "../../MethodSetup2/Constant";
 import RadioButton from "../../../Components/FormController/RadioButton";
-import { Button } from "../../../Components/Buttons/Buttons";
 import { useSelector } from "react-redux";
+import { useWindowSize } from "@uidotdev/usehooks";
+import SelectedSequence from "./SelectedSequence";
 
 export default function SingleSynthesisRun() {
-    const { control } = useFormContext();
+    const { control, watch } = useFormContext();
 
     const radio3 = [
         { label: "3'", value: "3" },
@@ -19,6 +20,11 @@ export default function SingleSynthesisRun() {
         { label: "Universal", value: "universal" },
     ];
 
+    const modeRadioButton = [
+        { label: "Auto", value: "auto" },
+        { label: "Manual", value: "manual" },
+    ];
+
     const columnEditor = useSelector((state) => state.columnEditor.positions);
 
     const containerMenuItem = columnEditor.map((el) => ({ value: el.id, label: el.name }));
@@ -27,15 +33,24 @@ export default function SingleSynthesisRun() {
 
     const sequenceMenuItem = sequence.map((el) => ({ value: el.id, label: el.name }));
 
+    const { height: windowHeight } = useWindowSize();
+
+    const selectedSequence = sequence.find((el) => el.id === watch("sequence")?.value);
+
+    console.log(`selectedSequence : `, selectedSequence);
+
     return (
-        <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md space-y-6">
-            <h2 className="text-xl font-bold text-gray-800 border-b pb-4">Synthesis Run</h2>
+        <div className="space-y-6 pr-4 mr-4 border-r border-neutral-500 w-full max-w-[40vw]" style={{ height: windowHeight - 36 }}>
+            <div className="flex flex-row justify-between border-b pb-4 items-center">
+                <h2 className="text-xl font-bold text-gray-800">Synthesis Run</h2>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label htmlFor="columnNo" className="block text-sm font-semibold text-gray-700 mb-2">
                         Column Position
                     </label>
+
                     <SelectionController
                         control={control}
                         height={44}
@@ -66,23 +81,25 @@ export default function SingleSynthesisRun() {
                     <label htmlFor="sequence" className="block text-sm font-semibold text-gray-700 mb-2">
                         Sequence
                     </label>
-                    <SelectionController control={control} menuItem={sequenceMenuItem} height={44} name="sequence" placeholder="Select sequence" />
+                    <SelectionController
+                        control={control}
+                        menuItem={sequenceMenuItem}
+                        height={44}
+                        name="sequence"
+                        placeholder="Select sequence"
+                        rules={{ required: "Please select sequence" }}
+                    />
                 </div>
+
+                <RadioButton buttons={radio3} control={control} name="option" header="Option" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <RadioButton buttons={radio3} control={control} name="option" header="Option" />
-                </div>
-
-                <div>
-                    <RadioButton header="Resin" buttons={resinOption} control={control} name="resinOption" />
-                </div>
+                <RadioButton header="Resin" buttons={resinOption} control={control} name="resinOption" />
+                <RadioButton buttons={modeRadioButton} control={control} name="mode" header="Mode" />
             </div>
 
-            <div className="text-center flex justify-end">
-                <Button label="Run Synthesis" bgClassName="bg-green-500 hover:bg-green-600 text-white py-2 px-6 rounded-lg mt-4" />
-            </div>
+            {/* {selectedSequence && <SelectedSequence selectedSequence={selectedSequence} />} */}
         </div>
     );
 }

@@ -68,7 +68,9 @@ export default function SequenceTab() {
                 sequence.filter((_, index) => index !== activeTabIndex)
             );
 
-            setActiveTab({ label: newSequence[0].name, value: 0 });
+            const activeTab = sequence.length === 0 ? { label: sequence[0].name, value: 0 } : { label: newSequence[0].name, value: 0 };
+
+            setActiveTab(activeTab);
         } catch (error) {
             console.log(`error : `, error);
 

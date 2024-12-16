@@ -10,7 +10,7 @@ import SequenceCreation from "./renderer/modules/SequenceCreation/SequenceCreati
 import MethodSetting from "./renderer/modules/MethodSetup2/MethodSetting";
 
 export default function App() {
-    const [isNavOpen, setIsNavOpen] = useState(false);
+    const [isNavOpen, setIsNavOpen] = useState(true);
 
     return (
         <Router>

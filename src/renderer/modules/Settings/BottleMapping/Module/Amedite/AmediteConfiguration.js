@@ -116,6 +116,7 @@ const AmediteConfiguration = () => {
                     data={data}
                     togglePopup={() => {
                         setIsModalOpen(false);
+                        setEditAmediteDetails({});
                     }}
                 />
             )}

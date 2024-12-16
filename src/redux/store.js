@@ -14,6 +14,7 @@ import columnEditorReduce from "./reducers/settings/columnEditor";
 import reagentReducer from "./reducers/settings/reagent";
 import flowRateReducer from "./reducers/settings/flowRate";
 import methodSetupReducer from "./reducers/methodSetup/methodSetup";
+import formStateReducer from "./reducers/formState/formState.js";
 
 const rootReducer = combineReducers({
     // setting
@@ -31,6 +32,8 @@ const rootReducer = combineReducers({
     methodSetup: methodSetupReducer,
     // sequence
     sequence: sequenceReducer,
+    // is form dirty
+    formState: formStateReducer,
 });
 
 const persistConfig = {

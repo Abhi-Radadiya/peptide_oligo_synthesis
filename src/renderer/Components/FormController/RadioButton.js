@@ -16,6 +16,7 @@ export default function RadioButton(props) {
                         control={control}
                         rules={rules}
                         disabled={disabled}
+                        defaultValue=""
                         render={({ field }) =>
                             buttons.map((el, index) => (
                                 <li className={`border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600 ${optionWidth}`} key={index}>

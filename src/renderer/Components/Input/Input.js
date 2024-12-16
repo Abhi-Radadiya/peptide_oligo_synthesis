@@ -44,6 +44,7 @@ const InputField = (props) => {
                 control={control}
                 name={name}
                 rules={rules}
+                defaultValue=""
                 render={({ field, fieldState: { error } }) => (
                     <div className="relative">
                         <input

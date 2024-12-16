@@ -11,13 +11,29 @@ import SequenceTab from "./SequenceTab/SequenceTab";
 import { addSequence, editSequence } from "../../../redux/reducers/sequenceReducer";
 import ConfirmGenerateBlock from "./Model/ConfirmGenerateBlock/ConfirmGenerateBlock";
 import { getUniqueId } from "../MethodSetup2/Constant";
+import { updateFormState } from "../../../redux/reducers/formState/formState";
 
 export default function SequenceCreation() {
     const { id } = useParams();
 
-    const method = useForm({ defaultValues: { blockOption: "1" } });
+    const method = useForm({ defaultValues: { blockOption: "1", sequenceString: "", name: "" } });
 
-    const { watch, setValue, clearErrors, handleSubmit, setError } = method;
+    const {
+        watch,
+        setValue,
+        clearErrors,
+        handleSubmit,
+        setError,
+        formState: { isDirty, isSubmitSuccessful },
+    } = method;
+
+    useEffect(() => {
+        dispatch(updateFormState(isDirty));
+
+        if (watch("sequence")?.length === 0 && watch("sequenceString")?.length === 0) {
+            dispatch(updateFormState(false));
+        }
+    }, [isDirty, isSubmitSuccessful]);
 
     const [showGenerateBlockModel, setShowGenerateBlockModel] = useState(false);
 
@@ -37,15 +53,15 @@ export default function SequenceCreation() {
         }
     };
 
-    const saveTextFile = () => {
-        const blob = new Blob([watch("sequence")], { type: "text/plain" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `logFile.txt`;
-        a.click();
-        URL.revokeObjectURL(url);
-    };
+    // const saveTextFile = () => {
+    //     const blob = new Blob([watch("sequence")], { type: "text/plain" });
+    //     const url = URL.createObjectURL(blob);
+    //     const a = document.createElement("a");
+    //     a.href = url;
+    //     a.download = `logFile.txt`;
+    //     a.click();
+    //     URL.revokeObjectURL(url);
+    // };
 
     const dispatch = useDispatch();
 

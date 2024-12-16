@@ -6,14 +6,14 @@ import { getUniqueId } from "../../../../MethodSetup2/Constant";
 import { useFormContext } from "react-hook-form";
 
 export default function SequenceImporter() {
-    const sequence = useSelector((state) => state.sequence);
+    const sequence = useSelector((state) => state.sequence.sequence);
 
     const { setValue } = useFormContext();
 
     const [sequenceMenuItem, setSequenceMenuItem] = useState();
 
     useEffect(() => {
-        setSequenceMenuItem(sequence?.sort((a, b) => b.id - a.id)?.map((el) => ({ label: el.name, value: el })));
+        setSequenceMenuItem(sequence?.map((el) => ({ label: el.name, value: el })));
     }, [sequence]);
 
     const [selectedSequence, setSelectedSequence] = useState([]);
@@ -26,7 +26,7 @@ export default function SequenceImporter() {
         setValue(
             "sequenceTemp",
             sequence.map((el) => {
-                return { id: getUniqueId(), name: el.value.name, block: el.value.block, sequenceString: el.sequence?.map((el) => el.block)?.join(" ") };
+                return { id: getUniqueId(), name: el.value.name, block: el.value.block, sequenceString: el.value.sequenceString };
             })
         );
     };
@@ -37,7 +37,7 @@ export default function SequenceImporter() {
         setValue(
             "sequenceTemp",
             option.map((el) => {
-                return { id: getUniqueId(), name: el.value.name, block: el.value.block, sequenceString: el.sequence?.map((el) => el.block)?.join(" ") };
+                return { id: getUniqueId(), name: el.value.name, block: el.value.block, sequenceString: el.value.sequenceString };
             })
         );
     };
