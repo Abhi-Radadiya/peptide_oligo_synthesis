@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import InputField from "../../../../Components/Input/Input";
 import { useWindowSize } from "@uidotdev/usehooks";
@@ -6,9 +6,13 @@ import { useWindowSize } from "@uidotdev/usehooks";
 export default function SequenceEditing(props) {
     const { index } = props;
 
-    const { control, setValue } = useFormContext();
+    const isEditing = index !== undefined;
+
+    const { control, setValue, watch } = useFormContext();
 
     const setSelectedBlocks = (blocks) => setValue("selectedBlock", blocks);
+
+    const selectedBlocks = watch("selectedBlock");
 
     const handleSelection = (event) => {
         const textarea = event.target;
@@ -43,6 +47,30 @@ export default function SequenceEditing(props) {
 
     const { height: windowHeight } = useWindowSize();
 
+    const handleSelectAll = () => {
+        if (!isEditing) {
+            if (isAllSelected()) {
+                setSelectedBlocks([]);
+                return;
+            }
+
+            const arrayLength = watch("sequenceString").split(" ")?.length;
+
+            const selectedBlock = Array.from({ length: arrayLength }, (_, index) => index);
+
+            setSelectedBlocks(selectedBlock);
+
+            textAreaRef.current.select();
+        }
+    };
+
+    const isAllSelected = () => {
+        const arrayLength = watch("sequenceString").split(" ")?.length;
+        return (selectedBlocks?.length ?? 0) === arrayLength && !!selectedBlocks.length;
+    };
+
+    const textAreaRef = useRef();
+
     return (
         <>
             <div className="w-1/2 pr-4 border-r border-neutral-300 overflow-auto no-scrollbar" style={{ height: windowHeight - (index !== undefined ? 172 : 100) }}>
@@ -59,8 +87,16 @@ export default function SequenceEditing(props) {
                     key={`${index}.name`}
                 />
 
-                <label className="block text-gray-700 text-sm font-bold">Sequence</label>
-                <p className="italic text-neutral-500 text-sm mb-2">(Enter Sequence Here)</p>
+                <div className="flex flex-row justify-between items-end mb-2">
+                    <div className="">
+                        <label className="block text-gray-700 text-sm font-bold">Sequence</label>
+                        <p className="italic text-neutral-500 text-sm">(Enter Sequence Here)</p>
+                    </div>
+
+                    <span className="font-normal text-blue-500 text-base hover:underline underline-offset-2 cursor-pointer" onClick={handleSelectAll}>
+                        {isAllSelected() ? "Unselect all" : "Select all"}
+                    </span>
+                </div>
 
                 <Controller
                     key={index}
@@ -77,6 +113,7 @@ export default function SequenceEditing(props) {
                                 className={`shadow appearance-none border border-neutral-400 scrollbar-style rounded-lg w-full py-2 px-3 text-neutral-700 focus:outline-none focus:shadow-outline ${
                                     error ? "border-red-500 placeholder:text-red-500" : "border-gray-300"
                                 }`}
+                                ref={textAreaRef}
                                 onSelect={handleSelection}
                             />
 

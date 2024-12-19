@@ -12,6 +12,7 @@ import { addSequence, editSequence } from "../../../redux/reducers/sequenceReduc
 import ConfirmGenerateBlock from "./Model/ConfirmGenerateBlock/ConfirmGenerateBlock";
 import { getUniqueId } from "../MethodSetup2/Constant";
 import { updateFormState } from "../../../redux/reducers/formState/formState";
+import ConfirmationPopup from "../../Components/Popup/ConfirmationPopup";
 
 export default function SequenceCreation() {
     const { id } = useParams();
@@ -24,44 +25,10 @@ export default function SequenceCreation() {
         clearErrors,
         handleSubmit,
         setError,
-        formState: { isDirty, isSubmitSuccessful },
+        formState: { isDirty },
     } = method;
 
-    useEffect(() => {
-        dispatch(updateFormState(isDirty));
-
-        if (watch("sequence")?.length === 0 && watch("sequenceString")?.length === 0) {
-            dispatch(updateFormState(false));
-        }
-    }, [isDirty, isSubmitSuccessful]);
-
-    const [showGenerateBlockModel, setShowGenerateBlockModel] = useState(false);
-
     const fileInputRef = useRef(null);
-
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const fileContent = event.target.result;
-                setValue("sequence", fileContent);
-            };
-            setValue("logFile", file?.name?.split(".txt")?.[0]);
-            clearErrors("sequence");
-            reader.readAsText(file);
-        }
-    };
-
-    // const saveTextFile = () => {
-    //     const blob = new Blob([watch("sequence")], { type: "text/plain" });
-    //     const url = URL.createObjectURL(blob);
-    //     const a = document.createElement("a");
-    //     a.href = url;
-    //     a.download = `logFile.txt`;
-    //     a.click();
-    //     URL.revokeObjectURL(url);
-    // };
 
     const dispatch = useDispatch();
 
@@ -69,32 +36,19 @@ export default function SequenceCreation() {
 
     const sequence = useSelector((state) => state.sequence.sequence);
 
-    const handleAddSequence = async () => {
-        const newSequence = {
-            id: getUniqueId(),
-            name: watch("name"),
-            block: watch("block"),
-            sequenceString: watch("sequenceString"),
-        };
+    const [showGenerateBlockModel, setShowGenerateBlockModel] = useState(false);
 
-        try {
-            id
-                ? await dispatch(editSequence({ id: id, name: watch("name"), block: watch("block"), sequenceString: watch("sequenceString") }))
-                : await dispatch(addSequence(newSequence));
+    const [isShowImportModel, setIsShowImportModel] = useState(false);
 
-            navigate("/available-sequence");
-        } catch (error) {
-            if (error.message === "Sequence with the same name already exists.") {
-                setError(`name`, {
-                    type: "manual",
-                    message: "Name already exists!",
-                });
-            } else {
-                console.log(`error : `, error);
-            }
-            console.log(`error handleAddSequence : `, error);
+    const [showConfirmationModelLeftMethodAssign, setShowConfirmationModelLeftMethodAssign] = useState(false);
+
+    useEffect(() => {
+        dispatch(updateFormState(isDirty));
+
+        if (watch("sequence")?.length === 0 && watch("sequenceString")?.length === 0) {
+            dispatch(updateFormState(false));
         }
-    };
+    }, [isDirty]);
 
     useEffect(() => {
         if (!id) return;
@@ -111,7 +65,59 @@ export default function SequenceCreation() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const [isShowImportModel, setIsShowImportModel] = useState(false);
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const fileContent = event.target.result;
+                setValue("sequence", fileContent);
+            };
+            setValue("logFile", file?.name?.split(".txt")?.[0]);
+            clearErrors("sequence");
+            reader.readAsText(file);
+        }
+    };
+
+    const saveSequence = async () => {
+        const sequence = {
+            id: getUniqueId(),
+            name: watch("name"),
+            block: watch("block"),
+            sequenceString: watch("sequenceString"),
+        };
+
+        try {
+            id
+                ? await dispatch(editSequence({ id: id, name: watch("name"), block: watch("block"), sequenceString: watch("sequenceString") }))
+                : await dispatch(addSequence(sequence));
+
+            navigate("/available-sequence");
+        } catch (error) {
+            if (error.message === "Sequence with the same name already exists.") {
+                setError(`name`, {
+                    type: "manual",
+                    message: "Name already exists!",
+                });
+            } else {
+                console.log(`error : `, error);
+            }
+            console.log(`error handleAddSequence : `, error);
+        } finally {
+            setShowConfirmationModelLeftMethodAssign(false);
+        }
+    };
+
+    const handleAddSequence = async () => {
+        const hasMissingMethod = watch("block").some((element) => !element.method);
+
+        if (hasMissingMethod) {
+            setShowConfirmationModelLeftMethodAssign(true);
+            return;
+        }
+
+        saveSequence();
+    };
 
     const setSequenceString = () => {
         const cleanedSequenceString = watch("sequenceString").replace(/\s+/g, "");
@@ -146,7 +152,6 @@ export default function SequenceCreation() {
                         <div className="flex flex-row item-center gap-4">
                             <Button label="Import sequence" onClick={() => setIsShowImportModel(true)} bgClassName="bg-indigo-200 hover:bg-indigo-300" />
                             <input type="file" accept=".txt" onChange={handleFileChange} ref={fileInputRef} className="hidden" />
-                            {/* <Button label="Export sequence" onClick={saveTextFile} bgClassName="bg-green-200 hover:bg-green-300" /> */}
                         </div>
 
                         {!watch("sequence")?.length && (
@@ -181,6 +186,14 @@ export default function SequenceCreation() {
                 )}
                 {showGenerateBlockModel && <ConfirmGenerateBlock setSequenceString={setSequenceString} onClose={() => setShowGenerateBlockModel(false)} />}
             </FormProvider>
+
+            <ConfirmationPopup
+                isOpen={showConfirmationModelLeftMethodAssign}
+                header="Confirm Save"
+                desc={`Some blocks are left where any method isn't assigned. Are you sure to save ? `}
+                closePopup={() => setShowConfirmationModelLeftMethodAssign(false)}
+                handleConfirm={saveSequence}
+            />
         </>
     );
 }

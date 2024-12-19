@@ -7,8 +7,12 @@ import { Selection } from "../../../Components/Dropdown/Dropdown";
 import { useDispatch } from "react-redux";
 import { addSequence } from "../../../../redux/reducers/sequenceReducer";
 import ConfirmGenerateBlock from "../Model/ConfirmGenerateBlock/ConfirmGenerateBlock";
+import ConfirmationPopup from "../../../Components/Popup/ConfirmationPopup";
+import { updateFormState } from "../../../../redux/reducers/formState/formState";
 
 export default function SequenceTab() {
+    const [showConfirmationModelLeftMethodAssign, setShowConfirmationModelLeftMethodAssign] = useState(false);
+
     const { watch, handleSubmit, setValue, setError } = useFormContext();
 
     const [activeTab, setActiveTab] = useState(null);
@@ -55,11 +59,13 @@ export default function SequenceTab() {
 
     const dispatch = useDispatch();
 
-    const handleSaveSequence = async () => {
+    const saveSequence = async () => {
         const selectedSequence = watch("sequence")[activeTabIndex];
 
         try {
             await dispatch(addSequence(selectedSequence));
+
+            dispatch(updateFormState(false));
 
             const newSequence = sequence.filter((_, index) => index !== activeTabIndex);
 
@@ -82,7 +88,22 @@ export default function SequenceTab() {
             } else {
                 console.log(`error : `, error);
             }
+        } finally {
+            setShowConfirmationModelLeftMethodAssign(false);
         }
+    };
+
+    const handleSaveSequence = async () => {
+        const selectedSequence = watch("sequence")[activeTabIndex];
+
+        const hasMissingMethod = selectedSequence.block.some((element) => !element.method);
+
+        if (hasMissingMethod) {
+            setShowConfirmationModelLeftMethodAssign(true);
+            return;
+        }
+
+        saveSequence();
     };
 
     const [showGenerateBlockModel, setShowGenerateBlockModel] = useState(false);
@@ -112,6 +133,14 @@ export default function SequenceTab() {
             </div>
 
             {showGenerateBlockModel && <ConfirmGenerateBlock setSequenceString={generateBlock} onClose={() => setShowGenerateBlockModel(false)} />}
+
+            <ConfirmationPopup
+                isOpen={showConfirmationModelLeftMethodAssign}
+                header="Confirm Save"
+                desc={`Some blocks are left where any method isn't assigned. Are you sure to save ? `}
+                closePopup={() => setShowConfirmationModelLeftMethodAssign(false)}
+                handleConfirm={saveSequence}
+            />
         </>
     );
 }

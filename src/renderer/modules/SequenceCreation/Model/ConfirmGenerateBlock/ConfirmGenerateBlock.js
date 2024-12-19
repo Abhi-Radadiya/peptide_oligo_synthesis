@@ -26,9 +26,9 @@ export default function ConfirmGenerateBlock(props) {
                 desc={`Are you sure want to generate new blocks? You will loose previously assign method !`}
                 onClose={() => onClose()}
             >
-                <span className="font-medium text-neutral-700">Type of sequence : </span>
+                <span className="font-medium text-neutral-700">Type of sequence </span>
 
-                <RadioButton className="mt-2" buttons={radioButtons} control={control} name="blockOption" />
+                <RadioButton className="mt-1 max-w-[50%]" buttons={radioButtons} control={control} name="blockOption" />
 
                 <div className="flex justify-end space-x-3 mt-12">
                     <button onClick={onClose} className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 focus:outline-none">

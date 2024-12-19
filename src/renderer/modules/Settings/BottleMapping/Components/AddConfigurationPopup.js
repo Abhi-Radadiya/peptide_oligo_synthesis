@@ -1,13 +1,13 @@
 import React from "react";
 import InputField from "../../../../Components/Input/Input";
 import { useForm } from "react-hook-form";
-import _ from "lodash";
+import _, { isEmpty } from "lodash";
 
 export default function AddConfigurationPopup(props) {
     const { editingData, onSubmit, togglePopup, data, type = "amedite" } = props;
 
     const getDefaultValue = () => {
-        return !_.isEmpty(editingData) ? editingData : { full_name: "", mw: "", case_no: "", msds: "", concentration: "" };
+        return !_.isEmpty(editingData) ? editingData : { full_name: "", mw: "", case_no: "", msds: "", concentration: "", flowRate: "" };
     };
 
     const { control, handleSubmit } = useForm({ defaultValues: getDefaultValue() });
@@ -71,12 +71,22 @@ export default function AddConfigurationPopup(props) {
                             />
                         </div>
 
+                        <InputField
+                            control={control}
+                            wrapperClassName="mb-4 w-1/2"
+                            name="flowRate"
+                            label="Flow rate"
+                            type="number"
+                            rules={{ required: "Please enter flow rate" }}
+                            placeholder="Enter flow rate"
+                        />
+
                         <div className="flex justify-end">
                             <button type="button" className="bg-gray-500 text-white px-4 py-2 rounded mr-2 focus:ring-2 ring-offset-2" onClick={() => togglePopup()}>
                                 Cancel
                             </button>
                             <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded focus:ring-2 ring-offset-2">
-                                {editingData ? "Update" : "Create"}
+                                {!isEmpty(editingData) ? "Update" : "Create"}
                             </button>
                         </div>
                     </form>

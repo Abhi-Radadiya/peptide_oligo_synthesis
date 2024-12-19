@@ -6,7 +6,7 @@ import ReagentConfiguration from "../Module/Reagent/ReagentConfiguration";
 export default function Configuration() {
     const tabs = [
         { label: "Amedite", value: "amedite" },
-        { label: "Reagent", value: "reagent" },
+        { label: "Solvent", value: "solvent" },
     ];
 
     const [activeTab, setActiveTab] = useState(tabs[0].value);

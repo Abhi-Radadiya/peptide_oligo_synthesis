@@ -5,6 +5,7 @@ import { addAmedite, updateAmedite, deleteAmedites } from "../../../../../../red
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "../../../../../Components/Buttons/Buttons";
 import ConfirmationPopup from "../../../../../Components/Popup/ConfirmationPopup";
+import { useWindowSize } from "@uidotdev/usehooks";
 
 const AmediteConfiguration = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -12,17 +13,21 @@ const AmediteConfiguration = () => {
     const [selectedRows, setSelectedRows] = useState([]);
     const [showConfirmation, setShowConfirmation] = useState(false);
 
+    const { height: windowHeight } = useWindowSize();
+
     const dispatch = useDispatch();
     const data = useSelector((state) => state.amedite.amediteList);
 
     const updateDetails = async (data) => {
         dispatch(updateAmedite(data));
         setIsModalOpen(false);
+        setEditAmediteDetails({});
     };
 
     const addNewDetails = async (data) => {
         dispatch(addAmedite(data));
         setIsModalOpen(false);
+        setEditAmediteDetails({});
     };
 
     const handleForm = async (data) => {
@@ -62,52 +67,56 @@ const AmediteConfiguration = () => {
                 <Button label="Add Amedite" onClick={() => setIsModalOpen(true)} />
             </div>
 
-            <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-                <thead className="bg-gray-200">
-                    <tr>
-                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Index</th>
-                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Full Name</th>
-                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">MW</th>
-                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Case No.</th>
-                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">MSDS</th>
-                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Concentration</th>
-                        <th className="py-3 px-6 text-left text-gray-600 font-semibold">Actions</th>
-                    </tr>
-                </thead>
+            <div className="overflow-auto scrollbar-style" style={{ height: windowHeight - 270 }}>
+                <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+                    <thead className="bg-gray-200">
+                        <tr>
+                            <th className="py-3 px-6 text-left text-gray-600 font-semibold">Index</th>
+                            <th className="py-3 px-6 text-left text-gray-600 font-semibold">Full Name</th>
+                            <th className="py-3 px-6 text-left text-gray-600 font-semibold">MW</th>
+                            <th className="py-3 px-6 text-left text-gray-600 font-semibold">Case No.</th>
+                            <th className="py-3 px-6 text-left text-gray-600 font-semibold">MSDS</th>
+                            <th className="py-3 px-6 text-left text-gray-600 font-semibold">Concentration</th>
+                            <th className="py-3 px-6 text-left text-gray-600 font-semibold">Flow rate</th>
+                            <th className="py-3 px-6 text-left text-gray-600 font-semibold">Actions</th>
+                        </tr>
+                    </thead>
 
-                {data.length ? (
-                    <tbody>
-                        {data?.map((item, index) => (
-                            <tr key={item.id} className="border-b hover:bg-gray-100 even:bg-neutral-50">
-                                <td className="py-3 px-6">{index + 1}.</td>
+                    {data.length ? (
+                        <tbody>
+                            {data?.map((item, index) => (
+                                <tr key={item.id} className="border-b hover:bg-gray-100 even:bg-neutral-50">
+                                    <td className="py-3 px-6">{index + 1}.</td>
 
-                                <td className="py-3 px-6">
-                                    <div className="flex flex-row items-center gap-2">
-                                        <input type="checkbox" className="h-4 w-4" checked={selectedRows.includes(item.id)} onChange={() => handleRowSelect(item.id)} />
-                                        {item.full_name}
-                                    </div>
-                                </td>
+                                    <td className="py-3 px-6">
+                                        <div className="flex flex-row items-center gap-2">
+                                            <input type="checkbox" className="h-4 w-4" checked={selectedRows.includes(item.id)} onChange={() => handleRowSelect(item.id)} />
+                                            {item.full_name}
+                                        </div>
+                                    </td>
 
-                                <td className="py-3 px-6">{item.mw}</td>
-                                <td className="py-3 px-6">{item.case_no}</td>
-                                <td className="py-3 px-6">{item.msds}</td>
-                                <td className="py-3 px-6">{item.concentration}</td>
-                                <td className="py-3 px-6 text-center">
-                                    <Button bgClassName="bg-amber-200 hover:bg-amber-300" label="Edit" onClick={() => handleEdit(item)} />
+                                    <td className="py-3 px-6">{item.mw}</td>
+                                    <td className="py-3 px-6">{item.case_no}</td>
+                                    <td className="py-3 px-6">{item.msds}</td>
+                                    <td className="py-3 px-6">{item.concentration}</td>
+                                    <td className="py-3 px-6">{item.flowRate}</td>
+                                    <td className="py-3 px-6 text-center">
+                                        <Button bgClassName="bg-amber-200 hover:bg-amber-300" label="Edit" onClick={() => handleEdit(item)} />
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    ) : (
+                        <tbody>
+                            <tr className="border-b hover:bg-gray-100 even:bg-neutral-50">
+                                <td colSpan={10} className="py-10 text-neutral-500 font-bold px-6 text-center">
+                                    No amedite reagent at this moment !
                                 </td>
                             </tr>
-                        ))}
-                    </tbody>
-                ) : (
-                    <tbody>
-                        <tr className="border-b hover:bg-gray-100 even:bg-neutral-50">
-                            <td colSpan={10} className="py-10 text-neutral-500 font-bold px-6 text-center">
-                                No amedite reagent at this moment !
-                            </td>
-                        </tr>
-                    </tbody>
-                )}
-            </table>
+                        </tbody>
+                    )}
+                </table>
+            </div>
 
             {isModalOpen && (
                 <AddConfigurationPopup

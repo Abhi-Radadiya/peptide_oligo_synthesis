@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 import Select from "react-select";
 import { useWindowSize } from "@uidotdev/usehooks";
@@ -15,8 +15,6 @@ export default function MethodAssign(props) {
 
     const setBlocks = (block) => setValue(blockName, block);
 
-    const [selectedMethod, setSelectedMethod] = useState(null);
-
     const blockContainerRef = useRef(null);
 
     const selectedBlocks = watch("selectedBlock");
@@ -24,11 +22,11 @@ export default function MethodAssign(props) {
     const setSelectedBlocks = (blocks) => setValue("selectedBlock", blocks);
 
     const handleMethodSelect = (selectedOption) => {
-        setSelectedMethod(selectedOption);
         const updatedBlocks = blocks.map((block, index) => (selectedBlocks.includes(index) ? { ...block, method: selectedOption } : block));
+
         setBlocks(updatedBlocks);
+
         setSelectedBlocks([]);
-        setSelectedMethod(null);
     };
 
     const scrollToSelectedBlock = useCallback(() => {
@@ -58,7 +56,7 @@ export default function MethodAssign(props) {
 
     const methods = useSelector((state) => state.methodSetup.method);
 
-    const methodMenuItem = methods.map((el) => ({ label: el.method_name, value: el.id }));
+    const methodMenuItem = useMemo(() => methods.map((el) => ({ label: el.method_name, value: el.id })), [methods]);
 
     const [hoveredBlock, setHoveredBlock] = useState(null);
 
@@ -77,20 +75,19 @@ export default function MethodAssign(props) {
                             <label className="block text-gray-700 text-sm font-bold">Method Selection</label>
                             <p className="italic text-neutral-500 text-sm mb-2">(Apply method to selected blocks)</p>
                         </div>
-                        <div className="pt-1 w-1/3">
+                        <div className="pt-1">
                             <Select
                                 isDisabled={isSelectDisabled}
                                 options={methodMenuItem}
                                 placeholder="Select method"
-                                value={selectedMethod}
                                 onChange={handleMethodSelect}
-                                // Additional styling to match your design
+                                value={{ label: "Select method", value: "" }}
                                 styles={{
                                     control: (base) => ({
                                         ...base,
-                                        borderColor: "#d1d5db", // Tailwind gray-300
+                                        borderColor: "#d1d5db",
                                         "&:hover": {
-                                            borderColor: "#6b7280", // Tailwind gray-500
+                                            borderColor: "#6b7280",
                                         },
                                     }),
                                 }}
@@ -122,21 +119,17 @@ export default function MethodAssign(props) {
                                 onContextMenu={() => setHoveredBlock(index)}
                                 onMouseLeave={() => setHoveredBlock(null)}
                                 className={`inline-block px-2 py-1 m-1 border relative group rounded ${
-                                    selectedBlocks?.includes(index)
-                                        ? "bg-yellow-200 border-yellow-500"
-                                        : // : !!block?.method
-                                          // ? "bg-green-300 border-green-400"
-                                          "bg-gray-100 border-gray-300"
+                                    selectedBlocks?.includes(index) ? "bg-yellow-200 border-yellow-500" : "bg-gray-100 border-gray-300"
                                 }`}
                                 style={{ ...(!!selectedColor && !selectedBlocks?.includes(index) ? { background: selectedColor } : {}) }}
                             >
                                 {block.block}
 
-                                {hasMethod && (
+                                {/* {hasMethod && (
                                     <div className={`${tooltipClasses} left-1/2`}>
                                         {hasMethod && <div className="text-sm text-neutral-700 whitespace-nowrap">{block.method.label}</div>}
                                     </div>
-                                )}
+                                )} */}
                             </div>
                         );
                     })}

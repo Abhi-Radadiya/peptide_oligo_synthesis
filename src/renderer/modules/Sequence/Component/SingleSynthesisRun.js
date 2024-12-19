@@ -37,11 +37,9 @@ export default function SingleSynthesisRun() {
 
     const selectedSequence = sequence.find((el) => el.id === watch("sequence")?.value);
 
-    console.log(`selectedSequence : `, selectedSequence);
-
     return (
-        <div className="space-y-6 pr-4 mr-4 border-r border-neutral-500 w-full max-w-[40vw]" style={{ height: windowHeight - 36 }}>
-            <div className="flex flex-row justify-between border-b pb-4 items-center">
+        <div className="pr-4 mr-4 border-r border-neutral-500 w-full max-w-[40vw]" style={{ height: windowHeight - 36 }}>
+            <div className="flex flex-row justify-between border-b pb-4 mb-6 items-center">
                 <h2 className="text-xl font-bold text-gray-800">Synthesis Run</h2>
             </div>
 
@@ -77,7 +75,7 @@ export default function SingleSynthesisRun() {
                     />
                 </div>
 
-                <div>
+                <div className="mb-6">
                     <label htmlFor="sequence" className="block text-sm font-semibold text-gray-700 mb-2">
                         Sequence
                     </label>
@@ -94,12 +92,12 @@ export default function SingleSynthesisRun() {
                 <RadioButton buttons={radio3} control={control} name="option" header="Option" />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6 mb-4 border-b border-neutral-300">
                 <RadioButton header="Resin" buttons={resinOption} control={control} name="resinOption" />
                 <RadioButton buttons={modeRadioButton} control={control} name="mode" header="Mode" />
             </div>
 
-            {/* {selectedSequence && <SelectedSequence selectedSequence={selectedSequence} />} */}
+            {selectedSequence && <SelectedSequence selectedSequence={selectedSequence} />}
         </div>
     );
 }

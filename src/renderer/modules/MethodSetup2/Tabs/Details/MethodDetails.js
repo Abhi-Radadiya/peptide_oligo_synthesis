@@ -71,6 +71,7 @@ const MethodDetails = (props) => {
         "n_cappingAVolume",
         "n_cappingBVolume",
         "n_cappingWashVolume",
+        "n_couplingFlowRate",
         "last_deVolume",
         "last_deWashVolume",
         "last_deaVolume",

@@ -152,7 +152,7 @@ export const Selection = (props) => {
             background: "#f4f4f4",
             color: "#333",
             width,
-            borderColor: state.isFocused ? "#dedcdc" : "#f4f4f4",
+            borderColor: state.isFocused ? "#dedcdc" : "#2d2e2e",
             boxShadow: state.isFocused ? "0 0 0 1px #333" : "none",
             "&:hover": {
                 borderColor: "#f5f5f5",

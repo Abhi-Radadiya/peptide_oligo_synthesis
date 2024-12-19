@@ -77,7 +77,7 @@ export default function MethodSetting() {
     };
 
     const method = useForm({
-        defaultValues: { ...getDefaultValue(), method_name: "" },
+        defaultValues: { ...getDefaultValue() },
     });
 
     const steps = [
@@ -103,12 +103,12 @@ export default function MethodSetting() {
 
     const {
         handleSubmit,
-        formState: { isDirty, isSubmitSuccessful },
+        formState: { isDirty },
     } = method;
 
     useEffect(() => {
         dispatch(updateFormState(isDirty));
-    }, [isDirty, isSubmitSuccessful]);
+    }, [isDirty]);
 
     const dispatch = useDispatch();
 
@@ -126,6 +126,7 @@ export default function MethodSetting() {
 
     const handleSave = (data) => {
         activeStep === 3 ? (!!id ? editMethod(data) : saveMethod(data)) : setActiveStep(activeStep + 1);
+        dispatch(updateFormState(false));
     };
 
     return (

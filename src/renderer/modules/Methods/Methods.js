@@ -14,6 +14,8 @@ export default function Methods() {
 
     const methods = useSelector((state) => state.methodSetup.method);
 
+    console.log(`methods : `, methods);
+
     const filteredData = useMemo(() => methods.filter((item) => item?.method_name?.toLowerCase().includes(searchTerm.toLowerCase())), [searchTerm, methods]);
 
     const handleSelectRow = (e, id) => {
