@@ -136,7 +136,7 @@ export function SelectionController(props) {
                             handleChange?.(option);
                         }}
                     />
-                    {error && <p className="text-red-500 text-xs">*{error.message}</p>}
+                    {error && <p className="text-red-500 text-sm">{error.message}</p>}
                 </div>
             )}
         />

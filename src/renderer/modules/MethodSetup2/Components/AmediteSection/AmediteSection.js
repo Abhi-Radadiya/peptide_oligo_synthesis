@@ -3,7 +3,6 @@ import { useFormContext } from "react-hook-form";
 import { SelectionController } from "../../../../Components/Dropdown/Dropdown";
 import InputField from "../../../../Components/Input/Input";
 import { wasteMenuItems } from "../../Constant";
-import RadioButton from "../../../../Components/FormController/RadioButton";
 import Checkbox from "../../../../Components/FormController/CheckBox";
 import { useSelector } from "react-redux";
 
@@ -13,13 +12,12 @@ export default function AmediteSection(props) {
         title,
         className,
         disabled,
+        chemical = "reagent",
     } = props;
 
     const { control, setValue } = useFormContext();
 
-    const flowRates = useSelector((state) => state.flowRate.items);
-
-    const chemicals = useSelector((state) => state.amedite.amediteList);
+    const chemicals = useSelector((state) => state[chemical][`${chemical}List`]);
 
     const chemicalFlowRates = chemicals.map((chemical) => {
         return {
@@ -29,7 +27,7 @@ export default function AmediteSection(props) {
     });
 
     const handleSelectSolvent = (option) => {
-        const flowRateEntry = flowRates.find((flow) => flow.chemical === option.value);
+        const flowRateEntry = chemicals.find((el) => el.id === option.value);
 
         setValue(flowRate, flowRateEntry.flowRate);
     };
@@ -42,7 +40,7 @@ export default function AmediteSection(props) {
                 <div className="flex flex-row items-center justify-between my-4">
                     <div className="flex flex-row items-start gap-6 w-full justify-between">
                         <div className="flex flex-row items-center gap-2">
-                            <span className="font-bold text-neutral-600">Solvent</span>
+                            <span className="font-bold text-neutral-600">{chemical === "reagent" ? "Solvent" : "Amedite"}</span>
                             <SelectionController
                                 rules={{ required: "Please select solvent" }}
                                 isDisabled={disabled}

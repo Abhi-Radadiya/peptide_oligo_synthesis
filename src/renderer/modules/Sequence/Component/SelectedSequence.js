@@ -15,7 +15,9 @@ export default function SelectedSequence(props) {
         <>
             <div className="">
                 <div className="mb-1 font-semibold text-gray-900">Select sequence</div>
-                <div className="w-full max-w-[40vw] overflow-auto scrollbar-style" style={{ height: windowHeight - 445 }}>
+                <div className="w-full max-w-[40vw] overflow-auto scrollbar-style" style={{ height: windowHeight - ( watch("mode") === "manual" ? 520 :    
+                    
+                    445 )}}>
                     {selectedSequence?.block?.map((el, index) => {
                         return (
                             <span

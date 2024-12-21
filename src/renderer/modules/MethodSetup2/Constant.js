@@ -16,4 +16,29 @@ export const amedites = [
     { label: "fC", value: "fC" },
 ];
 
+export const methodOption = [
+    {
+        label: "First",
+        options: [{ label: "Column wash", value: "first_wash" }],
+    },
+    {
+        label: "Nth",
+        options: [
+            { label: "De block", value: "n_block" },
+            { label: "Coupling", value: "n_coupling" },
+            { label: "Oxidization", value: "n_oxidization" },
+            { label: "Sulfurization", value: "n_sulfurization" },
+            { label: "Capping", value: "n_capping" },
+            { label: "Extra", value: "n_extra" },
+        ],
+    },
+    {
+        label: "Last",
+        options: [
+            { label: "De block", value: "last_deBlock" },
+            { label: "DEA", value: "last_dea" },
+        ],
+    },
+];
+
 export const getUniqueId = () => uuidv4();

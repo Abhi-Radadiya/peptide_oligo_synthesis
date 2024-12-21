@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Tabs } from "../../../../Components/Tabs/Tab";
-import AmediteConfiguration from "../Module/Amedite/AmediteConfiguration";
-import ReagentConfiguration from "../Module/Reagent/ReagentConfiguration";
+import { Tabs } from "../../../Components/Tabs/Tab";
+import AmediteConfiguration from "./Module/Amedite/AmediteConfiguration";
+import ReagentConfiguration from "./Module/Reagent/ReagentConfiguration";
 
 export default function Configuration() {
     const tabs = [

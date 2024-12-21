@@ -9,7 +9,12 @@ import { Button } from "../../../../Components/Buttons/Buttons";
 const MethodDetails = (props) => {
     const { disabled } = props;
 
-    const { control, watch, setValue } = useFormContext();
+    const {
+        control,
+        watch,
+        setValue,
+        formState: { errors },
+    } = useFormContext();
 
     const synthesisScale = watch("synthesisScale");
     const loadingTime = watch("loadingTime");
@@ -97,6 +102,7 @@ const MethodDetails = (props) => {
                     labelClassName="text-lg text-neutral-500 font-bold"
                     placeholder="Enter Method Name"
                 />
+
                 {watch("color") ? (
                     <div className="flex flex-row items-center gap-6">
                         <span>Assigned color</span>
@@ -107,7 +113,11 @@ const MethodDetails = (props) => {
                         />
                     </div>
                 ) : (
-                    <Button label="Assign color" onClick={() => setShowColorPicker(true)} />
+                    <div className="flex flex-col gap-0.5">
+                        <Button label="Assign color" onClick={() => setShowColorPicker(true)} />
+
+                        {errors.color && <div className="text-red-500 text-sm mt-1 font-normal">{errors.color.message}</div>}
+                    </div>
                 )}
             </div>
 
@@ -229,15 +239,9 @@ const MethodDetails = (props) => {
                 </div>
             </div>
 
-            {showColorPicker && <PickColor selectedColor={watch("color")} setSelectedColor={(color) => setValue("color", color)} onClose={() => setShowColorPicker(false)} />}
+            {showColorPicker && <PickColor onClose={() => setShowColorPicker(false)} />}
         </>
     );
 };
 
 export default MethodDetails;
-
-// import React from "react";
-
-// export default function MethodDetails() {
-//     return <div></div>;
-// }

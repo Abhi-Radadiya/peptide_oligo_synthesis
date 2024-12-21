@@ -79,7 +79,6 @@ export default function RunningSynthesis() {
                 <div className="flex space-x-4">
                     <Button label="Run" onClick={handleSubmit(() => setShowRunSpecificBlockModel(true))} />
                     <Button label="Pause" onClick={handlePause} />
-                    {/* <Button label="Start Over" onClick={handleStartOver} /> */}
                     <Button label="Resume" onClick={handleResume} />
                     <Button label="Stop" onClick={handleStop} />
                 </div>

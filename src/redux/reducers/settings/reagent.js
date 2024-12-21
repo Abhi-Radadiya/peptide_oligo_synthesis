@@ -13,13 +13,18 @@ const reagentSlice = createSlice({
             state.reagentList = [{ id: getUniqueId(), ...action.payload }, ...state.reagentList];
         },
         updateReagent: (state, action) => {
-            const { id, data } = action.payload;
-            state.reagentList = state.reagentList.map((el) => {
-                if (el.id === id) {
-                    return { ...el, ...data };
-                }
-                return el;
-            });
+            const { id } = action.payload;
+
+            const solventIndex = state.reagentList.findIndex((item) => item.id === id);
+
+            if (solventIndex !== -1) {
+                state.reagentList[solventIndex] = {
+                    ...state.reagentList[solventIndex],
+                    ...action.payload,
+                };
+            } else {
+                throw new Error("Solvent with the specified case number not found.");
+            }
         },
         deleteReagent: (state, action) => {
             const id = action.payload;

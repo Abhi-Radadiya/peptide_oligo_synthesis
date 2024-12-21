@@ -5,8 +5,8 @@ import Solvents from "./Components/Solvents";
 
 export default function Prime() {
     const tabs = [
-        { label: "Amedites", value: "amedites" },
-        { label: "Solvents", value: "solvents" },
+        { label: "Amedite", value: "amedite" },
+        { label: "Solvent", value: "solvent" },
     ];
 
     const [activeTab, setActiveTab] = useState(tabs[0].value);

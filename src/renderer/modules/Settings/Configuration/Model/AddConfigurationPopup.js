@@ -28,10 +28,10 @@ export default function AddConfigurationPopup(props) {
                                 required: "Please enter full name",
                                 ...(_.isEmpty(editingData)
                                     ? {
-                                          validate: {
-                                              uniqueName: (value) => !data.some((item) => item.full_name === value) || "Name already exists",
-                                          },
-                                      }
+                                        validate: {
+                                            uniqueName: (value) => !data.some((item) => item.full_name === value) || "Name already exists",
+                                        },
+                                    }
                                     : {}),
                             }}
                             placeholder="Enter full name"

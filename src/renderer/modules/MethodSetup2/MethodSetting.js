@@ -12,8 +12,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { addMethodSetup, updateMethodSetup } from "../../../redux/reducers/methodSetup/methodSetup";
 import { updateFormState } from "../../../redux/reducers/formState/formState";
 
-// kindly please check if module :==> modules\MethodSetup\MethodSetup.js is important or not
-
 export default function MethodSetting() {
     const { id } = useParams();
 
@@ -103,6 +101,7 @@ export default function MethodSetting() {
 
     const {
         handleSubmit,
+        setError,
         formState: { isDirty },
     } = method;
 
@@ -124,7 +123,22 @@ export default function MethodSetting() {
         navigate("/method-setup");
     };
 
+    const isErrorGenerated = (data) => {
+        let isError = false;
+
+        if (!data.color) {
+            setError("color", { message: "Please select a color" });
+            isError = true;
+        }
+
+        return isError;
+    };
+
     const handleSave = (data) => {
+        if (isErrorGenerated(data)) {
+            return;
+        }
+
         activeStep === 3 ? (!!id ? editMethod(data) : saveMethod(data)) : setActiveStep(activeStep + 1);
         dispatch(updateFormState(false));
     };

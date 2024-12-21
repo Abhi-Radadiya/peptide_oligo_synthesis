@@ -3,29 +3,18 @@ import { createSlice } from "@reduxjs/toolkit";
 const bottleMappingSlice = createSlice({
     name: "bottleMapping",
     initialState: {
-        mappingData: {},
+        amedite: Array(24).fill({}),
+        solvent: Array(10).fill({})
     },
     reducers: {
         saveBottleMapping: (state, action) => {
-            state.mappingData = action.payload;
+            const { type, data } = action.payload
+            state[type] = data
         },
 
-        updateBottleMapping: (state, action) => {
-            const { key, value } = action.payload;
-            state.mappingData[key] = value;
-        },
-
-        clearBottleMapping: (state, action) => {
-            const key = action.payload;
-            delete state.mappingData[key];
-        },
-
-        resetBottleMapping: (state) => {
-            state.mappingData = {};
-        },
     },
 });
 
-export const { saveBottleMapping, updateBottleMapping, clearBottleMapping, resetBottleMapping } = bottleMappingSlice.actions;
+export const { saveBottleMapping } = bottleMappingSlice.actions;
 
 export default bottleMappingSlice.reducer;

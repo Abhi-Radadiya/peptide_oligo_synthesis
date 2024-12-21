@@ -12,7 +12,6 @@ import uvSettingReduce from "./reducers/settings/uvSetting";
 import pressureSettingReduce from "./reducers/settings/pressure";
 import columnEditorReduce from "./reducers/settings/columnEditor";
 import reagentReducer from "./reducers/settings/reagent";
-import flowRateReducer from "./reducers/settings/flowRate";
 import methodSetupReducer from "./reducers/methodSetup/methodSetup";
 import formStateReducer from "./reducers/formState/formState.js";
 
@@ -27,7 +26,6 @@ const rootReducer = combineReducers({
     pressure: pressureSettingReduce,
     columnEditor: columnEditorReduce,
     reagent: reagentReducer,
-    flowRate: flowRateReducer,
     // method setup
     methodSetup: methodSetupReducer,
     // sequence
@@ -40,20 +38,7 @@ const persistConfig = {
     key: "root",
     version: 1,
     storage,
-    whitelist: [
-        "sequence",
-        "amedite",
-        "bottleMapping",
-        "primeAmedite",
-        "primeSolvent",
-        "liquidDetection",
-        "uvSetting",
-        "pressure",
-        "columnEditor",
-        "reagent",
-        "flowRate",
-        "methodSetup",
-    ],
+    whitelist: ["sequence", "amedite", "bottleMapping", "primeAmedite", "primeSolvent", "liquidDetection", "uvSetting", "pressure", "columnEditor", "reagent", "methodSetup"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

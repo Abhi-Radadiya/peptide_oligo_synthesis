@@ -3,11 +3,13 @@ import ModelWrapper from "../../../../../Components/Model/ModelWrapper";
 import { useFormContext } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { Button } from "../../../../../Components/Buttons/Buttons";
+import { SelectionController } from "../../../../../Components/Dropdown/Dropdown";
+import { methodOption } from "../../../../MethodSetup2/Constant";
 
 export default function RunSpecificBlocksModel(props) {
     const { onClose, setPrintingState, handleRun } = props;
 
-    const { watch } = useFormContext();
+    const { watch, control, handleSubmit } = useFormContext();
 
     const allSequence = useSelector((state) => state.sequence.sequence);
 
@@ -78,6 +80,8 @@ export default function RunSpecificBlocksModel(props) {
     const selectAll = () => {
         setIsAllSelected(true);
 
+        textAreaRef.current.select();
+
         setPrintingState((prevState) => ({
             ...prevState,
             startIndex: 0,
@@ -120,7 +124,19 @@ export default function RunSpecificBlocksModel(props) {
                                 className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-2xl cursor-pointer"
                             />
                         </div>
-                        <Button bgClassName="bg-green-300 hover:bg-green-400" label="Run synthesis" onClick={handleRun} />
+
+                        <div className="flex flex-row items-start gap-6">
+                            <SelectionController
+                                isClearable={false}
+                                className="w-[230px]"
+                                menuItem={methodOption}
+                                name="selectedMethodOption"
+                                control={control}
+                                rules={{ required: "Please select options" }}
+                            />
+
+                            <Button bgClassName="bg-green-300 hover:bg-green-400" label="Run synthesis" onClick={handleSubmit(handleRun)} />
+                        </div>
                     </div>
 
                     <textarea
@@ -128,6 +144,7 @@ export default function RunSpecificBlocksModel(props) {
                         value={sequenceString}
                         placeholder="Enter sequence here"
                         rows={22}
+                        readOnly={true}
                         className="shadow cursor-text appearance-none border border-neutral-400 scrollbar-style rounded-lg w-full py-2 px-3 text-neutral-700 focus:outline-none focus:shadow-outline"
                         onSelect={handleSelection}
                     />

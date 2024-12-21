@@ -1,41 +1,41 @@
 import React, { useState } from "react";
-import AddConfigurationPopup from "../../Components/AddConfigurationPopup";
 import _ from "lodash";
-import { addAmedite, updateAmedite, deleteAmedites } from "../../../../../../redux/reducers/settings/amedite";
 import { useDispatch, useSelector } from "react-redux";
+import { addReagent, updateReagent, deleteReagents } from "../../../../../../redux/reducers/settings/reagent";
 import { Button } from "../../../../../Components/Buttons/Buttons";
 import ConfirmationPopup from "../../../../../Components/Popup/ConfirmationPopup";
 import { useWindowSize } from "@uidotdev/usehooks";
+import AddConfigurationPopup from "../../Model/AddConfigurationPopup";
 
-const AmediteConfiguration = () => {
+const ReagentConfiguration = () => {
+    const data = useSelector((state) => state.reagent.reagentList);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editAmediteDetails, setEditAmediteDetails] = useState({});
+    const [editReagentDetails, setEditReagentDetails] = useState({});
     const [selectedRows, setSelectedRows] = useState([]);
     const [showConfirmation, setShowConfirmation] = useState(false);
-
     const { height: windowHeight } = useWindowSize();
 
     const dispatch = useDispatch();
-    const data = useSelector((state) => state.amedite.amediteList);
 
     const updateDetails = async (data) => {
-        dispatch(updateAmedite(data));
+        dispatch(updateReagent(data));
         setIsModalOpen(false);
-        setEditAmediteDetails({});
+        setEditReagentDetails({});
     };
 
     const addNewDetails = async (data) => {
-        dispatch(addAmedite(data));
+        dispatch(addReagent(data));
         setIsModalOpen(false);
-        setEditAmediteDetails({});
+        setEditReagentDetails({});
     };
 
     const handleForm = async (data) => {
-        _.isEmpty(editAmediteDetails) ? addNewDetails(data) : updateDetails(data);
+        _.isEmpty(editReagentDetails) ? addNewDetails(data) : updateDetails(data);
     };
 
     const handleEdit = (item) => {
-        setEditAmediteDetails(item);
+        setEditReagentDetails(item);
         setIsModalOpen(true);
     };
 
@@ -44,7 +44,7 @@ const AmediteConfiguration = () => {
     };
 
     const handleBulkDelete = () => {
-        dispatch(deleteAmedites(selectedRows));
+        dispatch(deleteReagents(selectedRows));
         setSelectedRows([]);
         setShowConfirmation(false);
     };
@@ -64,7 +64,7 @@ const AmediteConfiguration = () => {
                         bgClassName="ml-2 bg-[#fa5757] text-white disabled:bg-red-200 disabled:text-neutral-500"
                     />
                 </div>
-                <Button label="Add Amedite" onClick={() => setIsModalOpen(true)} />
+                <Button label="Add Solvent" onClick={() => setIsModalOpen(true)} />
             </div>
 
             <div className="overflow-auto scrollbar-style" style={{ height: windowHeight - 270 }}>
@@ -94,7 +94,6 @@ const AmediteConfiguration = () => {
                                             {item.full_name}
                                         </div>
                                     </td>
-
                                     <td className="py-3 px-6">{item.mw}</td>
                                     <td className="py-3 px-6">{item.case_no}</td>
                                     <td className="py-3 px-6">{item.msds}</td>
@@ -110,7 +109,7 @@ const AmediteConfiguration = () => {
                         <tbody>
                             <tr className="border-b hover:bg-gray-100 even:bg-neutral-50">
                                 <td colSpan={10} className="py-10 text-neutral-500 font-bold px-6 text-center">
-                                    No amedite reagent at this moment !
+                                    No reagent available at this moment !
                                 </td>
                             </tr>
                         </tbody>
@@ -120,13 +119,14 @@ const AmediteConfiguration = () => {
 
             {isModalOpen && (
                 <AddConfigurationPopup
-                    editingData={editAmediteDetails}
+                    editingData={editReagentDetails}
                     onSubmit={handleForm}
                     data={data}
                     togglePopup={() => {
                         setIsModalOpen(false);
-                        setEditAmediteDetails({});
+                        setEditReagentDetails({});
                     }}
+                    type="Solvent"
                 />
             )}
 
@@ -134,7 +134,7 @@ const AmediteConfiguration = () => {
                 <ConfirmationPopup
                     header="Delete sequence !"
                     isOpen={showConfirmation}
-                    desc="Are you sure you want to delete the selected amedite?"
+                    desc="Are you sure you want to delete the selected solvent?"
                     handleConfirm={handleBulkDelete}
                     closePopup={() => setShowConfirmation(false)}
                 />
@@ -143,4 +143,4 @@ const AmediteConfiguration = () => {
     );
 };
 
-export default AmediteConfiguration;
+export default ReagentConfiguration;

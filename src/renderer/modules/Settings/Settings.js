@@ -5,7 +5,7 @@ import LiquidDetection from "./LiquidDetection/LiquidDetection";
 import UVSetting from "./UVSetting/UVSetting";
 import Pressure from "./Pressure/Pressure";
 import ColumnEditor from "./ColumnEditor/ColumnEditor";
-import Configuration from "./BottleMapping/Components/Configuration";
+import Configuration from "./Configuration/Configuration";
 import { Tabs } from "../../Components/Tabs/Tab";
 
 export default function Settings() {
