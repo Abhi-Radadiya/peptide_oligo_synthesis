@@ -4,14 +4,13 @@ const bottleMappingSlice = createSlice({
     name: "bottleMapping",
     initialState: {
         amedite: Array(24).fill({}),
-        solvent: Array(10).fill({})
+        solvent: Array(10).fill({}),
     },
     reducers: {
         saveBottleMapping: (state, action) => {
-            const { type, data } = action.payload
-            state[type] = data
+            const { type, data } = action.payload;
+            state[type] = data;
         },
-
     },
 });
 

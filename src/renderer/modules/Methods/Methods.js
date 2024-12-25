@@ -110,7 +110,7 @@ export default function Methods() {
                                 ))
                             ) : (
                                 <tr>
-                                    <td className="py-8 text-center font-medium text-lg text-neutral-700" colSpan={3}>
+                                    <td className="py-8 text-center font-medium text-lg text-neutral-700" colSpan={5}>
                                         No method at this moment !
                                     </td>
                                 </tr>

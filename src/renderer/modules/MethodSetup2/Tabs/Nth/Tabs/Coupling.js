@@ -15,7 +15,6 @@ export default function Coupling(props) {
                     <h3 className="font-bold text-xl mb-4">Coupling Settings</h3>
 
                     <AmediteSection
-                        chemical="amedite"
                         disabled={disabled}
                         names={{ solvent: "n_couplingSolvent", volume: "n_couplingVolume", xFactor: "n_couplingXFactor", flowRate: "n_couplingFlowRate" }}
                         className="mb-4 pb-4 border-b border-neutral-300"
@@ -80,7 +79,6 @@ export default function Coupling(props) {
                     </div>
 
                     <AmediteSection
-                        chemical="amedite"
                         disabled={disabled}
                         names={{ solvent: "n_couplingWashSolvent", volume: "n_couplingWashVolume", xFactor: "n_couplingWashXFactor", flowRate: "n_couplingWashFlowRate" }}
                         className="mb-4 pb-4 border-b border-neutral-300"

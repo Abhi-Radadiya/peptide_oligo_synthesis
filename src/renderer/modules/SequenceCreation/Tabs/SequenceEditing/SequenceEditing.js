@@ -110,9 +110,8 @@ export default function SequenceEditing(props) {
                                 value={field.value ?? ""}
                                 placeholder="Enter sequence here"
                                 rows={index !== undefined ? 20 : 22}
-                                className={`shadow appearance-none border border-neutral-400 scrollbar-style rounded-lg w-full py-2 px-3 text-neutral-700 focus:outline-none focus:shadow-outline ${
-                                    error ? "border-red-500 placeholder:text-red-500" : "border-gray-300"
-                                }`}
+                                className={`shadow appearance-none border border-neutral-400 scrollbar-style rounded-lg w-full py-2 px-3 text-neutral-700 focus:outline-none focus:shadow-outline ${error ? "border-red-500 placeholder:text-red-500" : "border-gray-300"
+                                    }`}
                                 ref={textAreaRef}
                                 onSelect={handleSelection}
                             />

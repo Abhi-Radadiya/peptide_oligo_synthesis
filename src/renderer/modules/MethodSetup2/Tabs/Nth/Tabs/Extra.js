@@ -25,7 +25,7 @@ export default function Extra(props) {
                     />
                 </div>
 
-                <WasteColumnSelection disabled={disabled} control={control} name="n_extraWaster" />
+                <WasteColumnSelection disabled={disabled} control={control} name="n_extraWaste" />
             </div>
         </>
     );

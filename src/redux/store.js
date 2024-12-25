@@ -38,7 +38,20 @@ const persistConfig = {
     key: "root",
     version: 1,
     storage,
-    whitelist: ["sequence", "amedite", "bottleMapping", "primeAmedite", "primeSolvent", "liquidDetection", "uvSetting", "pressure", "columnEditor", "reagent", "methodSetup"],
+    // whitelist: ["sequence", "amedite", "primeAmedite", "primeSolvent", "liquidDetection", "uvSetting", "pressure", "columnEditor", "reagent", "methodSetup"],
+    whitelist: [
+        "sequence",
+        "amedite",
+        "bottleMapping",
+        "primeAmedite",
+        "primeSolvent",
+        "liquidDetection",
+        "uvSetting",
+        "pressure",
+        "columnEditor",
+        "reagent",
+        "methodSetup",
+    ],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

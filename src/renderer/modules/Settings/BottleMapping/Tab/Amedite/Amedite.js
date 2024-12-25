@@ -1,4 +1,4 @@
-import React, { } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { saveBottleMapping } from "../../../../../../redux/reducers/settings/bottleMapping";
@@ -14,14 +14,18 @@ export default function Amedite() {
 
     const ameditePosition = useSelector((state) => state.bottleMapping.amedite);
 
-    const { control, handleSubmit, watch, } = useForm({
-        defaultValues: { amedite: ameditePosition.map(el => { return el.value ? el : undefined }) },
+    const { control, handleSubmit, watch } = useForm({
+        defaultValues: {
+            amedite: ameditePosition?.map((el) => {
+                return el.value ? el : undefined;
+            }),
+        },
     });
 
     const onSubmit = async (data) => {
-        const payload = data.amedite.map(el => ({ value: el?.value, label: el?.label }))
+        const payload = data.amedite.map((el) => ({ value: el?.value, label: el?.label }));
 
-        dispatch(saveBottleMapping({ data: payload, type: 'amedite' }));
+        dispatch(saveBottleMapping({ data: payload, type: "amedite" }));
     };
 
     return (
@@ -35,10 +39,10 @@ export default function Amedite() {
                 </div>
 
                 <div className="grid grid-cols-4 gap-10">
-                    {ameditePosition.map((_, index) => {
+                    {ameditePosition?.map((_, index) => {
                         return (
                             <div key={index} className="flex gap-3 items-center w-full ">
-                                <span className="block font-medium text-gray-700">{index < 9 ? "0" + (index + 1) : (index + 1)}.</span>
+                                <span className="block font-medium text-gray-700">{index < 9 ? "0" + (index + 1) : index + 1}.</span>
                                 <div className={`${watch(`amedite.${index}`) && "border"} rounded border-neutral-800`}>
                                     <SelectionController
                                         control={control}
@@ -53,7 +57,6 @@ export default function Amedite() {
                         );
                     })}
                 </div>
-
             </form>
         </>
     );

@@ -80,8 +80,6 @@ export default function RunSpecificBlocksModel(props) {
     const selectAll = () => {
         setIsAllSelected(true);
 
-        textAreaRef.current.select();
-
         setPrintingState((prevState) => ({
             ...prevState,
             startIndex: 0,

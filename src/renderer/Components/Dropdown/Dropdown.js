@@ -101,9 +101,9 @@ export function SelectionController(props) {
         option: (provided, state) => ({
             ...provided,
             backgroundColor: state.isSelected ? "#dedcdc" : "white",
-            color: "#000",
+            color: state.isDisabled ? "#c4c2c2" : "#000",
             "&:hover": {
-                backgroundColor: "#f5f5f5",
+                backgroundColor: state.isDisabled ? "#fff" : "#f5f5f5",
             },
         }),
         placeholder: (defaultStyles) => {

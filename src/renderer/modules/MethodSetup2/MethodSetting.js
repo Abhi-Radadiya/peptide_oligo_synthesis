@@ -23,7 +23,7 @@ export default function MethodSetting() {
         n_couplingWaste: { label: 1, value: 1 },
         n_oxidizationWaste: { label: 1, value: 1 },
         n_sulfurizationWaste: { label: 1, value: 1 },
-        n_extraWaster: { label: 1, value: 1 },
+        n_extraWaste: { label: 1, value: 1 },
         n_cappingWaste: { label: 1, value: 1 },
         last_deWaste: { label: 1, value: 1 },
 
@@ -201,7 +201,7 @@ const flags = {
             "n_sulfurizationCheck",
             "n_sulfurizationWaste",
         ],
-        extra: ["n_extraSolvent", "n_extraVolume", "n_extraXFactor", "n_extraWashSolvent", "n_extraWashVolume", "n_extraWashXFactor", "n_extraWaster"],
+        extra: ["n_extraSolvent", "n_extraVolume", "n_extraXFactor", "n_extraWashSolvent", "n_extraWashVolume", "n_extraWashXFactor", "n_extraWaste"],
         capping: [
             "n_cappingASolvent",
             "n_cappingAVolume",

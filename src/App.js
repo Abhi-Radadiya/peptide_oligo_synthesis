@@ -16,7 +16,11 @@ export default function App() {
         <Router>
             <NavigationPanel isNavOpen={isNavOpen} setIsNavOpen={setIsNavOpen} />
 
-            <div className={`transition-all duration-300 ${isNavOpen ? "ml-64" : "ml-0"} overflow-auto h-screen scrollbar-style bg-gradient-to-br from-slate-50 to-amber-50`}>
+            <div
+                className={`transition-all duration-300 ${
+                    isNavOpen ? "ml-64" : "ml-0"
+                } overflow-auto h-screen scrollbar-style bg-gradient-to-br from-slate-50 to-amber-50`}
+            >
                 <Routes>
                     <Route path="/method-setting/:id" element={<MethodSetting />} />
                     <Route path="/method-setting" element={<MethodSetting />} />
