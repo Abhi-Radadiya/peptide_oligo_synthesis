@@ -108,7 +108,15 @@ export const WasteColumnSelection = (props) => {
     return (
         <div className="flex flex-row w-full max-w-[260px] items-center gap-3">
             <span className="font-bold text-base">Waste Column : </span>
-            <SelectionController isDisabled={disabled} isClearable={false} width={120} menuItem={wasteMenuItems} control={control} name={name} />
+            <SelectionController
+                isDisabled={disabled}
+                isClearable={false}
+                width={120}
+                menuItem={wasteMenuItems}
+                control={control}
+                name={name}
+                rules={{ required: "* Select column" }}
+            />
         </div>
     );
 };
@@ -128,7 +136,14 @@ export const RadioSection = (props) => {
                 <RadioButton className="max-w-[250px]" disabled={true} buttons={buttons} control={control} name={radioName} /> */}
             </div>
 
-            <Checkbox labelClassName="font-bold text-neutral-600" className="flex-row-reverse gap-4" label="Enabled" disabled={disabled} name={checkName} control={control} />
+            <Checkbox
+                labelClassName="font-bold text-neutral-600"
+                className="flex-row-reverse gap-4"
+                label="Enabled"
+                disabled={disabled}
+                name={checkName}
+                control={control}
+            />
         </div>
     );
 };

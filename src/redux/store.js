@@ -15,30 +15,34 @@ import reagentReducer from "./reducers/settings/reagent";
 import methodSetupReducer from "./reducers/methodSetup/methodSetup";
 import formStateReducer from "./reducers/formState/formState.js";
 
-const rootReducer = combineReducers({
-    // setting
-    amedite: amediteReducer,
-    bottleMapping: bottleMappingReducer,
-    primeAmedite: primeAmediteReducer,
-    primeSolvent: primeSolventReducer,
-    liquidDetection: liquidDetectionReduce,
-    uvSetting: uvSettingReduce,
-    pressure: pressureSettingReduce,
-    columnEditor: columnEditorReduce,
-    reagent: reagentReducer,
-    // method setup
-    methodSetup: methodSetupReducer,
-    // sequence
-    sequence: sequenceReducer,
-    // is form dirty
-    formState: formStateReducer,
-});
+const rootReducer = (state, action) => {
+    if (action.type === "IMPORT_STATE") {
+        return action.payload;
+    }
+    return combineReducers({
+        // setting
+        amedite: amediteReducer,
+        bottleMapping: bottleMappingReducer,
+        primeAmedite: primeAmediteReducer,
+        primeSolvent: primeSolventReducer,
+        liquidDetection: liquidDetectionReduce,
+        uvSetting: uvSettingReduce,
+        pressure: pressureSettingReduce,
+        columnEditor: columnEditorReduce,
+        reagent: reagentReducer,
+        // method setup
+        methodSetup: methodSetupReducer,
+        // sequence
+        sequence: sequenceReducer,
+        // is form dirty
+        formState: formStateReducer,
+    })(state, action);
+};
 
 const persistConfig = {
     key: "root",
     version: 1,
     storage,
-    // whitelist: ["sequence", "amedite", "primeAmedite", "primeSolvent", "liquidDetection", "uvSetting", "pressure", "columnEditor", "reagent", "methodSetup"],
     whitelist: [
         "sequence",
         "amedite",

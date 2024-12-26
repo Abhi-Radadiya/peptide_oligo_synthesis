@@ -6,6 +6,7 @@ import UVSetting from "./UVSetting/UVSetting";
 import Pressure from "./Pressure/Pressure";
 import ColumnEditor from "./ColumnEditor/ColumnEditor";
 import Configuration from "./Configuration/Configuration";
+import ApplicationData from "./ApplicationData/ApplicationData.js";
 import { Tabs } from "../../Components/Tabs/Tab";
 
 export default function Settings() {
@@ -17,6 +18,7 @@ export default function Settings() {
         { label: "Pressure", value: "pressure", component: Pressure },
         { label: "Column Editor", value: "columnEditor", component: ColumnEditor },
         { label: "Configuration", value: "configuration", component: Configuration },
+        { label: "Application Data", value: "applicationData", component: ApplicationData },
     ];
 
     const [activeTab, setActiveTab] = useState(tabs[0].value);

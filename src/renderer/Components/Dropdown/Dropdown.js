@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Controller } from "react-hook-form";
 import Select from "react-select";
 
@@ -82,10 +82,8 @@ export function ControllerDropdown(props) {
     );
 }
 
-export function SelectionController(props) {
-    const { control, name, menuItem, rules, isDisabled, className, placeholder, width, isClearable = true, height, handleChange } = props;
-
-    const customStyles = {
+const customStyles = (width, height) => {
+    return {
         control: (provided, state) => ({
             ...provided,
             background: "#fff",
@@ -100,7 +98,7 @@ export function SelectionController(props) {
         }),
         option: (provided, state) => ({
             ...provided,
-            backgroundColor: state.isSelected ? "#dedcdc" : "white",
+            backgroundColor: state.isFocused ? "#f5f5f5" : state.isSelected ? "#dedcdc" : "white",
             color: state.isDisabled ? "#c4c2c2" : "#000",
             "&:hover": {
                 backgroundColor: state.isDisabled ? "#fff" : "#f5f5f5",
@@ -113,6 +111,10 @@ export function SelectionController(props) {
             };
         },
     };
+};
+
+export function SelectionController(props) {
+    const { control, name, menuItem, rules, isDisabled, className, placeholder, width, isClearable = true, height, handleChange, isMulti = false } = props;
 
     return (
         <Controller
@@ -121,22 +123,22 @@ export function SelectionController(props) {
             rules={rules}
             render={({ field: { onChange, value }, fieldState: { error } }) => (
                 <div className={`${className}`}>
-                    <Select
+                    <Selection
                         value={value}
-                        isSearchable
-                        className={`basic-single placeholder:text-neutral-200 ${className}`}
-                        classNamePrefix="select"
                         isDisabled={isDisabled}
                         isClearable={isClearable}
-                        options={menuItem}
+                        menuItem={menuItem}
                         placeholder={placeholder}
-                        styles={customStyles}
                         onChange={(option) => {
                             onChange(option);
                             handleChange?.(option);
                         }}
+                        width={width}
+                        className={className}
+                        height={height}
+                        isMulti={isMulti}
+                        error={error}
                     />
-                    {error && <p className="text-red-500 text-sm">{error.message}</p>}
                 </div>
             )}
         />
@@ -144,47 +146,33 @@ export function SelectionController(props) {
 }
 
 export const Selection = (props) => {
-    const { onChange, menuItem, value, isDisabled, className, placeholder, width, isClearable = true, height, isMulti = false } = props;
+    const { onChange, menuItem, value, isDisabled, className, placeholder, width, isClearable = true, height, isMulti = false, error } = props;
 
-    const customStyles = {
-        control: (provided, state) => ({
-            ...provided,
-            background: "#f4f4f4",
-            color: "#333",
-            width,
-            borderColor: state.isFocused ? "#dedcdc" : "#2d2e2e",
-            boxShadow: state.isFocused ? "0 0 0 1px #333" : "none",
-            "&:hover": {
-                borderColor: "#f5f5f5",
-            },
-            height: height,
-        }),
-        option: (provided, state) => ({
-            ...provided,
-            backgroundColor: state.isSelected ? "#dedcdc" : "white",
-            color: "#333",
-            "&:hover": {
-                backgroundColor: "#f5f5f5",
-            },
-            "&:focus": {
-                backgroundColor: "#f5f5f5",
-            },
-        }),
-    };
+    const selectRef = useRef(null);
+
+    useEffect(() => {
+        if (error) {
+            selectRef.current.focus();
+        }
+    }, [error]);
 
     return (
-        <Select
-            value={value}
-            isSearchable
-            className={`basic-single ${className}`}
-            classNamePrefix="select"
-            isDisabled={isDisabled}
-            isClearable={isClearable}
-            options={menuItem}
-            placeholder={placeholder}
-            styles={customStyles}
-            onChange={onChange}
-            isMulti={isMulti}
-        />
+        <>
+            <Select
+                value={value}
+                isSearchable
+                className={`basic-single placeholder:text-neutral-200 ${className}`}
+                classNamePrefix="select"
+                isDisabled={isDisabled}
+                isClearable={isClearable}
+                options={menuItem}
+                placeholder={placeholder}
+                styles={customStyles(width, height)}
+                onChange={onChange}
+                isMulti={isMulti}
+                ref={selectRef}
+            />
+            {error && <p className="text-red-500 text-sm">{error.message}</p>}
+        </>
     );
 };

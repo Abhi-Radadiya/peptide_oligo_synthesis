@@ -162,7 +162,7 @@ export default function SequenceCreation() {
                                     onClick={() => handleSubmit(() => setShowGenerateBlockModel(true))()}
                                 />
 
-                                <Button label="Save" onClick={() => handleSubmit(handleAddSequence)()} />
+                                <Button label="Save" disabled={!watch("block")?.length} onClick={() => handleSubmit(handleAddSequence)()} />
                             </div>
                         )}
                     </div>

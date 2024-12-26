@@ -287,7 +287,7 @@ const DisplayMethodDetails = React.memo((props) => {
     return (
         <>
             <div className="px-4 py-4 rounded-lg border-neutral-300 border shadow overflow-auto scrollbar-style" style={{ height: windowHeight - 220 }}>
-                <ComponentToRender selectedMethodData={data} />
+                <ComponentToRender selectedMethodData={selectedMethodData} />
             </div>
         </>
     );

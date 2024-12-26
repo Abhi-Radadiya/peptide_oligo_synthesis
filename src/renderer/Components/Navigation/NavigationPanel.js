@@ -115,12 +115,15 @@ export default function NavigationPanel(props) {
                     })}
                 </ul>
             </nav>
+
             <div
                 className={`bottom-10 ${!isNavOpen ? "left-2" : "left-60"} transition-all duration-300 cursor-pointer absolute z-[30]`}
                 onClick={() => setIsNavOpen((prevState) => !prevState)}
             >
                 <DownIcon
-                    className={`${isNavOpen ? "rotate-90" : "-rotate-90"} rounded-full border-2 cursor-pointer bg-neutral-200 transition-all duration-300 border-neutral-500`}
+                    className={`${
+                        isNavOpen ? "rotate-90" : "-rotate-90"
+                    } rounded-full border-2 cursor-pointer bg-neutral-200 transition-all duration-300 border-neutral-500`}
                 />
             </div>
 

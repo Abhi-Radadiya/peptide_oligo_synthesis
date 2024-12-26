@@ -20,7 +20,7 @@ export default function LastDeBlock(props) {
 
     return (
         <>
-            <span className="font-medium text-base">Capping</span>
+            <span className="font-medium text-base">De Block</span>
 
             <div className="space-y-2 my-4">
                 {data.map((el, index) => {

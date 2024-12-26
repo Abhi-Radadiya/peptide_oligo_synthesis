@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import RunSpecificBlocksModel from "../RunSequence/Model/RunSpecificBlocksModel";
 import DisplayMethodDetails from "./Component/DisplayMethodDetails";
 import { SelectionController } from "../../../../Components/Dropdown/Dropdown";
-import { methodOption } from "../../../MethodSetup2/Constant";
 
 export default function RunningSynthesis() {
     const { handleSubmit, watch } = useFormContext();
@@ -259,7 +258,7 @@ export default function RunningSynthesis() {
                 ],
             },
         ],
-        []
+        [selectedMethodData?.hasOxidization, selectedMethodData?.hasSulfurization, selectedMethodData?.hasExtra]
     );
 
     return (
