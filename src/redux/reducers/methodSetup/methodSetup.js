@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getUniqueId } from "../../../renderer/modules/MethodSetup2/Constant";
+import { getUniqueId } from "../../../renderer/Helpers/Constant";
 
 const initialState = {
     method: [],

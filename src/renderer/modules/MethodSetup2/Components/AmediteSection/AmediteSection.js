@@ -2,7 +2,7 @@ import React from "react";
 import { useFormContext } from "react-hook-form";
 import { SelectionController } from "../../../../Components/Dropdown/Dropdown";
 import InputField from "../../../../Components/Input/Input";
-import { wasteMenuItems } from "../../Constant";
+import { wasteMenuItems } from "../../../../Helpers/Constant";
 import Checkbox from "../../../../Components/FormController/CheckBox";
 import { useSelector } from "react-redux";
 

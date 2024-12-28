@@ -3,6 +3,8 @@ import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { SelectionController } from "../../../../Components/Dropdown/Dropdown";
 import { savePrimeAmedite } from "../../../../../redux/reducers/settings/prime/primeAmedite";
+import { openToast } from "../../../../../redux/reducers/toastStateReducer/toastStateReducer";
+import { SUCCESS } from "../../../../Helpers/Icons";
 
 export default function PrimeAmedites() {
     const dispatch = useDispatch();
@@ -31,6 +33,8 @@ export default function PrimeAmedites() {
         const cleanedData = Object.fromEntries(Object.entries(data).filter(([_, value]) => value.value || value.check));
 
         dispatch(savePrimeAmedite(cleanedData));
+
+        dispatch(openToast({ text: "Amedite saved successfully.", icon: SUCCESS }));
     };
 
     return (

@@ -9,6 +9,8 @@ import { addSequence } from "../../../../redux/reducers/sequenceReducer";
 import ConfirmGenerateBlock from "../Model/ConfirmGenerateBlock/ConfirmGenerateBlock";
 import ConfirmationPopup from "../../../Components/Popup/ConfirmationPopup";
 import { updateFormState } from "../../../../redux/reducers/formState/formState";
+import { openToast } from "../../../../redux/reducers/toastStateReducer/toastStateReducer";
+import { SUCCESS } from "../../../Helpers/Icons";
 
 export default function SequenceTab() {
     const [showConfirmationModelLeftMethodAssign, setShowConfirmationModelLeftMethodAssign] = useState(false);
@@ -75,6 +77,8 @@ export default function SequenceTab() {
             );
 
             const activeTab = sequence.length === 0 ? { label: sequence[0].name, value: 0 } : { label: newSequence[0].name, value: 0 };
+
+            dispatch(openToast({ text: "Sequence saved successfully.", icon: SUCCESS }));
 
             setActiveTab(activeTab);
         } catch (error) {

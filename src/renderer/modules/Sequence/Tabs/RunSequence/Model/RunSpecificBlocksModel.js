@@ -4,7 +4,7 @@ import { useFormContext } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { Button } from "../../../../../Components/Buttons/Buttons";
 import { SelectionController } from "../../../../../Components/Dropdown/Dropdown";
-import { methodOption } from "../../../../MethodSetup2/Constant";
+import { methodOption } from "../../../../../Helpers/Constant";
 
 export default function RunSpecificBlocksModel(props) {
     const { onClose, setPrintingState, handleRun } = props;

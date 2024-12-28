@@ -10,9 +10,11 @@ import ImportSequenceModel from "./Model/ImportSequenceModel/ImportSequenceModel
 import SequenceTab from "./SequenceTab/SequenceTab";
 import { addSequence, editSequence } from "../../../redux/reducers/sequenceReducer";
 import ConfirmGenerateBlock from "./Model/ConfirmGenerateBlock/ConfirmGenerateBlock";
-import { getUniqueId } from "../MethodSetup2/Constant";
+import { getUniqueId } from "../../Helpers/Constant";
 import { updateFormState } from "../../../redux/reducers/formState/formState";
 import ConfirmationPopup from "../../Components/Popup/ConfirmationPopup";
+import { openToast } from "../../../redux/reducers/toastStateReducer/toastStateReducer";
+import { SUCCESS } from "../../Helpers/Icons";
 
 export default function SequenceCreation() {
     const { id } = useParams();
@@ -91,6 +93,8 @@ export default function SequenceCreation() {
             id
                 ? await dispatch(editSequence({ id: id, name: watch("name"), block: watch("block"), sequenceString: watch("sequenceString") }))
                 : await dispatch(addSequence(sequence));
+
+            dispatch(openToast({ text: "Sequence saved successfully.", icon: SUCCESS }));
 
             navigate("/available-sequence");
         } catch (error) {

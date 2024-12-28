@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import InputField from "../../../Components/Input/Input";
 import { setDetectors } from "../../../../redux/reducers/settings/liquidDetection";
+import { openToast } from "../../../../redux/reducers/toastStateReducer/toastStateReducer";
+import { SUCCESS } from "../../../Helpers/Icons";
 
 export default function LiquidDetection() {
     const dispatch = useDispatch();
@@ -25,6 +27,8 @@ export default function LiquidDetection() {
                 threshold: data[detector.position]?.threshold || "",
                 checked: data[detector.position]?.checked || false,
             }));
+
+            dispatch(openToast({ text: "Liquid detection saved successfully.", icon: SUCCESS }));
 
             dispatch(setDetectors(detectorSettings));
         } catch (error) {

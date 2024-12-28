@@ -5,7 +5,9 @@ import PressureModal from "./Component/AddPressureModel";
 import { Button } from "../../../Components/Buttons/Buttons";
 import ConfirmationPopup from "../../../Components/Popup/ConfirmationPopup";
 import ToggleSwitch from "../../../Components/FormController/Switch";
-import { getUniqueId } from "../../MethodSetup2/Constant";
+import { getUniqueId } from "../../../Helpers/Constant";
+import { openToast } from "../../../../redux/reducers/toastStateReducer/toastStateReducer";
+import { SUCCESS } from "../../../Helpers/Icons";
 
 export default function Pressure() {
     const dispatch = useDispatch();
@@ -20,6 +22,8 @@ export default function Pressure() {
         setSelectedPositions([]);
 
         setShowConfirmation(false);
+
+        dispatch(openToast({ text: "Position deleted successfully.", icon: SUCCESS }));
     };
 
     const handleEdit = (position) => {
@@ -33,7 +37,10 @@ export default function Pressure() {
         } else {
             dispatch(updatePositions([{ id: getUniqueId(), ...data }, ...positions]));
         }
+
         setIsModalOpen(false);
+
+        dispatch(openToast({ text: "Position saved successfully.", icon: SUCCESS }));
     };
 
     const [showConfirmation, setShowConfirmation] = useState(false);
@@ -111,7 +118,9 @@ export default function Pressure() {
                                     {el.file ? (
                                         <div className="group relative">
                                             <span className="text-neutral-800 font-normal cursor-alias">{el.file.name}</span>
-                                            <span className="hidden group-hover:block absolute right-0 bg-slate-200 text-xs py-0.5 rounded-lg px-2 top-6">{el.file.path}</span>
+                                            <span className="hidden group-hover:block absolute right-0 bg-slate-200 text-xs py-0.5 rounded-lg px-2 top-6">
+                                                {el.file.path}
+                                            </span>
                                         </div>
                                     ) : (
                                         <span className="text-neutral-500">No file selected</span>

@@ -13,7 +13,8 @@ import pressureSettingReduce from "./reducers/settings/pressure";
 import columnEditorReduce from "./reducers/settings/columnEditor";
 import reagentReducer from "./reducers/settings/reagent";
 import methodSetupReducer from "./reducers/methodSetup/methodSetup";
-import formStateReducer from "./reducers/formState/formState.js";
+import formStateReducer from "./reducers/formState/formState";
+import toastStateReducer from "./reducers/toastStateReducer/toastStateReducer";
 
 const rootReducer = (state, action) => {
     if (action.type === "IMPORT_STATE") {
@@ -36,6 +37,8 @@ const rootReducer = (state, action) => {
         sequence: sequenceReducer,
         // is form dirty
         formState: formStateReducer,
+        // toaster
+        toastState: toastStateReducer,
     })(state, action);
 };
 

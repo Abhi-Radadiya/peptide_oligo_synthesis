@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { ReactComponent as TrashIcon } from "../../../../../Assets/trash.svg";
-import { getUniqueId } from "../../../../MethodSetup2/Constant";
+import { getUniqueId } from "../../../../../Helpers/Constant";
 
 export default function FileUploader() {
     const [sequences, setSequences] = useState([]);

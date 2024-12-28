@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import InputField from "../../../Components/Input/Input";
 import { setDetectors } from "../../../../redux/reducers/settings/uvSetting";
+import { openToast } from "../../../../redux/reducers/toastStateReducer/toastStateReducer";
+import { SUCCESS } from "../../../Helpers/Icons";
 
 export default function UVSetting() {
     const dispatch = useDispatch();
@@ -27,6 +29,8 @@ export default function UVSetting() {
         }));
 
         dispatch(setDetectors(uvSettings));
+
+        dispatch(openToast({ text: "UV setting saved successfully.", icon: SUCCESS }));
     };
 
     return (
@@ -57,7 +61,10 @@ export default function UVSetting() {
                             <td className="py-3 px-6">
                                 <InputField
                                     control={control}
-                                    rules={{ min: { value: 190, message: "Value must be between 190 - 700" }, max: { value: 700, message: "Value must be between 190 - 700" } }}
+                                    rules={{
+                                        min: { value: 190, message: "Value must be between 190 - 700" },
+                                        max: { value: 700, message: "Value must be between 190 - 700" },
+                                    }}
                                     name={`${el.position}.value`}
                                     placeholder={`Enter UV Value [190-700]`}
                                     type="number"

@@ -3,6 +3,8 @@ import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { SelectionController } from "../../../../Components/Dropdown/Dropdown";
 import { savePrimeSolvent } from "../../../../../redux/reducers/settings/prime/primeSolvent";
+import { openToast } from "../../../../../redux/reducers/toastStateReducer/toastStateReducer";
+import { SUCCESS } from "../../../../Helpers/Icons";
 
 export default function PrimeSolvents() {
     const dispatch = useDispatch();
@@ -29,6 +31,8 @@ export default function PrimeSolvents() {
 
     const onSubmit = async (data) => {
         dispatch(savePrimeSolvent(data));
+
+        dispatch(openToast({ text: "Solvent saved successfully.", icon: SUCCESS }));
     };
 
     return (

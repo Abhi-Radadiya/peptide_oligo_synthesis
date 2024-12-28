@@ -4,6 +4,8 @@ import ColumnDetailsModel from "./Component/ColumnDetailsModel";
 import { useSelector, useDispatch } from "react-redux";
 import ConfirmationPopup from "../../../Components/Popup/ConfirmationPopup";
 import { deletePositions } from "../../../../redux/reducers/settings/columnEditor";
+import { openToast } from "../../../../redux/reducers/toastStateReducer/toastStateReducer";
+import { SUCCESS } from "../../../Helpers/Icons";
 
 const ColumnEditor = () => {
     const columnEditor = useSelector((state) => state.columnEditor.positions);
@@ -23,6 +25,7 @@ const ColumnEditor = () => {
         dispatch(deletePositions(selectedRows));
         setSelectedRows([]);
         setShowConfirmation(false);
+        dispatch(openToast({ text: "Deleted successfully.", icon: SUCCESS }));
     };
 
     return (

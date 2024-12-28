@@ -3,6 +3,8 @@ import { useFormContext } from "react-hook-form";
 import Select from "react-select";
 import { useWindowSize } from "@uidotdev/usehooks";
 import { useSelector } from "react-redux";
+import { ReactComponent as ReimbursementIcon } from "../../../../Assets/reimbursement.svg";
+import MethodColorModel from "./Model/MethodColorModel";
 
 export default function MethodAssign(props) {
     const { index } = props;
@@ -10,6 +12,8 @@ export default function MethodAssign(props) {
     const { watch, setValue } = useFormContext();
 
     const blockName = index !== undefined ? `sequence.${index}.block` : "block";
+
+    const [showMethodColor, setShowMethodColor] = useState(false);
 
     const blocks = watch(blockName);
 
@@ -75,7 +79,10 @@ export default function MethodAssign(props) {
                             <label className="block text-gray-700 text-sm font-bold">Method Selection</label>
                             <p className="italic text-neutral-500 text-sm mb-2">(Apply method to selected blocks)</p>
                         </div>
-                        <div className="pt-1">
+
+                        <div className="pt-1 flex flex-row items-center gap-2">
+                            <ReimbursementIcon className="rotate-180 fill-neutral-500 cursor-pointer stroke-white" onClick={() => setShowMethodColor(true)} />
+
                             <Select
                                 isDisabled={isSelectDisabled}
                                 options={methodMenuItem}
@@ -85,6 +92,7 @@ export default function MethodAssign(props) {
                                 styles={{
                                     control: (base) => ({
                                         ...base,
+                                        width: "250px",
                                         borderColor: "#d1d5db",
                                         "&:hover": {
                                             borderColor: "#6b7280",
@@ -135,6 +143,8 @@ export default function MethodAssign(props) {
                     })}
                 </div>
             </div>
+
+            {showMethodColor && <MethodColorModel onClose={() => setShowMethodColor(false)} methods={methods} />}
         </>
     );
 }

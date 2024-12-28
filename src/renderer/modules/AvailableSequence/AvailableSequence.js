@@ -7,6 +7,8 @@ import { ReactComponent as ViewIcon } from "../../Assets/pos.svg";
 import ConfirmationPopup from "../../Components/Popup/ConfirmationPopup";
 import { deleteSequence } from "../../../redux/reducers/sequenceReducer";
 import SequenceStringPopup from "./Model/SequenceStringPopup";
+import { openToast } from "../../../redux/reducers/toastStateReducer/toastStateReducer";
+import { SUCCESS } from "../../Helpers/Icons";
 
 export default function AvailableSequence() {
     const navigate = useNavigate();
@@ -19,6 +21,7 @@ export default function AvailableSequence() {
         });
         setShowDeleteSeqPopup(false);
         setSelectedIds([]);
+        dispatch(openToast({ text: "Sequence deleted successfully.", icon: SUCCESS }));
     };
 
     const [showDeleteSeqPopup, setShowDeleteSeqPopup] = useState(false);
@@ -74,10 +77,16 @@ export default function AvailableSequence() {
                                 <td className="border p-2 text-left">{el.name}</td>
                                 <td className="border p-2 text-left">
                                     <div className="flex flex-row gap-4">
-                                        <div className="w-fit cursor-pointer hover:border-b hover:-mb-1 border-[#433db8]" onClick={() => navigate(`/sequence-editor/${el.id}`)}>
+                                        <div
+                                            className="w-fit cursor-pointer hover:border-b hover:-mb-1 border-[#433db8]"
+                                            onClick={() => navigate(`/sequence-editor/${el.id}`)}
+                                        >
                                             <EditIcon stroke="#433db8" />
                                         </div>
-                                        <div className="w-fit cursor-pointer hover:border-b hover:-mb-1 border-[#433db8]" onClick={() => setSelectedSequence(el.sequenceString)}>
+                                        <div
+                                            className="w-fit cursor-pointer hover:border-b hover:-mb-1 border-[#433db8]"
+                                            onClick={() => setSelectedSequence(el.sequenceString)}
+                                        >
                                             <ViewIcon stroke="#433db8" />
                                         </div>
                                     </div>

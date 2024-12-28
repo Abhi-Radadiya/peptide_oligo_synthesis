@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { SelectionController } from "../../../Components/Dropdown/Dropdown";
 import { useFormContext } from "react-hook-form";
-import { methodOption, wasteMenuItems } from "../../MethodSetup2/Constant";
+import { methodOption, wasteMenuItems } from "../../../Helpers/Constant";
 import RadioButton from "../../../Components/FormController/RadioButton";
 import { useSelector } from "react-redux";
 import { useWindowSize } from "@uidotdev/usehooks";

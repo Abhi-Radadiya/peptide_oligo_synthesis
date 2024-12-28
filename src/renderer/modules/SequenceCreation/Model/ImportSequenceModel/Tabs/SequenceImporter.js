@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ReactComponent as TrashIcon } from "../../../../../Assets/trash.svg";
 import { useSelector } from "react-redux";
 import { Selection } from "../../../../../Components/Dropdown/Dropdown";
-import { getUniqueId } from "../../../../MethodSetup2/Constant";
+import { getUniqueId } from "../../../../../Helpers/Constant";
 import { useFormContext } from "react-hook-form";
 
 export default function SequenceImporter() {

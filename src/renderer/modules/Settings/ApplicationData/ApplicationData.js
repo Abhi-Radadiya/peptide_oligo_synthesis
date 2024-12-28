@@ -4,6 +4,8 @@ import { ReactComponent as ExportIcon } from "../../../Assets/export.svg";
 import { ReactComponent as ImportIcon } from "../../../Assets/cross-arrow.svg";
 import { store } from "../../../../redux/store";
 import { useDispatch } from "react-redux";
+import { openToast } from "../../../../redux/reducers/toastStateReducer/toastStateReducer";
+import { SUCCESS, ERROR } from "../../../Helpers/Icons";
 
 export default function ApplicationData() {
     const exportStore = () => {
@@ -28,7 +30,12 @@ export default function ApplicationData() {
         const file = event.target.files[0];
         if (file) {
             const success = await importStoreData(file);
-            console.log("success =:= ", success);
+
+            if (success) {
+                dispatch(openToast({ text: "Data imported successfully.", icon: SUCCESS }));
+            } else {
+                dispatch(openToast({ text: "Error importing data!", icon: ERROR }));
+            }
         }
     };
 

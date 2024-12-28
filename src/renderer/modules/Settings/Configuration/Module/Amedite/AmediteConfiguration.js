@@ -6,6 +6,8 @@ import { Button } from "../../../../../Components/Buttons/Buttons";
 import ConfirmationPopup from "../../../../../Components/Popup/ConfirmationPopup";
 import { useWindowSize } from "@uidotdev/usehooks";
 import AddConfigurationPopup from "../../Model/AddConfigurationPopup";
+import { openToast } from "../../../../../../redux/reducers/toastStateReducer/toastStateReducer";
+import { SUCCESS } from "../../../../../Helpers/Icons";
 
 const AmediteConfiguration = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,12 +24,14 @@ const AmediteConfiguration = () => {
         dispatch(updateAmedite(data));
         setIsModalOpen(false);
         setEditAmediteDetails({});
+        dispatch(openToast({ text: "Amedite updated successfully.", icon: SUCCESS }));
     };
 
     const addNewDetails = async (data) => {
         dispatch(addAmedite(data));
         setIsModalOpen(false);
         setEditAmediteDetails({});
+        dispatch(openToast({ text: "Amedite created successfully.", icon: SUCCESS }));
     };
 
     const handleForm = async (data) => {
@@ -47,6 +51,7 @@ const AmediteConfiguration = () => {
         dispatch(deleteAmedites(selectedRows));
         setSelectedRows([]);
         setShowConfirmation(false);
+        dispatch(openToast({ text: "Amedite deleted successfully.", icon: SUCCESS }));
     };
 
     return (
@@ -90,7 +95,12 @@ const AmediteConfiguration = () => {
 
                                     <td className="py-3 px-6">
                                         <div className="flex flex-row items-center gap-2">
-                                            <input type="checkbox" className="h-4 w-4" checked={selectedRows.includes(item.id)} onChange={() => handleRowSelect(item.id)} />
+                                            <input
+                                                type="checkbox"
+                                                className="h-4 w-4"
+                                                checked={selectedRows.includes(item.id)}
+                                                onChange={() => handleRowSelect(item.id)}
+                                            />
                                             {item.full_name}
                                         </div>
                                     </td>

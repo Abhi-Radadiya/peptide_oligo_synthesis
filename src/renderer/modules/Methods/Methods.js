@@ -5,6 +5,8 @@ import { ReactComponent as EditIcon } from "../../Assets/edit.svg";
 import { Button } from "../../Components/Buttons/Buttons";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteMethodSetup } from "../../../redux/reducers/methodSetup/methodSetup";
+import { openToast } from "../../../redux/reducers/toastStateReducer/toastStateReducer";
+import { SUCCESS } from "../../Helpers/Icons";
 
 export default function Methods() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,6 +32,9 @@ export default function Methods() {
 
     const handleDeleteSelectedMethod = () => {
         dispatch(deleteMethodSetup(selectedRows));
+
+        dispatch(openToast({ text: "Method deleted successfully.", icon: SUCCESS }));
+
         setSelectedRows([]);
         setIsModalOpen(false);
     };

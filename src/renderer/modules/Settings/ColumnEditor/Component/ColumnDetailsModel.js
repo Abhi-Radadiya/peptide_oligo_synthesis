@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { isEmpty } from "lodash";
 import { addPosition, updatePosition } from "../../../../../redux/reducers/settings/columnEditor";
+import { openToast } from "../../../../../redux/reducers/toastStateReducer/toastStateReducer";
+import { SUCCESS } from "../../../../Helpers/Icons";
 
 export default function ColumnDetailsModel(props) {
     const { editingDetails, closeModal, columnEditor } = props;
@@ -29,6 +31,7 @@ export default function ColumnDetailsModel(props) {
     const handleSave = (data) => {
         isEditing ? dispatch(updatePosition(data)) : dispatch(addPosition(data));
         closeModal();
+        dispatch(openToast({ text: "Saved successfully.", icon: SUCCESS }));
     };
 
     return (
@@ -41,7 +44,9 @@ export default function ColumnDetailsModel(props) {
                         <InputField
                             wrapperClassName="col-span-2"
                             rules={{
-                                ...(!isEditing ? { validate: { uniqueName: (value) => !columnEditor?.some((item) => item.name === value) || "Name already exists" } } : {}),
+                                ...(!isEditing
+                                    ? { validate: { uniqueName: (value) => !columnEditor?.some((item) => item.name === value) || "Name already exists" } }
+                                    : {}),
                                 required: "Please enter name",
                             }}
                             control={control}

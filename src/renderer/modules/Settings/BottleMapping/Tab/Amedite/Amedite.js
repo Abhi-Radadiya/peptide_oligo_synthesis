@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { saveBottleMapping } from "../../../../../../redux/reducers/settings/bottleMapping";
 import { SelectionController } from "../../../../../Components/Dropdown/Dropdown";
+import { openToast } from "../../../../../../redux/reducers/toastStateReducer/toastStateReducer";
+import { SUCCESS } from "../../../../../Helpers/Icons";
 
 export default function Amedite() {
     const dispatch = useDispatch();
@@ -26,6 +28,8 @@ export default function Amedite() {
         const payload = data.amedite.map((el) => ({ value: el?.value, label: el?.label }));
 
         dispatch(saveBottleMapping({ data: payload, type: "amedite" }));
+
+        dispatch(openToast({ text: "Amedite saved successfully.", icon: SUCCESS }));
     };
 
     return (

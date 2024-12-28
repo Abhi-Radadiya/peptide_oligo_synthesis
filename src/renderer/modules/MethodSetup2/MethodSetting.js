@@ -11,6 +11,8 @@ import Footer from "./Components/Footer";
 import { useDispatch, useSelector } from "react-redux";
 import { addMethodSetup, updateMethodSetup } from "../../../redux/reducers/methodSetup/methodSetup";
 import { updateFormState } from "../../../redux/reducers/formState/formState";
+import { openToast } from "../../../redux/reducers/toastStateReducer/toastStateReducer";
+import { SUCCESS } from "../../Helpers/Icons";
 
 export default function MethodSetting() {
     const { id } = useParams();
@@ -140,6 +142,9 @@ export default function MethodSetting() {
         }
 
         activeStep === 3 ? (!!id ? editMethod(data) : saveMethod(data)) : setActiveStep(activeStep + 1);
+
+        dispatch(openToast({ text: "Method created successfully.", icon: SUCCESS }));
+
         dispatch(updateFormState(false));
     };
 
