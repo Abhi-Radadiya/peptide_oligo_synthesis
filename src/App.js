@@ -29,7 +29,6 @@ export default function App() {
                         <Route path="/method-setup" element={<Methods />} />
                         <Route path="/method-setting/:id" element={<MethodSetting />} />
                         <Route path="/method-setting" element={<MethodSetting />} />
-                        {/* <Route path="/motor-testing" element={<MotorTesting />} /> */}
                         <Route path="/settings" element={<Settings />} />
                         <Route path="/sequence" element={<Sequence />} />
                         <Route path="/available-sequence" element={<AvailableSequence />} />

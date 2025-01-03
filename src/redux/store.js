@@ -16,31 +16,26 @@ import methodSetupReducer from "./reducers/methodSetup/methodSetup";
 import formStateReducer from "./reducers/formState/formState";
 import toastStateReducer from "./reducers/toastStateReducer/toastStateReducer";
 
-const rootReducer = (state, action) => {
-    if (action.type === "IMPORT_STATE") {
-        return action.payload;
-    }
-    return combineReducers({
-        // setting
-        amedite: amediteReducer,
-        bottleMapping: bottleMappingReducer,
-        primeAmedite: primeAmediteReducer,
-        primeSolvent: primeSolventReducer,
-        liquidDetection: liquidDetectionReduce,
-        uvSetting: uvSettingReduce,
-        pressure: pressureSettingReduce,
-        columnEditor: columnEditorReduce,
-        reagent: reagentReducer,
-        // method setup
-        methodSetup: methodSetupReducer,
-        // sequence
-        sequence: sequenceReducer,
-        // is form dirty
-        formState: formStateReducer,
-        // toaster
-        toastState: toastStateReducer,
-    })(state, action);
-};
+const rootReducer = combineReducers({
+    // setting
+    amedite: amediteReducer,
+    bottleMapping: bottleMappingReducer,
+    primeAmedite: primeAmediteReducer,
+    primeSolvent: primeSolventReducer,
+    liquidDetection: liquidDetectionReduce,
+    uvSetting: uvSettingReduce,
+    pressure: pressureSettingReduce,
+    columnEditor: columnEditorReduce,
+    reagent: reagentReducer,
+    // method setup
+    methodSetup: methodSetupReducer,
+    // sequence
+    sequence: sequenceReducer,
+    // is form dirty
+    formState: formStateReducer,
+    // toaster
+    toastState: toastStateReducer,
+});
 
 const persistConfig = {
     key: "root",

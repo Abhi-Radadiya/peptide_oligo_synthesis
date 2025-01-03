@@ -30,7 +30,7 @@ export default function NotifyToaster() {
             <div
                 id="toast-success"
                 className={`flex items-center w-full max-w-sm p-4 mb-4 text-gray-500 bg-[#f2f1ed] border border-neutral-400 rounded-lg shadow-xl dark:text-gray-400 dark:bg-gray-800 absolute z-50 left-0 right-0 mx-auto transition-all duration-500 ${
-                    isToastOpen ? "top-10 opacity-100" : "top-0 opacity-0"
+                    isToastOpen ? "top-10 opacity-100 z-20" : "top-0 opacity-0 z-0"
                 }`}
                 role="alert"
             >
