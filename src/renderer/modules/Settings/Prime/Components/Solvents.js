@@ -1,36 +1,23 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { SelectionController } from "../../../../Components/Dropdown/Dropdown";
-import { savePrimeSolvent } from "../../../../../redux/reducers/settings/prime/primeSolvent";
 import { openToast } from "../../../../../redux/reducers/toastStateReducer/toastStateReducer";
 import { SUCCESS } from "../../../../Helpers/Icons";
+import { savePriming } from "../../../../../redux/reducers/settings/prime/primingReducer";
 
 export default function PrimeSolvents() {
     const dispatch = useDispatch();
 
-    const amediteOptions = useSelector(
-        (state) =>
-            state.amedite?.amediteList?.map((el) => ({
-                label: el.full_name,
-                value: el.full_name,
-            })) || []
-    );
+    const primeSolvent = useSelector((state) => state.priming.solvent || {});
 
-    const existingPrimeSolvents = useSelector((state) => state.primeSolvent?.primeSolvents || {});
+    const solventPosition = useSelector((state) => state.bottleMapping.solvent);
 
-    const positions = Array.from({ length: 10 });
-
-    const { control, handleSubmit, setValue, watch } = useForm({ defaultValues: existingPrimeSolvents });
-
-    useEffect(() => {
-        Object.entries(existingPrimeSolvents).forEach(([key, value]) => {
-            setValue(key, value);
-        });
-    }, [existingPrimeSolvents, setValue]);
+    const { control, handleSubmit } = useForm({ defaultValues: { solvent: primeSolvent } });
 
     const onSubmit = async (data) => {
-        dispatch(savePrimeSolvent(data));
+        const payload = data.solvent.map((el, index) => ({ ...el, amedite: solventPosition[index] }));
+
+        dispatch(savePriming({ data: payload, type: "solvent" }));
 
         dispatch(openToast({ text: "Solvent saved successfully.", icon: SUCCESS }));
     };
@@ -44,30 +31,29 @@ export default function PrimeSolvents() {
                 </button>
             </div>
 
-            <div className="grid grid-cols-3 w-full justify-between gap-5">
-                {positions?.map((_, index) => {
-                    const indexP = index + 1;
+            <div className="grid grid-cols-4 gap-10">
+                {solventPosition.map((_, index) => {
+                    const selectedSolvent = solventPosition[index].label;
 
                     return (
-                        <div key={index} className="flex gap-3 items-center w-full">
-                            <span className="block font-medium text-gray-700">{indexP < 10 ? "0" + indexP : indexP}.</span>
+                        <div key={index} className="flex gap-3 items-center w-full ">
+                            <span className="block font-medium text-gray-700">{index < 9 ? "0" + (index + 1) : index + 1}.</span>
 
-                            <div className={`${watch(`prime_solvent_${indexP}.solvent.value`) && "border"} rounded border-neutral-800`}>
-                                <SelectionController
-                                    control={control}
-                                    placeholder={`Select solvent`}
-                                    name={`prime_solvent_${indexP}.solvent`}
-                                    menuItem={amediteOptions}
-                                    className="max-w-[200px]"
-                                    width={200}
-                                />
-                            </div>
+                            <span className={`px-2 py-2 border bg-white border-neutral-300 rounded-md w-full ${!!selectedSolvent ? "" : "text-neutral-300"}`}>
+                                {selectedSolvent ?? "Solvent isn't selected"}
+                            </span>
 
                             <Controller
                                 control={control}
-                                name={`prime_solvent_${indexP}.check`}
+                                name={`solvent.${index}.check`}
                                 render={({ field: { onChange, onBlur, value } }) => (
-                                    <input type="checkbox" onBlur={onBlur} onChange={onChange} checked={value ?? false} className="h-4 w-4" />
+                                    <input
+                                        type="checkbox"
+                                        onBlur={onBlur}
+                                        onChange={onChange}
+                                        checked={value ?? false}
+                                        className="h-5 w-5 focus:ring-1 ring-neutral-500 rounded-lg ring-offset-1"
+                                    />
                                 )}
                             />
                         </div>

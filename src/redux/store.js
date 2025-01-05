@@ -5,8 +5,7 @@ import storage from "redux-persist/lib/storage";
 import sequenceReducer from "./reducers/sequenceReducer";
 import amediteReducer from "./reducers/settings/amedite";
 import bottleMappingReducer from "./reducers/settings/bottleMapping";
-import primeAmediteReducer from "./reducers/settings/prime/primeAmedite";
-import primeSolventReducer from "./reducers/settings/prime/primeSolvent";
+import primingReducer from "./reducers/settings/prime/primingReducer";
 import liquidDetectionReduce from "./reducers/settings/liquidDetection";
 import uvSettingReduce from "./reducers/settings/uvSetting";
 import pressureSettingReduce from "./reducers/settings/pressure";
@@ -20,8 +19,7 @@ const rootReducer = combineReducers({
     // setting
     amedite: amediteReducer,
     bottleMapping: bottleMappingReducer,
-    primeAmedite: primeAmediteReducer,
-    primeSolvent: primeSolventReducer,
+    priming: primingReducer,
     liquidDetection: liquidDetectionReduce,
     uvSetting: uvSettingReduce,
     pressure: pressureSettingReduce,
@@ -41,19 +39,7 @@ const persistConfig = {
     key: "root",
     version: 1,
     storage,
-    whitelist: [
-        "sequence",
-        "amedite",
-        "bottleMapping",
-        "primeAmedite",
-        "primeSolvent",
-        "liquidDetection",
-        "uvSetting",
-        "pressure",
-        "columnEditor",
-        "reagent",
-        "methodSetup",
-    ],
+    whitelist: ["sequence", "amedite", "bottleMapping", "priming", "liquidDetection", "uvSetting", "pressure", "columnEditor", "reagent", "methodSetup"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

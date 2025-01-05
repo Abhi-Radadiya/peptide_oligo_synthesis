@@ -1,38 +1,23 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { SelectionController } from "../../../../Components/Dropdown/Dropdown";
-import { savePrimeAmedite } from "../../../../../redux/reducers/settings/prime/primeAmedite";
 import { openToast } from "../../../../../redux/reducers/toastStateReducer/toastStateReducer";
 import { SUCCESS } from "../../../../Helpers/Icons";
+import { savePriming } from "../../../../../redux/reducers/settings/prime/primingReducer";
 
 export default function PrimeAmedites() {
     const dispatch = useDispatch();
 
-    const amediteOptions = useSelector(
-        (state) =>
-            state.amedite?.amediteList?.map((el) => ({
-                label: el.full_name,
-                value: el.full_name,
-            })) || []
-    );
+    const primeAmedites = useSelector((state) => state.priming.amedite || {});
 
-    const existingPrimeAmedites = useSelector((state) => state.primeAmedite?.primeAmedites || {});
+    const ameditePosition = useSelector((state) => state.bottleMapping.amedite);
 
-    const positions = Array.from({ length: 24 });
-
-    const { control, handleSubmit, setValue, watch } = useForm({ defaultValues: existingPrimeAmedites });
-
-    useEffect(() => {
-        Object.entries(existingPrimeAmedites).forEach(([key, value]) => {
-            setValue(key, value);
-        });
-    }, [existingPrimeAmedites, setValue]);
+    const { control, handleSubmit } = useForm({ defaultValues: { priming: primeAmedites } });
 
     const onSubmit = async (data) => {
-        const cleanedData = Object.fromEntries(Object.entries(data).filter(([_, value]) => value.value || value.check));
+        const payload = data.priming.map((el, index) => ({ ...el, amedite: ameditePosition[index] }));
 
-        dispatch(savePrimeAmedite(cleanedData));
+        dispatch(savePriming({ data: payload, type: "amedite" }));
 
         dispatch(openToast({ text: "Amedite saved successfully.", icon: SUCCESS }));
     };
@@ -46,39 +31,36 @@ export default function PrimeAmedites() {
                 </button>
             </div>
 
-            <div className="flex flex-row w-full justify-between gap-5">
-                {[...Array(4)].map((_, colIndex) => (
-                    <div key={colIndex} className="w-full space-y-8">
-                        {positions.slice(colIndex * 6, (colIndex + 1) * 6)?.map((_, index) => {
-                            const indexP = index + 1 + colIndex * 6;
+            <div className="grid grid-cols-4 gap-10">
+                {primeAmedites.map((_, index) => {
+                    const selectedAmedite = ameditePosition[index].label;
 
-                            return (
-                                <div key={index} className="flex gap-3 items-center w-full">
-                                    <span className="block font-medium text-gray-700">{indexP < 10 ? "0" + indexP : indexP}.</span>
+                    return (
+                        <div key={index} className="flex gap-3 items-center w-full ">
+                            <div key={index} className="flex gap-3 items-center w-full">
+                                <span className="block font-medium text-gray-700">{index < 9 ? "0" + (index + 1) : index + 1}.</span>
 
-                                    <div className={`${watch(`prime_amedite_${indexP}.amedite.value`) && "border"} rounded border-neutral-800`}>
-                                        <SelectionController
-                                            control={control}
-                                            placeholder={`Select amedite`}
-                                            name={`prime_amedite_${indexP}.amedite`}
-                                            menuItem={amediteOptions}
-                                            className="max-w-[200px]"
-                                            width={200}
+                                <span className={`px-2 py-2 border bg-white border-neutral-300 rounded-md w-full ${!!selectedAmedite ? "" : "text-neutral-300"}`}>
+                                    {selectedAmedite ?? "Amedite isn't selected"}
+                                </span>
+
+                                <Controller
+                                    control={control}
+                                    name={`priming.${index}.check`}
+                                    render={({ field: { onChange, onBlur, value } }) => (
+                                        <input
+                                            type="checkbox"
+                                            onBlur={onBlur}
+                                            onChange={onChange}
+                                            checked={value ?? false}
+                                            className="h-5 w-5 focus:ring-1 ring-neutral-500 rounded-lg ring-offset-1"
                                         />
-                                    </div>
-
-                                    <Controller
-                                        control={control}
-                                        name={`prime_amedite_${indexP}.check`}
-                                        render={({ field: { onChange, onBlur, value } }) => (
-                                            <input type="checkbox" onBlur={onBlur} onChange={onChange} checked={value ?? false} className="h-4 w-4" />
-                                        )}
-                                    />
-                                </div>
-                            );
-                        })}
-                    </div>
-                ))}
+                                    )}
+                                />
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
         </form>
     );

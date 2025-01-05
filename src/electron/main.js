@@ -1,26 +1,30 @@
 const { app, BrowserWindow, ipcMain, screen } = require("electron");
 
 const path = require("path");
+
 const { SerialPort } = require("serialport");
+
 const {
-    initializeDB,
-    saveBottleMappingData,
-    getBottleMappingData,
-    saveBottleMappingDetails,
-    getBottleMappingDetails,
     quitDb,
-    updateBottleMappingDetails,
-    deleteBottleMappingDetails,
+    getTableData,
+    initializeDB,
+    saveUVSettings,
     savePrimeDetails,
     getPrimePosition,
-    saveLiquidDetectionDetails,
     getLiquidDetection,
-    saveUVSettings,
-    getTableData,
+    getBottleMappingData,
+    saveBottleMappingData,
+    getBottleMappingDetails,
+    saveBottleMappingDetails,
+    deleteBottleMappingDetails,
+    updateBottleMappingDetails,
+    saveLiquidDetectionDetails,
 } = require("./db");
+
 const { autoUpdater } = require("electron-updater");
 
 let mainWindow;
+
 let activePort = null;
 
 async function createWindow() {
