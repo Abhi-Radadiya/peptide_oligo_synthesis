@@ -41,9 +41,9 @@ export default function RunSpecificBlocksModel(props) {
         const spaceIndices = [
             -1,
             ...value
-                .split("")
-                .map((char, i) => (char === " " ? i : -1))
-                .filter((i) => i >= 0),
+                ?.split("")
+                ?.map((char, i) => (char === " " ? i : -1))
+                ?.filter((i) => i >= 0),
             value.length,
         ];
 
