@@ -15,7 +15,7 @@ export default function ConfirmGenerateBlock(props) {
 
     const generateBlock = () => {
         setSequenceString();
-        onClose();
+        // onClose();
     };
 
     return (

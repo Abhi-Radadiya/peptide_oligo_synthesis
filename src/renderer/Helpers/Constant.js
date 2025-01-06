@@ -144,3 +144,7 @@ const flags = {
         ],
     },
 };
+
+export const findAmediteLabel = (amediteList, amediteId) => {
+    return amediteList.find((el) => amediteId === el.id)?.full_name;
+};

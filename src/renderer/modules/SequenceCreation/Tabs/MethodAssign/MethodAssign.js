@@ -5,6 +5,7 @@ import { useWindowSize } from "@uidotdev/usehooks";
 import { useSelector } from "react-redux";
 import { ReactComponent as ReimbursementIcon } from "../../../../Assets/reimbursement.svg";
 import MethodColorModel from "./Model/MethodColorModel";
+import { isArray } from "lodash";
 
 export default function MethodAssign(props) {
     const { index } = props;
@@ -131,7 +132,7 @@ export default function MethodAssign(props) {
                                 }`}
                                 style={{ ...(!!selectedColor && !selectedBlocks?.includes(index) ? { background: selectedColor } : {}) }}
                             >
-                                {block.block}
+                                {isArray(block.block) ? block.block.join(" ") : block.block}
 
                                 {/* {hasMethod && (
                                     <div className={`${tooltipClasses} left-1/2`}>

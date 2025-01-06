@@ -1,14 +1,24 @@
-import React, { useRef } from "react";
-import { Controller, useFormContext } from "react-hook-form";
+import React, { useRef, useState } from "react";
+import { useFormContext } from "react-hook-form";
 import InputField from "../../../../Components/Input/Input";
 import { useWindowSize } from "@uidotdev/usehooks";
+import TextArea from "./Component/TextArea";
+import { ReactComponent as ReimbursementIcon } from "../../../../Assets/reimbursement.svg";
+import InvalidSequenceBlockModel from "./Model/InvalidSequenceBlockModel";
 
 export default function SequenceEditing(props) {
     const { index } = props;
 
     const isEditing = index !== undefined;
 
-    const { control, setValue, watch } = useFormContext();
+    const {
+        control,
+        setValue,
+        watch,
+        formState: { errors },
+    } = useFormContext();
+
+    const textAreaRef = useRef();
 
     const setSelectedBlocks = (blocks) => setValue("selectedBlock", blocks);
 
@@ -66,10 +76,13 @@ export default function SequenceEditing(props) {
 
     const isAllSelected = () => {
         const arrayLength = watch("sequenceString").split(" ")?.length;
+
         return (selectedBlocks?.length ?? 0) === arrayLength && !!selectedBlocks.length;
     };
 
-    const textAreaRef = useRef();
+    const invalidBlock = errors?.invalidSequenceBlock?.invalidBlock;
+
+    const [showInvalidBlockModel, setShowInvalidBlockModel] = useState(false);
 
     return (
         <>
@@ -93,34 +106,21 @@ export default function SequenceEditing(props) {
                         <p className="italic text-neutral-500 text-sm">(Enter Sequence Here)</p>
                     </div>
 
-                    <span className="font-normal text-blue-500 text-base hover:underline underline-offset-2 cursor-pointer" onClick={handleSelectAll}>
-                        {isAllSelected() ? "Unselect all" : "Select all"}
-                    </span>
+                    <div className="flex flex-row items-center gap-3">
+                        {invalidBlock?.length && (
+                            <ReimbursementIcon className="rotate-180 fill-red-400 cursor-pointer stroke-red-100" onClick={() => setShowInvalidBlockModel(true)} />
+                        )}
+
+                        <span className="font-normal text-blue-500 text-base hover:underline underline-offset-2 cursor-pointer" onClick={handleSelectAll}>
+                            {isAllSelected() ? "Unselect all" : "Select all"}
+                        </span>
+                    </div>
                 </div>
 
-                <Controller
-                    key={index}
-                    control={control}
-                    name={index !== undefined ? `sequence.${index}.sequenceString` : "sequenceString"}
-                    rules={{ required: "Sequence can't be empty, enter sequence" }}
-                    render={({ field, fieldState: { error } }) => (
-                        <div className="relative">
-                            <textarea
-                                {...field}
-                                value={field.value ?? ""}
-                                placeholder="Enter sequence here"
-                                rows={index !== undefined ? 20 : 22}
-                                className={`shadow appearance-none border border-neutral-400 scrollbar-style rounded-lg w-full py-2 px-3 text-neutral-700 focus:outline-none focus:shadow-outline ${error ? "border-red-500 placeholder:text-red-500" : "border-gray-300"
-                                    }`}
-                                ref={textAreaRef}
-                                onSelect={handleSelection}
-                            />
-
-                            {error && <p className="text-red-500 text-sm mt-1">{error.message}</p>}
-                        </div>
-                    )}
-                />
+                <TextArea index={index} textAreaRef={textAreaRef} handleSelection={handleSelection} />
             </div>
+
+            {showInvalidBlockModel && <InvalidSequenceBlockModel invalidBlock={invalidBlock} onClose={() => setShowInvalidBlockModel(false)} />}
         </>
     );
 }

@@ -123,29 +123,74 @@ export default function SequenceCreation() {
         saveSequence();
     };
 
+    // const setSequenceString = () => {
+    //     const cleanedSequenceString = watch("sequenceString").replace(/\s+/g, "");
+
+    //     const blockOption = watch("blockOption");
+
+    //     let optionSeparatedSequenceString;
+
+    //     if (blockOption === "3") {
+    //         const blocks = cleanedSequenceString.match(/.{1,3}/g);
+    //         optionSeparatedSequenceString = blocks.join(" ");
+    //     } else {
+    //         optionSeparatedSequenceString = cleanedSequenceString.split("").join(" ");
+    //     }
+
+    //     setValue("sequenceString", optionSeparatedSequenceString);
+
+    //     console.log(
+    //         "=:= ",
+    //         optionSeparatedSequenceString
+    //             .split(" ")
+    //             .filter(Boolean)
+    //             .map((block, index) => ({ block, index }))
+    //     );
+
+    // setValue(
+    //     "block",
+    //     optionSeparatedSequenceString
+    //         .split(" ")
+    //         .filter(Boolean)
+    //         .map((block, index) => ({ block, index }))
+    // );
+    // };
+
     const setSequenceString = () => {
-        const cleanedSequenceString = watch("sequenceString").replace(/\s+/g, "");
+        const sequenceStringArray = watch("sequenceString").split(" ");
 
         const blockOption = watch("blockOption");
+        if (blockOption === "1") {
+            const block = sequenceStringArray.filter(Boolean).map((block, index) => ({ block: [block], index }));
 
-        let optionSeparatedSequenceString;
+            setValue("block", block);
 
-        if (blockOption === "3") {
-            const blocks = cleanedSequenceString.match(/.{1,3}/g);
-            optionSeparatedSequenceString = blocks.join(" ");
+            setValue("sequenceString", watch("sequenceString"));
         } else {
-            optionSeparatedSequenceString = cleanedSequenceString.split("").join(" ");
+            let blockArray = [];
+
+            for (let index = 0; index < sequenceStringArray.length / 3 + 1; index++) {
+                const element1 = sequenceStringArray[index * 3];
+                const element2 = sequenceStringArray[index * 3 + 1];
+                const element3 = sequenceStringArray[index * 3 + 2];
+
+                if (!element1) break;
+
+                const combine3Element = [element1, element2, element3];
+
+                blockArray.push(combine3Element.filter(Boolean));
+            }
+
+            const flatMapArray = blockArray.map((el) => el.join(""));
+
+            setValue("sequenceString", flatMapArray.join(" "));
+
+            const block = blockArray.filter(Boolean).map((block, index) => ({ block: [...block], index }));
+
+            setValue("block", block);
         }
 
-        setValue("sequenceString", optionSeparatedSequenceString);
-
-        setValue(
-            "block",
-            optionSeparatedSequenceString
-                .split(" ")
-                .filter(Boolean)
-                .map((block, index) => ({ block, index }))
-        );
+        clearErrors("invalidSequenceBlock");
     };
 
     return (

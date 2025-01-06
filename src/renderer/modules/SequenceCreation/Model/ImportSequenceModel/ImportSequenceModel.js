@@ -24,41 +24,9 @@ export default function ImportSequenceModel(props) {
 
     const ComponentToRender = tabs.find((el) => el.value === activeTab).component;
 
-    const blockOption = watch("blockOption");
-
-    const generateSingleSequenceBlock = (sequence) => {
-        const sequenceString = sequence.sequenceString;
-
-        let optionSeparatedSequenceString;
-
-        const cleanedSequenceString = sequenceString.replace(/\s+/g, "");
-
-        if (blockOption === "3") {
-            const blocks = cleanedSequenceString.match(/.{1,3}/g);
-            optionSeparatedSequenceString = blocks.join(" ");
-        } else {
-            optionSeparatedSequenceString = cleanedSequenceString.split("").join(" ");
-        }
-
-        const generatedBlock = optionSeparatedSequenceString
-            .split(" ")
-            .filter(Boolean)
-            .map((block, index) => ({ block, index }));
-
-        return { block: generatedBlock, sequenceString: optionSeparatedSequenceString };
-    };
-
-    const generateBlock = (sequence) => {
-        const formattedSequence = sequence.map((el) => {
-            return { ...el, ...generateSingleSequenceBlock(el) };
-        });
-
-        setValue("sequence", formattedSequence);
-    };
-
     const importSequence = () => {
         resetField("sequenceTemp");
-        generateBlock(watch("sequenceTemp"));
+        setValue("sequence", watch("sequenceTemp"));
         onClose();
     };
 

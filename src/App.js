@@ -8,6 +8,7 @@ import Sequence from "./renderer/modules/Sequence/Sequence";
 import AvailableSequence from "./renderer/modules/AvailableSequence/AvailableSequence";
 import SequenceCreation from "./renderer/modules/SequenceCreation/SequenceCreation";
 import MethodSetting from "./renderer/modules/MethodSetup2/MethodSetting";
+import Generator from "./renderer/modules/Generator/Generator";
 import NotifyToaster from "./renderer/modules/NotifyToaster/NotifyToaster";
 
 export default function App() {
@@ -34,6 +35,7 @@ export default function App() {
                         <Route path="/available-sequence" element={<AvailableSequence />} />
                         <Route path="/sequence-editor/new" element={<SequenceCreation />} />
                         <Route path="/sequence-editor/:id" element={<SequenceCreation />} />
+                        <Route path="/generator" element={<Generator />} />
                         <Route index element={<Methods />} />
                     </Routes>
                 </div>
