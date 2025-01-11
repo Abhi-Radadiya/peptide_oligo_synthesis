@@ -5,7 +5,7 @@ import { FormProvider } from "react-hook-form";
 import SequenceEditing from "./Tabs/SequenceEditing/SequenceEditing";
 import MethodAssign from "./Tabs/MethodAssign/MethodAssign";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ImportSequenceModel from "./Model/ImportSequenceModel/ImportSequenceModel";
 import SequenceTab from "./SequenceTab/SequenceTab";
 import { addSequence, editSequence } from "../../../redux/reducers/sequenceReducer";
@@ -15,9 +15,10 @@ import { updateFormState } from "../../../redux/reducers/formState/formState";
 import ConfirmationPopup from "../../Components/Popup/ConfirmationPopup";
 import { openToast } from "../../../redux/reducers/toastStateReducer/toastStateReducer";
 import { SUCCESS } from "../../Helpers/Icons";
+import HeaderButtons from "./Component/Header/HeaderButtons";
 
-export default function SequenceCreation() {
-    const { id } = useParams();
+export default function SequenceCreation(props) {
+    const { id } = props;
 
     const method = useForm({ defaultValues: { blockOption: "1", sequenceString: "", name: "" } });
 
@@ -123,39 +124,6 @@ export default function SequenceCreation() {
         saveSequence();
     };
 
-    // const setSequenceString = () => {
-    //     const cleanedSequenceString = watch("sequenceString").replace(/\s+/g, "");
-
-    //     const blockOption = watch("blockOption");
-
-    //     let optionSeparatedSequenceString;
-
-    //     if (blockOption === "3") {
-    //         const blocks = cleanedSequenceString.match(/.{1,3}/g);
-    //         optionSeparatedSequenceString = blocks.join(" ");
-    //     } else {
-    //         optionSeparatedSequenceString = cleanedSequenceString.split("").join(" ");
-    //     }
-
-    //     setValue("sequenceString", optionSeparatedSequenceString);
-
-    //     console.log(
-    //         "=:= ",
-    //         optionSeparatedSequenceString
-    //             .split(" ")
-    //             .filter(Boolean)
-    //             .map((block, index) => ({ block, index }))
-    //     );
-
-    // setValue(
-    //     "block",
-    //     optionSeparatedSequenceString
-    //         .split(" ")
-    //         .filter(Boolean)
-    //         .map((block, index) => ({ block, index }))
-    // );
-    // };
-
     const setSequenceString = () => {
         const sequenceStringArray = watch("sequenceString").split(" ");
 
@@ -197,24 +165,15 @@ export default function SequenceCreation() {
         <>
             <FormProvider {...method}>
                 <div className="px-4">
-                    <div className="flex justify-between flex-row mb-4 pb-4 border-b border-neutral-800 sticky top-0 pt-4 bg-white z-10">
-                        <div className="flex flex-row item-center gap-4">
-                            <Button label="Import sequence" onClick={() => setIsShowImportModel(true)} bgClassName="bg-indigo-200 hover:bg-indigo-300" />
-                            <input type="file" accept=".txt" onChange={handleFileChange} ref={fileInputRef} className="hidden" />
-                        </div>
-
-                        {!watch("sequence")?.length && (
-                            <div className="flex flex-row item-center gap-4">
-                                <Button
-                                    label="Generate Blocks"
-                                    bgClassName="bg-amber-200 hover:bg-amber-300"
-                                    onClick={() => handleSubmit(() => setShowGenerateBlockModel(true))()}
-                                />
-
-                                <Button label="Save" disabled={!watch("block")?.length} onClick={() => handleSubmit(handleAddSequence)()} />
-                            </div>
-                        )}
-                    </div>
+                    <HeaderButtons
+                        setIsShowImportModel={setIsShowImportModel}
+                        handleFileChange={handleFileChange}
+                        fileInputRef={fileInputRef}
+                        watch={watch}
+                        handleSubmit={handleSubmit}
+                        setShowGenerateBlockModel={setShowGenerateBlockModel}
+                        handleAddSequence={handleAddSequence}
+                    />
 
                     {!!watch("sequence")?.length ? (
                         <SequenceTab />

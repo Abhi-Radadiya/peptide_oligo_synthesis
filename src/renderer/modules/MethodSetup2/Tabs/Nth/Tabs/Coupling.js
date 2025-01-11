@@ -43,10 +43,10 @@ export default function Coupling(props) {
                             wrapperClassName="max-w-[220px] mt-2"
                             control={control}
                             type="number"
-                            placeholder="Enter mix time"
-                            label="Mix Time"
+                            placeholder="Enter circulation time"
+                            label="Circulation time"
                             rightFixItem="min"
-                            rules={{ required: "Please enter mix time" }}
+                            rules={{ required: "Please enter circulation time" }}
                         />
                     </div>
 

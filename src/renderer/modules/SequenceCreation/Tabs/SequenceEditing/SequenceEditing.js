@@ -5,6 +5,8 @@ import { useWindowSize } from "@uidotdev/usehooks";
 import TextArea from "./Component/TextArea";
 import { ReactComponent as ReimbursementIcon } from "../../../../Assets/reimbursement.svg";
 import InvalidSequenceBlockModel from "./Model/InvalidSequenceBlockModel";
+import { Button } from "../../../../Components/Buttons/Buttons";
+import EnterSequenceModel from "./Model/EnterSequenceModel";
 
 export default function SequenceEditing(props) {
     const { index } = props;
@@ -21,6 +23,10 @@ export default function SequenceEditing(props) {
     const textAreaRef = useRef();
 
     const setSelectedBlocks = (blocks) => setValue("selectedBlock", blocks);
+
+    const [showInvalidBlockModel, setShowInvalidBlockModel] = useState(false);
+
+    const [showEnterSequenceModel, setShowEnterSequenceModel] = useState(false);
 
     const selectedBlocks = watch("selectedBlock");
 
@@ -57,32 +63,7 @@ export default function SequenceEditing(props) {
 
     const { height: windowHeight } = useWindowSize();
 
-    const handleSelectAll = () => {
-        if (!isEditing) {
-            if (isAllSelected()) {
-                setSelectedBlocks([]);
-                return;
-            }
-
-            const arrayLength = watch("sequenceString").split(" ")?.length;
-
-            const selectedBlock = Array.from({ length: arrayLength }, (_, index) => index);
-
-            setSelectedBlocks(selectedBlock);
-
-            textAreaRef.current.select();
-        }
-    };
-
-    const isAllSelected = () => {
-        const arrayLength = watch("sequenceString").split(" ")?.length;
-
-        return (selectedBlocks?.length ?? 0) === arrayLength && !!selectedBlocks.length;
-    };
-
     const invalidBlock = errors?.invalidSequenceBlock?.invalidBlock;
-
-    const [showInvalidBlockModel, setShowInvalidBlockModel] = useState(false);
 
     return (
         <>
@@ -111,9 +92,7 @@ export default function SequenceEditing(props) {
                             <ReimbursementIcon className="rotate-180 fill-red-400 cursor-pointer stroke-red-100" onClick={() => setShowInvalidBlockModel(true)} />
                         )}
 
-                        <span className="font-normal text-blue-500 text-base hover:underline underline-offset-2 cursor-pointer" onClick={handleSelectAll}>
-                            {isAllSelected() ? "Unselect all" : "Select all"}
-                        </span>
+                        <Button label="Enter block" onClick={() => setShowEnterSequenceModel(true)} />
                     </div>
                 </div>
 
@@ -121,6 +100,8 @@ export default function SequenceEditing(props) {
             </div>
 
             {showInvalidBlockModel && <InvalidSequenceBlockModel invalidBlock={invalidBlock} onClose={() => setShowInvalidBlockModel(false)} />}
+
+            {showEnterSequenceModel && <EnterSequenceModel onClose={() => setShowEnterSequenceModel(false)} />}
         </>
     );
 }

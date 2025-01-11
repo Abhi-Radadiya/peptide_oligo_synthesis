@@ -33,6 +33,8 @@ async function createWindow() {
 
     mainWindow = new BrowserWindow({
         width: screenDimention.width,
+        titleBarStyle: "hidden",
+        ...(process.platform !== "darwin" ? { titleBarOverlay: true } : {}),
         // height: 100,
         height: screenDimention.height,
         autoHideMenuBar: true,

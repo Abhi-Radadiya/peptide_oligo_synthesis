@@ -62,8 +62,6 @@ export default function TextArea(props) {
         [dispatch]
     );
 
-    console.log("errors?.invalidSequenceBlock =:= ", errors?.invalidSequenceBlock);
-
     return (
         <>
             <Controller

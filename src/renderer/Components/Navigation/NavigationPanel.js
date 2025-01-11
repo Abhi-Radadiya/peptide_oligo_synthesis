@@ -15,8 +15,7 @@ export default function NavigationPanel(props) {
         { label: "Method Setup", to: "method-setup", isShowSubLink: true, subLink: [{ label: "Method Editor", to: "method-setting" }] },
         { label: "Settings", to: "settings" },
         { label: "Sequence", to: "sequence" },
-        // { label: "generator", to: "generator" },
-        { label: "Available Sequence", to: "available-sequence", isShowSubLink: true, subLink: [{ label: "Sequence Editor", to: "sequence-editor/new" }] },
+        { label: "Available Sequence", to: "available-sequence", isShowSubLink: true, subLink: [{ label: "Sequence Editor", to: "sequence-editor" }] },
     ];
 
     const [activeTab, setActiveTab] = useState(() => {
@@ -56,12 +55,12 @@ export default function NavigationPanel(props) {
     const [showConfirmationPopup, setShowConfirmationPopup] = useState(null);
 
     const handleNavigation = (to) => {
-        if (isFormDirty) {
-            setShowConfirmationPopup(to);
-        } else {
-            navigate(to);
-            setActiveTab(to);
-        }
+        // if (isFormDirty) {
+        //     setShowConfirmationPopup(to);
+        // } else {
+        // }
+        navigate(to);
+        setActiveTab(to);
     };
 
     const dispatch = useDispatch();

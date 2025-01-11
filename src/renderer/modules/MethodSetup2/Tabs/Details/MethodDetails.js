@@ -50,6 +50,9 @@ const MethodDetails = (props) => {
             setValue("deliveryTimeAct", Number(deliveryTimeAct.toFixed(3)));
             setValue("totalCouplingVolume", Number(totalCouplingVolume.toFixed(2)));
             setValue("deliveryTimeAmedite", Number(deliveryTimeAmedite.toFixed(3)));
+
+            setValue("n_couplingAmediteVolume", numberAmediteVolume);
+            setValue("n_couplingActVolume", numberActVolume);
         }
 
         return () => {
@@ -84,6 +87,8 @@ const MethodDetails = (props) => {
     ];
 
     const handleColumnSizeSelection = (option) => {
+        console.log("option =:= ", option);
+
         volumeNames.forEach((el) => setValue(el, option.value.volume));
     };
 

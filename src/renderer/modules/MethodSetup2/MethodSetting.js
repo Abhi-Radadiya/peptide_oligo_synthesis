@@ -5,7 +5,7 @@ import LastMethod from "./Tabs/Last/LastMethod";
 import { FormProvider, useForm } from "react-hook-form";
 import LeftPanel from "../../Components/LeftPanel/LeftPanel";
 import { useWindowSize } from "@uidotdev/usehooks";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import MethodDetails from "./Tabs/Details/MethodDetails";
 import Footer from "./Components/Footer";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,8 +14,8 @@ import { updateFormState } from "../../../redux/reducers/formState/formState";
 import { openToast } from "../../../redux/reducers/toastStateReducer/toastStateReducer";
 import { SUCCESS } from "../../Helpers/Icons";
 
-export default function MethodSetting() {
-    const { id } = useParams();
+export default function MethodSetting(props) {
+    const { id } = props;
 
     const methods = useSelector((state) => state.methodSetup.method);
 
@@ -82,17 +82,9 @@ export default function MethodSetting() {
 
     const steps = [
         { label: "Details", value: "detail", component: MethodDetails },
-        { label: "First Method", value: "firstMethod", component: FirstMethod },
-        {
-            label: (
-                <span>
-                    N<sup>th</sup> Method
-                </span>
-            ),
-            value: "nThMethod",
-            component: NthMethod,
-        },
-        { label: "Last Method", value: "lastMethod", component: LastMethod },
+        { label: "Initial Step", value: "firstMethod", component: FirstMethod },
+        { label: "Run Step", value: "nThMethod", component: NthMethod },
+        { label: "Final Step", value: "lastMethod", component: LastMethod },
     ];
 
     const [activeStep, setActiveStep] = useState(0);

@@ -29,6 +29,8 @@ export default function AmediteSection(props) {
     const handleSelectSolvent = (option) => {
         const flowRateEntry = chemicals.find((el) => el.id === option.value);
 
+        console.log("flowRateEntry =:= ", flowRateEntry);
+
         setValue(flowRate, flowRateEntry.flowRate);
     };
 
@@ -85,7 +87,7 @@ export default function AmediteSection(props) {
                     </div>
 
                     <div className="flex flex-row items-center gap-2">
-                        <span className="font-bold text-neutral-600">X Factor</span>
+                        <span className="font-bold text-neutral-600">Loop</span>
                         <InputField
                             disabled={disabled}
                             name={xFactor}

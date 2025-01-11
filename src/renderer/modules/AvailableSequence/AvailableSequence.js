@@ -50,7 +50,7 @@ export default function AvailableSequence() {
                             bgClassName="ml-2 bg-[#fa5757] text-white disabled:bg-red-200 disabled:text-neutral-500"
                         />
                     </div>
-                    <Button label="Create New Sequence" onClick={() => navigate("/sequence-editor/new")} />
+                    <Button label="Create New Sequence" onClick={() => navigate("/sequence-editor")} />
                 </div>
 
                 <table className="w-full border-collapse mb-6">
