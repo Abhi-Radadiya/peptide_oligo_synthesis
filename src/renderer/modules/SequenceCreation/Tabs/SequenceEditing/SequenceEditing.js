@@ -6,17 +6,14 @@ import TextArea from "./Component/TextArea";
 import { ReactComponent as ReimbursementIcon } from "../../../../Assets/reimbursement.svg";
 import InvalidSequenceBlockModel from "./Model/InvalidSequenceBlockModel";
 import { Button } from "../../../../Components/Buttons/Buttons";
-import EnterSequenceModel from "./Model/EnterSequenceModel";
+import EnterSequenceModel from "./Model/EnterSequence/EnterSequenceModel";
 
 export default function SequenceEditing(props) {
     const { index } = props;
 
-    const isEditing = index !== undefined;
-
     const {
         control,
         setValue,
-        watch,
         formState: { errors },
     } = useFormContext();
 
@@ -27,8 +24,6 @@ export default function SequenceEditing(props) {
     const [showInvalidBlockModel, setShowInvalidBlockModel] = useState(false);
 
     const [showEnterSequenceModel, setShowEnterSequenceModel] = useState(false);
-
-    const selectedBlocks = watch("selectedBlock");
 
     const handleSelection = (event) => {
         const textarea = event.target;
@@ -101,7 +96,7 @@ export default function SequenceEditing(props) {
 
             {showInvalidBlockModel && <InvalidSequenceBlockModel invalidBlock={invalidBlock} onClose={() => setShowInvalidBlockModel(false)} />}
 
-            {showEnterSequenceModel && <EnterSequenceModel onClose={() => setShowEnterSequenceModel(false)} />}
+            {showEnterSequenceModel && <EnterSequenceModel index={index} onClose={() => setShowEnterSequenceModel(false)} />}
         </>
     );
 }

@@ -10,6 +10,7 @@ import Sequence from "../../modules/Sequence/Sequence";
 import Settings from "../../modules/Settings/Settings";
 import AvailableSequence from "../../modules/AvailableSequence/AvailableSequence";
 import SequenceCreation from "../../modules/SequenceCreation/SequenceCreation";
+import Documantation from "../../modules/Documantation/Documantation.js";
 import { useSelector } from "react-redux";
 
 const TabContext = createContext();
@@ -24,6 +25,7 @@ const routeConfig = {
     "/sequence-editor/:id": { name: "Sequence Editor", Component: SequenceCreation },
     "/method-setting": { name: "Method Setting", Component: MethodSetting },
     "/sequence-editor": { name: "Sequence Editor", Component: SequenceCreation },
+    "/documantation": { name: "Documantation", Component: Documantation },
 };
 
 const findSequenceName = (sequence, id) => {

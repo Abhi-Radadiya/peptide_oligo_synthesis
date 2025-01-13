@@ -114,6 +114,10 @@ export default function NavigationPanel(props) {
                         );
                     })}
                 </ul>
+
+                <Link to="/documantation" className="fixed bottom-4 ml-8 cursor-pointer font-medium text-[#738ff5]">
+                    Documantation
+                </Link>
             </nav>
 
             <div

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "../../Components/Buttons/Buttons";
 import { FormProvider } from "react-hook-form";
 import SequenceEditing from "./Tabs/SequenceEditing/SequenceEditing";
 import MethodAssign from "./Tabs/MethodAssign/MethodAssign";
@@ -132,8 +131,6 @@ export default function SequenceCreation(props) {
             const block = sequenceStringArray.filter(Boolean).map((block, index) => ({ block: [block], index }));
 
             setValue("block", block);
-
-            setValue("sequenceString", watch("sequenceString"));
         } else {
             let blockArray = [];
 
@@ -192,6 +189,7 @@ export default function SequenceCreation(props) {
                         }}
                     />
                 )}
+
                 {showGenerateBlockModel && <ConfirmGenerateBlock setSequenceString={setSequenceString} onClose={() => setShowGenerateBlockModel(false)} />}
             </FormProvider>
 
