@@ -19,7 +19,7 @@ const routeConfig = {
     "/": { name: "Methods", Component: Methods },
     "/method-setup": { name: "Methods", Component: Methods },
     "/settings": { name: "Settings", Component: Settings },
-    "/sequence": { name: "Sequence", Component: Sequence },
+    "/sequence": { name: "Run Synthesis", Component: Sequence },
     "/available-sequence": { name: "Available Sequence", Component: AvailableSequence },
     "/method-setting/:id": { name: "Method Setting", Component: MethodSetting },
     "/sequence-editor/:id": { name: "Sequence Editor", Component: SequenceCreation },
@@ -71,7 +71,7 @@ export const TabProvider = ({ children }) => {
                     return false;
                 }
 
-                id = pathSegments[pathSegments.length - 1];
+                id = pathSegments.length === 3 ? pathSegments[pathSegments.length - 1] : null;
 
                 return routeKeySegments.every((segment, index) => segment.startsWith(":") || segment === pathSegments[index]);
             });

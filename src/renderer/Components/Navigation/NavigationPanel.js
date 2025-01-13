@@ -4,6 +4,7 @@ import { ReactComponent as DownIcon } from "../../Assets/chevron-down.svg";
 import { useDispatch, useSelector } from "react-redux";
 import ConfirmationPopup from "../Popup/ConfirmationPopup";
 import { updateFormState } from "../../../redux/reducers/formState/formState";
+import { BookText } from "lucide-react";
 
 export default function NavigationPanel(props) {
     const { isNavOpen, setIsNavOpen } = props;
@@ -14,7 +15,7 @@ export default function NavigationPanel(props) {
     const links = [
         { label: "Method Setup", to: "method-setup", isShowSubLink: true, subLink: [{ label: "Method Editor", to: "method-setting" }] },
         { label: "Settings", to: "settings" },
-        { label: "Sequence", to: "sequence" },
+        { label: "Run Synthesis", to: "sequence" },
         { label: "Available Sequence", to: "available-sequence", isShowSubLink: true, subLink: [{ label: "Sequence Editor", to: "sequence-editor" }] },
     ];
 
@@ -115,7 +116,8 @@ export default function NavigationPanel(props) {
                     })}
                 </ul>
 
-                <Link to="/documantation" className="fixed bottom-4 ml-8 cursor-pointer font-medium text-[#738ff5]">
+                <Link to="/documantation" className="fixed bottom-4 ml-8 cursor-pointer font-medium flex flex-row items-center gap-3 text-[#738ff5]">
+                    <BookText />
                     Documantation
                 </Link>
             </nav>

@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { Tabs } from "../../Components/Tabs/Tab";
 import Setting from "./Tabs/Setting/Setting";
-import MethodSetup from "./Tabs/MethodSetup/MethodSetup.js";
+import MethodSetup from "./Tabs/MethodSetup/MethodSetup";
+import AvailableSequence from "./Tabs/AvailableSequence/AvailableSequence";
+import Synthesis from "./Tabs/Synthesis/Synthesis";
 
 export default function Documantation() {
     const tabs = [
         { label: "Setting", value: "setting", component: Setting },
         { label: "Method Setup", value: "methodSetup", component: MethodSetup },
+        { label: "Sequence", value: "sequence", component: AvailableSequence },
+        { label: "Synthesis", value: "synthesis", component: Synthesis },
     ];
 
     const [activeTab, setActiveTab] = useState(tabs[0].value);

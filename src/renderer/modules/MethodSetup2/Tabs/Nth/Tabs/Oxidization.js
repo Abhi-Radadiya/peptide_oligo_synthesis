@@ -20,6 +20,7 @@ export default function Oxidization(props) {
                     />
 
                     <AmediteSection
+                        title="Wash Setting"
                         disabled={disabled}
                         names={{
                             solvent: "n_oxidizationWashSolvent",
