@@ -27,11 +27,9 @@ export default function AmediteSection(props) {
     });
 
     const handleSelectSolvent = (option) => {
-        const flowRateEntry = chemicals.find((el) => el.id === option.value);
+        const flowRateEntry = chemicals?.find((el) => el?.id === option?.value);
 
-        console.log("flowRateEntry =:= ", flowRateEntry);
-
-        setValue(flowRate, flowRateEntry.flowRate);
+        setValue(flowRate, flowRateEntry?.flowRate);
     };
 
     return (
@@ -141,7 +139,7 @@ export const RadioSection = (props) => {
             <Checkbox
                 labelClassName="font-bold text-neutral-600"
                 className="flex-row-reverse gap-4"
-                label="Enabled"
+                label="Disable"
                 disabled={disabled}
                 name={checkName}
                 control={control}

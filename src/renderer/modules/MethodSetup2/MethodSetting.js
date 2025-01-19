@@ -30,12 +30,14 @@ export default function MethodSetting(props) {
         last_deWaste: { label: 1, value: 1 },
 
         last_deaWaste: { label: 1, value: 1 },
+        "1_primingWaste": { label: 1, value: 1 },
         last_deaXFactor: 1,
         last_deaWashXFactor: 1,
 
         last_deXFactor: 1,
         last_deWashXFactor: 1,
         "1_XFactor": 1,
+        "1_primingXFactor": 1,
         n_deXFactor: 1,
         n_deWashXFactor: 1,
         n_couplingXFactor: 1,
@@ -96,7 +98,7 @@ export default function MethodSetting(props) {
     const {
         handleSubmit,
         setError,
-        formState: { isDirty },
+        formState: { isDirty, errors },
     } = method;
 
     useEffect(() => {
@@ -144,12 +146,13 @@ export default function MethodSetting(props) {
         <>
             <div className="relative px-4 pt-4">
                 <div className="flex flex-row relative">
-                    <LeftPanel tabs={steps} activeStep={activeStep} setActiveStep={setActiveStep} />
+                    <LeftPanel errors={errors} tabs={steps} activeStep={activeStep} setActiveStep={setActiveStep} />
 
                     <FormProvider {...method}>
                         <div className="border-l relative border-neutral-500 pl-6 w-full pb-12 overflow-auto scrollbar-style pr-2" style={{ height: windowHeight - 36 }}>
                             <ComponentToRender setActiveStep={setActiveStep} />
                         </div>
+
                         <Footer onClick={handleSubmit(handleSave)} label={activeStep === 3 ? "Save" : "Next"} />
                     </FormProvider>
                 </div>

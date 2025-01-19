@@ -64,6 +64,7 @@ const MethodDetails = (props) => {
 
     const volumeNames = [
         "1_volume",
+        "1_primingVolume",
         "n_deVolume",
         "n_deWashVolume",
         "n_couplingVolume",
@@ -87,8 +88,6 @@ const MethodDetails = (props) => {
     ];
 
     const handleColumnSizeSelection = (option) => {
-        console.log("option =:= ", option);
-
         volumeNames.forEach((el) => setValue(el, option.value.volume));
     };
 

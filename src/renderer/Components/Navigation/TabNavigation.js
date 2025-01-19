@@ -10,6 +10,7 @@ import Sequence from "../../modules/Sequence/Sequence";
 import Settings from "../../modules/Settings/Settings";
 import AvailableSequence from "../../modules/AvailableSequence/AvailableSequence";
 import SequenceCreation from "../../modules/SequenceCreation/SequenceCreation";
+import SequenceCreation2 from "../../modules/SequenceCreation2/SequenceCreation2";
 import Documantation from "../../modules/Documantation/Documantation.js";
 import { useSelector } from "react-redux";
 
