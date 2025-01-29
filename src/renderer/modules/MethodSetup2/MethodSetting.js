@@ -1,3 +1,7 @@
+// TODO go back model not closing
+// Showing Save toast every compo save
+// initial step priming not showing
+
 import React, { useEffect, useState } from "react";
 import FirstMethod from "./Tabs/First/FirstMethod";
 import NthMethod from "./Tabs/Nth/NthMethod";

@@ -62,6 +62,8 @@ export default function TextArea(props) {
         [dispatch]
     );
 
+    console.log("errors as=:= ", errors);
+
     return (
         <>
             <Controller

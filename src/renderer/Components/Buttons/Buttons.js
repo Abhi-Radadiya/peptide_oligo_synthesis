@@ -42,4 +42,28 @@ const SaveButton = (props) => {
     );
 };
 
-export { SaveButton, Button };
+const ModelButton = (props) => {
+    const { onCancel, handleSave } = props;
+
+    return (
+        <div className="flex flex-row justify-end w-full gap-2 mt-4">
+            <button onClick={onCancel} className="text-sm hover:bg-neutral-100 transition-colors duration-300 rounded-lg px-4 py-1">
+                Cancel
+            </button>
+
+            <Button label="Save" onClick={handleSave} bgClassName="bg-green-300" />
+        </div>
+    );
+};
+
+const SmallButton = (props) => {
+    const { label, onClick, bgClassName } = props;
+
+    return (
+        <button onClick={onClick} className={`text-sm font-normal transition-colors duration-300 rounded-lg px-2 py-1 ${bgClassName}`}>
+            {label}
+        </button>
+    );
+};
+
+export { SaveButton, Button, ModelButton, SmallButton };

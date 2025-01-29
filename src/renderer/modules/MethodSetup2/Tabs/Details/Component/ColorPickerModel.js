@@ -1,34 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import { ChromePicker } from "react-color";
 import ModelWrapper from "../../../../../Components/Model/ModelWrapper";
-import { Controller, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
+import { ModelButton } from "../../../../../Components/Buttons/Buttons";
 
 export default function PickColor(props) {
     const { onClose } = props;
 
-    const {
-        control,
-        formState: { errors },
-    } = useFormContext();
+    const { setValue, getValues } = useFormContext();
+
+    const [tempColor, setTempColor] = useState(getValues("color") ?? "#000000");
+
+    const handleSave = () => {
+        setValue("color", tempColor);
+        setTempColor("#000000");
+        onClose();
+    };
 
     return (
         <>
-            <ModelWrapper onClose={onClose} header="Select color">
-                <div className="mr-2 my-6">
-                    <Controller
-                        name="color"
-                        control={control}
-                        rules={{ required: "Please select a color" }}
-                        render={({ field: { onChange, value } }) => (
-                            <ChromePicker
-                                color={value ?? "#51A447"}
-                                onChange={(color) => onChange(color.hex)}
-                                disableAlpha={true}
-                                onChangeComplete={(color) => onChange(color.hex)}
-                            />
-                        )}
+            <ModelWrapper width="w-[18vw]" onClose={onClose} header="Select color">
+                <div className="mr-2 mt-6">
+                    <div className="flex flex-row items-center justify-between mb-4">
+                        <span className="text-sm font-normal">Selected color : </span>
+                        <div className="h-10 w-24 rounded-lg" style={{ background: tempColor }} />
+                    </div>
+
+                    <ChromePicker
+                        color={tempColor}
+                        onChange={(color) => setTempColor(color.hex)}
+                        disableAlpha={true}
+                        onChangeComplete={(color) => setTempColor(color.hex)}
                     />
-                    {errors.color && <div className="text-red-500 text-sm mt-1 font-normal">{errors.color.message}</div>}
+                    <ModelButton onCancel={onClose} handleSave={handleSave} />
                 </div>
             </ModelWrapper>
         </>

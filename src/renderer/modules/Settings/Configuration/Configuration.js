@@ -1,3 +1,6 @@
+// TODO user can not add details if white space is there in name
+// also can not delete if any where in use
+
 import React, { useState } from "react";
 import { Tabs } from "../../../Components/Tabs/Tab";
 import AmediteConfiguration from "./Module/Amedite/AmediteConfiguration";

@@ -126,6 +126,7 @@ export default function RunningSynthesis() {
                     selectedMethodData={selectedMethodData}
                 />
 
+                {/* TODO get method name from main data table */}
                 <div className="flex flex-row justify-between items-center">
                     {currentBlock ? (
                         <p>

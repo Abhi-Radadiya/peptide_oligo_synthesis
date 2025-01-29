@@ -13,7 +13,9 @@ const amediteSlice = createSlice({
             if (!existingAmedite) {
                 state.amediteList = [{ ...action.payload, id: getUniqueId() }, ...state.amediteList];
             } else {
-                throw new Error("Amedite with the same case number already exists.");
+                console.log("action.payload.full_name =:= ", action.payload.full_name);
+
+                throw new Error("Amedite with the same name already exists.");
             }
         },
         updateAmedite: (state, action) => {
@@ -27,7 +29,7 @@ const amediteSlice = createSlice({
                     ...action.payload,
                 };
             } else {
-                throw new Error("Amedite with the specified case number not found.");
+                throw new Error("Amedite with the specified name not found.");
             }
         },
         deleteAmedites: (state, action) => {

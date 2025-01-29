@@ -148,3 +148,38 @@ const flags = {
 export const findAmediteLabel = (amediteList, amediteId) => {
     return amediteList.find((el) => amediteId === el.id)?.full_name;
 };
+
+export const getTextColorForBackground = (backgroundColor) => {
+    // Convert hex color to RGB
+    const hexToRgb = (hex) => {
+        const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+        hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result
+            ? {
+                  r: parseInt(result[1], 16),
+                  g: parseInt(result[2], 16),
+                  b: parseInt(result[3], 16),
+              }
+            : null;
+    };
+
+    // Calculate luminance
+    const calculateLuminance = (r, g, b) => {
+        const a = [r, g, b].map((v) => {
+            v /= 255;
+            return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+        });
+        return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+    };
+
+    // Get RGB values from the background color
+    const rgb = hexToRgb(backgroundColor);
+
+    if (!rgb) return "#000000"; // Default to black if color is invalid
+
+    const luminance = calculateLuminance(rgb.r, rgb.g, rgb.b);
+
+    // Use white text for dark backgrounds and black text for light backgrounds
+    return luminance > 0.5 ? "#000000" : "#FFFFFF";
+};

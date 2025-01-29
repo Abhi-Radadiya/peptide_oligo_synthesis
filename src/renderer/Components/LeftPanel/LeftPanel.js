@@ -16,7 +16,7 @@ export default function LeftPanel(props) {
     };
 
     return (
-        <div className="flex flex-col gap-6 max-w-[224px] w-full">
+        <div className="flex flex-col gap-6 max-w-[176px] mr-4 w-full">
             {tabs.map((el, index) => {
                 const isActive = activeStep === index;
 

@@ -16,7 +16,7 @@ export default function ModelWrapper(props) {
     return (
         <div className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ${wrapperClass}`} onClick={handleOutsideClick}>
             <Draggable handle=".modal-header" bounds="parent" defaultPosition={{ x: 0, y: 0 }}>
-                <div ref={modalRef} className={`bg-white rounded-lg shadow-lg p-6 relative ${width}`}>
+                <div ref={modalRef} className={`bg-white rounded-3xl shadow-lg p-6 relative ${width}`}>
                     <div className="modal-header cursor-move flex justify-between items-center mb-4">
                         {header && <h2 className="text-xl font-semibold text-gray-800">{header}</h2>}
 

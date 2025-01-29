@@ -59,9 +59,11 @@ export default function App() {
 
             <Router>
                 <TabProvider>
+                    {isNavOpen && <div className="fixed inset-0 bg-black bg-opacity-50 z-20" onClick={() => setIsNavOpen(false)} />}
+
                     <NavigationPanel isNavOpen={isNavOpen} setIsNavOpen={setIsNavOpen} />
 
-                    <div className={`transition-all duration-300 ${isNavOpen ? "ml-64" : "ml-0"} overflow-hidden h-screen bg-gradient-to-br from-slate-50 to-amber-50`}>
+                    <div className={`transition-all duration-300 overflow-hidden h-screen bg-gradient-to-br from-slate-50 to-amber-50`}>
                         <RouteHandler />
                         <TabNavigation isNavOpen={isNavOpen} />
                     </div>

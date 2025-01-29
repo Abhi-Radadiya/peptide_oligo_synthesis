@@ -2,8 +2,11 @@
 
 // at component where passing id as props need to handle using routing params
 
-import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
+// While saving form close exiting tab and redirect to given tab
+
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Methods from "../../modules/Methods/Methods";
 import MethodSetting from "../../modules/MethodSetup2/MethodSetting";
 import Sequence from "../../modules/Sequence/Sequence";
@@ -11,26 +14,30 @@ import Settings from "../../modules/Settings/Settings";
 import AvailableSequence from "../../modules/AvailableSequence/AvailableSequence";
 import SequenceCreation from "../../modules/SequenceCreation/SequenceCreation";
 import SequenceCreation2 from "../../modules/SequenceCreation2/SequenceCreation2";
-import Documantation from "../../modules/Documantation/Documantation.js";
-import { useSelector } from "react-redux";
+import Documantation from "../../modules/Documantation/Documantation";
+import Demo from "../../modules/Demo/Demo";
 
 const TabContext = createContext();
 
+export { TabContext };
+
 const routeConfig = {
     "/": { name: "Methods", Component: Methods },
-    "/method-setup": { name: "Methods", Component: Methods },
     "/settings": { name: "Settings", Component: Settings },
     "/sequence": { name: "Run Synthesis", Component: Sequence },
     "/available-sequence": { name: "Available Sequence", Component: AvailableSequence },
+    "/method-setup": { name: "Methods", Component: Methods },
     "/method-setting/:id": { name: "Method Setting", Component: MethodSetting },
-    "/sequence-editor/:id": { name: "Sequence Editor", Component: SequenceCreation },
+    "/sequence-editor/:id": { name: "Sequence Editor", Component: SequenceCreation2 },
     "/method-setting": { name: "Method Setting", Component: MethodSetting },
-    "/sequence-editor": { name: "Sequence Editor", Component: SequenceCreation },
+    "/sequence-editor": { name: "Sequence Editor", Component: SequenceCreation2 },
     "/documantation": { name: "Documantation", Component: Documantation },
+    "/demo": { name: "demo", Component: Demo },
 };
 
 const findSequenceName = (sequence, id) => {
     const selectedSequence = sequence.find((el) => el.id === id);
+
     return selectedSequence?.name;
 };
 
@@ -50,7 +57,7 @@ export const TabProvider = ({ children }) => {
 
     const methods = useSelector((state) => state.methodSetup.method);
 
-    const addTab = useCallback((path) => {
+    const addTab = (path) => {
         setTabs((prev) => {
             const existingTab = prev.find((tab) => tab.path === path);
 
@@ -105,29 +112,26 @@ export const TabProvider = ({ children }) => {
 
             return [...prev, newTab];
         });
-    }, []);
+    };
 
-    const closeTab = useCallback(
-        (tabId) => {
-            setTabs((prev) => {
-                const tabIndex = prev.findIndex((tab) => tab.id === tabId);
-                const newTabs = prev.filter((tab) => tab.id !== tabId);
+    const closeTab = (tabId) => {
+        setTabs((prev) => {
+            const tabIndex = prev.findIndex((tab) => tab.id === tabId);
+            const newTabs = prev.filter((tab) => tab.id !== tabId);
 
-                if (activeTabId === tabId && newTabs.length > 0) {
-                    const newActiveIndex = Math.min(tabIndex, newTabs.length - 1);
+            if (activeTabId === tabId && newTabs.length > 0) {
+                const newActiveIndex = Math.min(tabIndex, newTabs.length - 1);
 
-                    const activeTab = tabs.find((el) => el.id === newTabs[newActiveIndex].id);
+                const activeTab = tabs.find((el) => el.id === newTabs[newActiveIndex].id);
 
-                    navigate(activeTab.path);
+                navigate(activeTab.path);
 
-                    setActiveTabId(newTabs[newActiveIndex].id);
-                }
+                setActiveTabId(newTabs[newActiveIndex].id);
+            }
 
-                return newTabs;
-            });
-        },
-        [activeTabId]
-    );
+            return newTabs;
+        });
+    };
 
     return <TabContext.Provider value={{ tabs, activeTabId, addTab, closeTab, setActiveTabId }}>{children}</TabContext.Provider>;
 };

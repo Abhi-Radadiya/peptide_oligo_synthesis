@@ -12,12 +12,11 @@ const sequenceSlice = createSlice({
             if (!existingSequence) {
                 state.sequence.unshift(action.payload);
             } else {
+                //  TODO need to fix this, breaks
                 throw new Error("Sequence with the same name already exists.");
             }
         },
         editSequence: (state, action) => {
-            console.log(`action.payload : `, action.payload);
-
             const { id, name } = action.payload;
 
             const nameConflict = state.sequence.find((sequence) => sequence.name.toLowerCase() === name.toLowerCase() && sequence.id !== id);
