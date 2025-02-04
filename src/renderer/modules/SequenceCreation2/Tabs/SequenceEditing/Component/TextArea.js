@@ -21,6 +21,7 @@ export default function TextArea() {
 
     const [showBlockModel, setShowBlockModel] = useState(false);
 
+    // show only blocks used in priming
     const availableBlocks = useMemo(() => {
         return [...new Set([...ameditePosition.map((el) => findAmediteLabel(amediteList, el.value)).filter((el) => !!el)])]; // get all label => filter defined value => remove duplicate entries
     }, [ameditePosition, amediteList]);
@@ -83,7 +84,7 @@ export default function TextArea() {
             setValue("textAreaSequenceString", textAreaSequenceString);
             debouncedHandleChange(textAreaSequenceString);
         },
-        [setValue]
+        [setValue, availableBlocks]
     );
 
     // TODO while typing remove existing method assingment

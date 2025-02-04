@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import { Play, Pause, Square, RotateCcw } from "lucide-react";
+import { useFormContext } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { processWiseFlag } from "../../../../Helpers/Constant";
 
 export default function Header() {
-    const [status, setStatus] = useState("idle"); // idle, running, paused
+    const [status, setStatus] = useState("idle");
+
+    const { watch, setValue } = useFormContext();
 
     const buttonClasses = {
         base: "flex items-center justify-center py-2 px-3 rounded-md transition-all duration-200",
@@ -13,29 +18,139 @@ export default function Header() {
         reset: "bg-neutral-500 hover:bg-neutral-600 text-white",
     };
 
+    const methods = useSelector((state) => state.methodSetup.method);
+
+    const getMethodDetailsById = (id) => {
+        return methods.find((el) => el.id === id);
+    };
+
+    const operation = [
+        { label: "Column wash", value: "columnWash", index: 0 },
+        { label: "Priming", value: "priming", index: 1 },
+        { label: "De block", value: "deBlock", index: 2 },
+        { label: "Coupling", value: "coupling", index: 3 },
+        { label: "Oxidization", value: "oxidization", index: 4 },
+        { label: "Sulfurization", value: "sulfurization", index: 5 },
+        { label: "Capping", value: "capping", index: 6 },
+        { label: "Extra", value: "extra", index: 7 },
+        { label: "De block", value: "lastDeBlock", index: 8 },
+        { label: "DEA", value: "dea", index: 9 },
+    ];
+
+    function formatMethodData(method, block) {
+        let formattedMethod = {};
+
+        for (const [key, values] of Object.entries(processWiseFlag)) {
+            formattedMethod[key] = {};
+            values.forEach((value) => {
+                if (method.hasOwnProperty(value)) {
+                    formattedMethod[key][value] = method[value];
+                }
+            });
+
+            if (Object.keys(formattedMethod[key]).length === 0) {
+                delete formattedMethod[key];
+            }
+        }
+
+        const oprerationWiseFormation = operation.map((el) => {
+            return { ...el, block, operationData: formattedMethod[el.value] };
+        });
+
+        return oprerationWiseFormation;
+    }
+
+    function filterOperations(operations) {
+        let seenColumnWash = false;
+        let seenPriming = false;
+        let lastDeBlockIndex = -1;
+        let lastDeaIndex = -1;
+
+        // Find the last occurrence of lastDeBlock and dea
+        operations.forEach((op, index) => {
+            if (op.value === "lastDeBlock") lastDeBlockIndex = index;
+            if (op.value === "dea") lastDeaIndex = index;
+        });
+
+        return operations.filter((op, index) => {
+            if (op.value === "columnWash") {
+                if (!seenColumnWash) {
+                    seenColumnWash = true;
+                    return true;
+                }
+                return false;
+            }
+
+            if (op.value === "priming") {
+                if (!seenPriming) {
+                    seenPriming = true;
+                    return true;
+                }
+                return false;
+            }
+
+            if (op.value === "lastDeBlock" && index === lastDeBlockIndex) {
+                return true;
+            }
+
+            if (op.value === "dea" && index === lastDeaIndex) {
+                return true;
+            }
+
+            return !["columnWash", "priming", "lastDeBlock", "dea"].includes(op.value);
+        });
+    }
+
+    const formateSequenceOperation = async (sequence) => {
+        const formattedSequenceMethod = sequence
+            .map((el) => {
+                return formatMethodData(el.method, el.block);
+            })
+            .flat();
+
+        const formattedOperations = filterOperations(formattedSequenceMethod);
+
+        let index = 0;
+
+        const interval = setInterval(() => {
+            setValue("executingCurrentBlock", formattedOperations[index]);
+
+            index++;
+
+            if (index >= formattedOperations.length) {
+                clearInterval(interval); // Stop when all items are processed
+            }
+        }, 1000);
+    };
+
     const handleRun = () => {
+        const selectedBlock = watch("selectedBlocks");
+
+        const blocksWithMethodDetails = selectedBlock.map((el) => {
+            return { ...el, method: { ...el.method, ...getMethodDetailsById(el.method.id) } };
+        });
+
+        formateSequenceOperation(blocksWithMethodDetails);
+
+        getMethodDetailsById();
+
         setStatus("running");
-        // Add your run logic here
     };
 
     const handlePause = () => {
         setStatus("paused");
-        // Add your pause logic here
     };
 
     const handleResume = () => {
         setStatus("running");
-        // Add your resume logic here
     };
 
     const handleStop = () => {
         setStatus("idle");
-        // Add your stop logic here
     };
 
     const handleReset = () => {
         setStatus("idle");
-        // Add your reset logic here
     };
 
     return (
@@ -44,7 +159,11 @@ export default function Header() {
                 <h2 className="text-xl font-bold text-neutral-800">Control Panel</h2>
                 <div className="flex space-x-2">
                     {status === "idle" && (
-                        <button onClick={handleRun} className={`${buttonClasses.base} ${buttonClasses.run}`}>
+                        <button
+                            disabled={!watch("selectedBlocks") || watch("selectedBlocks")?.length === 0}
+                            onClick={handleRun}
+                            className={`${buttonClasses.base} ${buttonClasses.run} disabled:opacity-50 disabled:cursor-not-allowed`}
+                        >
                             <Play className="mr-2" size={20} /> Run
                         </button>
                     )}

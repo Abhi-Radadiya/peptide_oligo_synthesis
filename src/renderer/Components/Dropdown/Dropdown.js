@@ -114,34 +114,55 @@ const customStyles = (width, height) => {
 };
 
 export function SelectionController(props) {
-    const { control, name, menuItem, rules, isDisabled, className, placeholder, width, isClearable = true, height, handleChange, isMulti = false } = props;
+    const {
+        control,
+        name,
+        menuItem,
+        rules,
+        isDisabled,
+        className,
+        placeholder,
+        width,
+        isClearable = true,
+        height,
+        handleChange,
+        isMulti = false,
+        label,
+        labelClassName = "text-gray-700 leading-[17px] font-normal",
+    } = props;
 
     return (
-        <Controller
-            name={name}
-            control={control}
-            rules={rules}
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-                <div className={`${className}`}>
-                    <Selection
-                        value={value}
-                        isDisabled={isDisabled}
-                        isClearable={isClearable}
-                        menuItem={menuItem}
-                        placeholder={placeholder}
-                        onChange={(option) => {
-                            onChange(option);
-                            handleChange?.(option);
-                        }}
-                        width={width}
-                        className={className}
-                        height={height}
-                        isMulti={isMulti}
-                        error={error}
-                    />
-                </div>
-            )}
-        />
+        <>
+            <div className="">
+                {label && <label className={`block pb-2 ${labelClassName}`}>{label}</label>}
+
+                <Controller
+                    name={name}
+                    control={control}
+                    rules={rules}
+                    render={({ field: { onChange, value }, fieldState: { error } }) => (
+                        <div className={`${className}`}>
+                            <Selection
+                                value={value}
+                                isDisabled={isDisabled}
+                                isClearable={isClearable}
+                                menuItem={menuItem}
+                                placeholder={placeholder}
+                                onChange={(option) => {
+                                    onChange(option);
+                                    handleChange?.(option);
+                                }}
+                                width={width}
+                                className={className}
+                                height={height}
+                                isMulti={isMulti}
+                                error={error}
+                            />
+                        </div>
+                    )}
+                />
+            </div>
+        </>
     );
 }
 

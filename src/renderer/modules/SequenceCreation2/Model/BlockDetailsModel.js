@@ -4,6 +4,8 @@ import ModelWrapper from "../../../Components/Model/ModelWrapper";
 export default function BlockDetailsModel(props) {
     const { onClose, availableBlocks } = props;
 
+    console.log(`availableBlocks inside : `, availableBlocks);
+
     return (
         <>
             <ModelWrapper

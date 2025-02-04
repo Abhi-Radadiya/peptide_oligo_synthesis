@@ -28,6 +28,7 @@ export default function Header() {
     const { tabs, activeTabId, closeTab, setActiveTabId } = useContext(TabContext);
 
     const formatBlock = () => {
+        // TODO add amedite id while saving not just block name
         return watch("sequence")?.map((el) => {
             return {
                 block: el.block,
@@ -79,13 +80,7 @@ export default function Header() {
     return (
         <>
             <div className="flex flex-row w-full items-end pb-4 border-b border-neutral-300 mb-4 justify-between">
-                <InputField
-                    label="Sequence name"
-                    control={control}
-                    name="sequenceName"
-                    rules={{ required: "Please enter sequence name" }}
-                    placeholder="Enter sequence name"
-                />
+                <InputField label="Sequence name" control={control} name="sequenceName" rules={{ required: "Please enter sequence name" }} placeholder="Enter sequence name" />
 
                 <Button label="Save" bgClassName="bg-green-300" onClick={handleSubmit(handleSave)} disabled={!isEmpty(errors)} />
             </div>
