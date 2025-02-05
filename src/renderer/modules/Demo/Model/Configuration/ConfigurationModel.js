@@ -60,7 +60,18 @@ export default function ConfigurationModel(props) {
 
     return (
         <>
-            <ModelWrapper hasOutsideClick={false} width="w-[80vw]" onClose={onClose} header="Configure synthesis">
+            <ModelWrapper
+                hasOutsideClick={false}
+                width="w-[80vw]"
+                onClose={() => {
+                    if (!watch("isSavedOne")) {
+                        setValue("tempSelectedBlocks", new Set());
+                        reset();
+                    }
+                    onClose();
+                }}
+                header="Configure synthesis"
+            >
                 <div className="w-full flex flex-row items-start gap-6">
                     <div className="pt-4 space-y-6 w-1/3">
                         <SelectionController
@@ -122,6 +133,7 @@ export default function ConfigurationModel(props) {
                                 >
                                     Universal
                                 </button>
+
                                 <button
                                     className={`border px-4 py-1 transition-colors duration-300 rounded-lg ${watch("tempResin") === "standard" && "bg-blue-200 border-blue-400"}`}
                                     onClick={() => setValue("tempResin", "standard")}
@@ -140,6 +152,7 @@ export default function ConfigurationModel(props) {
                 {showBlockSelectionError && (
                     <span className="text-sm font-medium text-red-400 justify-end flex mt-2">* No block is selected please select any block to proceed! </span>
                 )}
+
                 <ModelButton
                     onCancel={() => {
                         if (!watch("isSavedOne")) {

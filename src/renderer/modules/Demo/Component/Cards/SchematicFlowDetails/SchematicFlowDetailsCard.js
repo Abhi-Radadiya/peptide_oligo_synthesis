@@ -54,7 +54,7 @@ export default function SchematicFlowDetailsCard() {
 
                             {/* Displaying Operation Data */}
                             <div className="space-y-4">
-                                {Object.entries(executingCurrentBlock.operationData).map(([key, value]) => {
+                                {Object.entries(executingCurrentBlock?.operationData ?? {})?.map(([key, value]) => {
                                     const formattedKey = formatKey(key); // Format the key for better readability
                                     return (
                                         <div key={key} className="flex items-center space-x-3">

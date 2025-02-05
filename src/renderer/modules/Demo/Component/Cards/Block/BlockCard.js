@@ -15,6 +15,10 @@ export default function BlockCard() {
         return watch("selectedBlocks")?.find((el) => el.method.id === methodId)?.method.method_name;
     };
 
+    const activeBlockIndex = watch("activeBlockIndex");
+
+    const blocks = watch("option") == 3 ? [...(selectedSequenceData?.block ?? [])]?.reverse() : selectedSequenceData?.block;
+
     return (
         <div className="bg-white shadow-lg flex-grow rounded-xl overflow-hidden min-w-[400px] w-[400px] border border-neutral-200 transition-all duration-300 hover:shadow-xl">
             <div className="bg-gradient-to-r from-amber-100 to-amber-200 p-4">
@@ -22,22 +26,26 @@ export default function BlockCard() {
             </div>
 
             <div className="p-4 -m-2">
-                {selectedSequenceData?.block?.map((el, index) => {
+                {blocks?.map((el, index) => {
                     const isDisabled = !selectedBlockIndices.includes(index);
 
                     const methodName = getMethodName(el.method.value);
 
+                    const isActive = watch("selectedBlocks")?.[activeBlockIndex]?.index === index;
+
                     return (
                         <div
-                            className={`inline-block rounded-lg px-2 py-1 m-2 transition-all duration-300 ${
-                                isDisabled
+                            className={`inline-block rounded-lg px-2 py-1 m-2 transition-all duration-300 relative ${
+                                isActive
+                                    ? "bg-amber-200 border-amber-400 border scale-105 shadow-lg"
+                                    : isDisabled
                                     ? "bg-neutral-100 text-neutral-400 text-sm italic shadow-sm opacity-70 cursor-not-allowed"
                                     : "border bg-neutral-50 shadow-lg border-neutral-400"
                             }`}
                             key={index}
                         >
+                            {isActive && <div className="h-3 w-3 rounded-full bg-green-500 absolute -right-1 -top-1 animate-ping" />}
                             <span className="font-medium mr-1">{el.block}</span>
-
                             {!!methodName && <span className={`italic text-xs ${isDisabled ? "text-neutral-400" : "text-neutral-600"}`}>({methodName})</span>}
                         </div>
                     );

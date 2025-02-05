@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Play, Pause, Square, RotateCcw } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { useSelector } from "react-redux";
@@ -8,6 +8,8 @@ export default function Header() {
     const [status, setStatus] = useState("idle");
 
     const { watch, setValue } = useFormContext();
+
+    const intervalRef = useRef(null); // Store the interval ID
 
     const buttonClasses = {
         base: "flex items-center justify-center py-2 px-3 rounded-md transition-all duration-200",
@@ -37,7 +39,7 @@ export default function Header() {
         { label: "DEA", value: "dea", index: 9 },
     ];
 
-    function formatMethodData(method, block) {
+    function formatMethodData(method, block, blockIndex) {
         let formattedMethod = {};
 
         for (const [key, values] of Object.entries(processWiseFlag)) {
@@ -53,11 +55,11 @@ export default function Header() {
             }
         }
 
-        const oprerationWiseFormation = operation.map((el) => {
-            return { ...el, block, operationData: formattedMethod[el.value] };
+        const operationWiseFormation = operation.map((el) => {
+            return { ...el, block, operationData: formattedMethod[el.value], blockIndex };
         });
 
-        return oprerationWiseFormation;
+        return operationWiseFormation;
     }
 
     function filterOperations(operations) {
@@ -101,56 +103,77 @@ export default function Header() {
         });
     }
 
-    const formateSequenceOperation = async (sequence) => {
-        const formattedSequenceMethod = sequence
-            .map((el) => {
-                return formatMethodData(el.method, el.block);
-            })
-            .flat();
+    const indexRef = useRef(0);
+
+    const operationsRef = useRef([]);
+
+    const formatSequenceOperation = async (sequence) => {
+        const formattedSequenceMethod = sequence.map((el, index) => formatMethodData(el.method, el.block, index)).flat();
 
         const formattedOperations = filterOperations(formattedSequenceMethod);
+        operationsRef.current = formattedOperations;
+        indexRef.current = 0;
 
-        let index = 0;
+        startExecution();
+    };
 
-        const interval = setInterval(() => {
-            setValue("executingCurrentBlock", formattedOperations[index]);
+    const startExecution = () => {
+        if (intervalRef.current) clearInterval(intervalRef.current);
 
-            index++;
+        intervalRef.current = setInterval(() => {
+            setValue("executingCurrentBlock", operationsRef.current[indexRef.current]);
 
-            if (index >= formattedOperations.length) {
-                clearInterval(interval); // Stop when all items are processed
+            setValue("activeBlockIndex", operationsRef.current[indexRef.current].blockIndex);
+
+            indexRef.current++;
+
+            if (indexRef.current >= operationsRef.current.length) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+                setStatus("idle");
             }
         }, 1000);
+
+        setStatus("running");
     };
 
     const handleRun = () => {
         const selectedBlock = watch("selectedBlocks");
 
-        const blocksWithMethodDetails = selectedBlock.map((el) => {
-            return { ...el, method: { ...el.method, ...getMethodDetailsById(el.method.id) } };
-        });
+        const blocksWithMethodDetails = selectedBlock.map((el) => ({
+            ...el,
+            method: { ...el.method, ...getMethodDetailsById(el.method.id) },
+        }));
 
-        formateSequenceOperation(blocksWithMethodDetails);
-
-        getMethodDetailsById();
-
-        setStatus("running");
+        formatSequenceOperation(blocksWithMethodDetails);
     };
 
     const handlePause = () => {
-        setStatus("paused");
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+            setStatus("paused");
+        }
     };
 
     const handleResume = () => {
-        setStatus("running");
+        if (status === "paused") {
+            startExecution();
+        }
     };
 
     const handleStop = () => {
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        }
+        indexRef.current = 0;
+        setValue("executingCurrentBlock", null);
         setStatus("idle");
     };
 
     const handleReset = () => {
-        setStatus("idle");
+        handleStop();
     };
 
     return (
