@@ -53,8 +53,8 @@ const InputField = (props) => {
                             type={type}
                             placeholder={placeholder}
                             disabled={disabled}
-                            className={`px-3 py-2 ${rightFixItem ? "pl-3 pr-12" : "px-3"} ${borderClass} focus:ring-1 ring-offset-2 ring-neutral-900 rounded ${
-                                error ? "border-red-500" : "border-gray-300"
+                            className={`px-3 py-2 ${rightFixItem ? "pl-3 pr-12" : "px-3"} ${borderClass} shadow-md focus:ring-1 ring-offset-2 ring-neutral-900 rounded-lg ${
+                                error ? "border-red-500" : "border-neutral-600"
                             } ${className} ${width ?? "w-full"}`}
                             {...(type === "number" ? numberInputProps : {})}
                             {...(type === "checkbox" ? { checked: field.value ?? false } : {})}

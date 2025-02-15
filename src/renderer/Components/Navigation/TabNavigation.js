@@ -16,6 +16,8 @@ import SequenceCreation from "../../modules/SequenceCreation/SequenceCreation";
 import SequenceCreation2 from "../../modules/SequenceCreation2/SequenceCreation2";
 import Documentation from "../../modules/Documantation/Documentation";
 import Demo from "../../modules/Demo/Demo";
+import SequenceCommand from "../../modules/SequenceCommand/SequenceCommand";
+import CommandEditor from "../../modules/CommandEditor/CommandEditor";
 
 const TabContext = createContext();
 
@@ -33,6 +35,9 @@ const routeConfig = {
     "/sequence-editor": { name: "Sequence Editor", Component: SequenceCreation2 },
     "/documentation": { name: "Documentation", Component: Documentation },
     "/demo": { name: "demo", Component: Demo },
+    "/sequence-command": { name: "Sequence Command", Component: SequenceCommand },
+    "/command-editor": { name: "Command Editor", Component: CommandEditor },
+    "/command-editor/:id": { name: "Command Editor", Component: CommandEditor },
 };
 
 const findSequenceName = (sequence, id) => {
@@ -46,6 +51,11 @@ const findMethodSettingName = (method, id) => {
     return selectedMethod?.method_name;
 };
 
+const findCommandEditorFileName = (commands, id) => {
+    const selectedMethod = commands.find((el) => el.id === id);
+    return selectedMethod?.fileName;
+};
+
 export const TabProvider = ({ children }) => {
     const [tabs, setTabs] = useState([]);
 
@@ -56,6 +66,8 @@ export const TabProvider = ({ children }) => {
     const sequence = useSelector((state) => state.sequence.sequence);
 
     const methods = useSelector((state) => state.methodSetup.method);
+
+    const commands = useSelector((state) => state.commands.commands);
 
     const addTab = (path) => {
         setTabs((prev) => {
@@ -95,9 +107,11 @@ export const TabProvider = ({ children }) => {
                 additionalName = findSequenceName(sequence, id);
             } else if (pathSegments[1] === "method-setting") {
                 additionalName = findMethodSettingName(methods, id);
+            } else if (pathSegments[1] === "command-editor") {
+                additionalName = findCommandEditorFileName(commands, id);
             }
 
-            const name = `${routeConfig[matchedRoute]?.name}${!additionalName ? "" : ` / ${additionalName}`}`;
+            const name = `${routeConfig[matchedRoute]?.name}${!additionalName ? "" : ` /  ${additionalName}`}`;
 
             const { Component } = routeConfig[matchedRoute];
 
