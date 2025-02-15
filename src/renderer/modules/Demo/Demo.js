@@ -8,7 +8,9 @@ import RunningBlockDetailsCard from "./Component/Cards/RunningBlockDetails/Runni
 import SchematicFlowDetailsCard from "./Component/Cards/SchematicFlowDetails/SchematicFlowDetailsCard";
 
 export default function Demo() {
-    const method = useForm({ defaultValues: { option: "3", resin: "universal" } });
+    const method = useForm({ defaultValues: { option: "3", resin: "universal", showConfigurationCard: true } });
+
+    const { watch } = method;
 
     return (
         <>
@@ -18,8 +20,13 @@ export default function Demo() {
 
                     <div className="h-[80vh] overflow-auto scrollbar-style pr-4 -mr-4">
                         <div className="flex flex-row gap-4 items-stretch mb-6">
-                            <SelectionCard />
-                            <RunCard />
+                            {watch("showConfigurationCard") && (
+                                <>
+                                    <SelectionCard />
+                                    <RunCard />
+                                </>
+                            )}
+
                             <BlockCard />
                         </div>
 

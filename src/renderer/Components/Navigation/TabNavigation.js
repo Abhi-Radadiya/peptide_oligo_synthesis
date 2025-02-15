@@ -14,7 +14,7 @@ import Settings from "../../modules/Settings/Settings";
 import AvailableSequence from "../../modules/AvailableSequence/AvailableSequence";
 import SequenceCreation from "../../modules/SequenceCreation/SequenceCreation";
 import SequenceCreation2 from "../../modules/SequenceCreation2/SequenceCreation2";
-import Documantation from "../../modules/Documantation/Documantation";
+import Documentation from "../../modules/Documantation/Documentation";
 import Demo from "../../modules/Demo/Demo";
 
 const TabContext = createContext();
@@ -31,7 +31,7 @@ const routeConfig = {
     "/sequence-editor/:id": { name: "Sequence Editor", Component: SequenceCreation2 },
     "/method-setting": { name: "Method Setting", Component: MethodSetting },
     "/sequence-editor": { name: "Sequence Editor", Component: SequenceCreation2 },
-    "/documantation": { name: "Documantation", Component: Documantation },
+    "/documentation": { name: "Documentation", Component: Documentation },
     "/demo": { name: "demo", Component: Demo },
 };
 

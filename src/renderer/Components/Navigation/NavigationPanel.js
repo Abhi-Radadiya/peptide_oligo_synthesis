@@ -69,11 +69,7 @@
 
 //     return (
 //         <>
-//             <nav
-//                 className={`fixed top-0 z-[30] left-0 h-screen w-64 bg-gray-200 transition-transform duration-300 shadow-lg ${
-//                     isNavOpen ? "translate-x-0" : "-translate-x-full"
-//                 }`}
-//             >
+//             <nav className={`fixed top-0 z-[30] left-0 h-screen w-64 bg-gray-200 transition-transform duration-300 shadow-lg ${isNavOpen ? "translate-x-0" : "-translate-x-full"}`}>
 //                 <ul className="space-y-4 mt-10 ml-8">
 //                     {links.map((el, index) => {
 //                         return (
@@ -132,9 +128,7 @@
 //                 onClick={() => setIsNavOpen((prevState) => !prevState)}
 //             >
 //                 <DownIcon
-//                     className={`${
-//                         isNavOpen ? "rotate-90" : "-rotate-90"
-//                     } rounded-full border-2 cursor-pointer bg-neutral-200 transition-all duration-300 border-neutral-500`}
+//                     className={`${isNavOpen ? "rotate-90" : "-rotate-90"} rounded-full border-2 cursor-pointer bg-neutral-200 transition-all duration-300 border-neutral-500`}
 //                 />
 //             </div>
 
@@ -226,7 +220,7 @@ export default function NavigationPanel({ isNavOpen, setIsNavOpen }) {
                         {/* Logo or Brand Area */}
                         <div
                             className={`
-                        p-4 flex items-center 
+                        p-4 flex items-center
                         ${isNavOpen ? "justify-between" : "justify-center"}
                     `}
                         >
@@ -272,11 +266,10 @@ export default function NavigationPanel({ isNavOpen, setIsNavOpen }) {
                             ))}
                         </ul>
 
-                        {/* Footer Link */}
                         <Link
                             to="/documentation"
                             className={`
-                            flex items-center p-4 border-t 
+                            flex items-center p-4 border-t
                             hover:bg-gray-100 transition-all
                             ${isNavOpen ? "justify-start" : "justify-center"}
                         `}
@@ -289,10 +282,7 @@ export default function NavigationPanel({ isNavOpen, setIsNavOpen }) {
             </div>
 
             {!isNavOpen && (
-                <button
-                    onClick={() => setIsNavOpen(true)}
-                    className="fixed bottom-6 left-6 z-40 bg-white shadow-lg rounded-full p-2 hover:bg-blue-50 transition-all duration-300"
-                >
+                <button onClick={() => setIsNavOpen(true)} className="fixed bottom-6 left-6 z-40 bg-white shadow-lg rounded-full p-2 hover:bg-blue-50 transition-all duration-300">
                     <ChevronRight className="text-blue-600" />
                 </button>
             )}

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { SmallButton } from "../../../../../Components/Buttons/Buttons";
-import { Edit, Settings } from "lucide-react";
+import { Settings } from "lucide-react";
 import ConfigurationModel from "../../../Model/Configuration/ConfigurationModel";
 import { useFormContext } from "react-hook-form";
 
@@ -43,25 +43,15 @@ export default function SelectionCard() {
                 <div className="bg-gradient-to-r from-amber-100 to-amber-200 p-4">
                     <div className="flex flex-row justify-between items-center">
                         <h2 className="text-lg font-semibold text-neutral-800">Configuration</h2>
-                        <div className="flex flex-row space-x-2">
-                            <SmallButton
-                                bgClassName="bg-amber-300 hover:bg-amber-400 transition-colors duration-200 flex items-center"
-                                label={
-                                    <span className="flex items-center">
-                                        <Settings className="mr-2" size={16} /> Configure
-                                    </span>
-                                }
-                                onClick={() => setShowConfigurationModel(true)}
-                            />
-                            <SmallButton
-                                bgClassName="bg-green-300 hover:bg-green-400 transition-colors duration-200 flex items-center"
-                                label={
-                                    <span className="flex items-center">
-                                        <Edit className="mr-2" size={16} /> Edit
-                                    </span>
-                                }
-                            />
-                        </div>
+                        <SmallButton
+                            bgClassName="bg-green-300 hover:bg-green-400 transition-colors duration-200 flex items-center"
+                            label={
+                                <span className="flex items-center">
+                                    <Settings className="mr-2" size={16} /> Configure
+                                </span>
+                            }
+                            onClick={() => setShowConfigurationModel(true)}
+                        />
                     </div>
                 </div>
 

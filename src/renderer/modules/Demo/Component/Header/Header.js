@@ -1,8 +1,9 @@
 import React, { useRef, useState } from "react";
-import { Play, Pause, Square, RotateCcw } from "lucide-react";
+import { Play, Pause, Square, RotateCcw, Settings } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { processWiseFlag } from "../../../../Helpers/Constant";
+import { SmallButton } from "../../../../Components/Buttons/Buttons";
 
 export default function Header() {
     const [status, setStatus] = useState("idle");
@@ -90,7 +91,6 @@ export default function Header() {
                 }
                 return false;
             }
-
             if (op.value === "lastDeBlock" && index === lastDeBlockIndex) {
                 return true;
             }
@@ -145,6 +145,8 @@ export default function Header() {
             method: { ...el.method, ...getMethodDetailsById(el.method.id) },
         }));
 
+        setValue("showConfigurationCard", false);
+
         formatSequenceOperation(blocksWithMethodDetails);
     };
 
@@ -154,12 +156,14 @@ export default function Header() {
             intervalRef.current = null;
             setStatus("paused");
         }
+        setValue("showConfigurationCard", false);
     };
 
     const handleResume = () => {
         if (status === "paused") {
             startExecution();
         }
+        setValue("showConfigurationCard", false);
     };
 
     const handleStop = () => {
@@ -170,6 +174,7 @@ export default function Header() {
         indexRef.current = 0;
         setValue("executingCurrentBlock", null);
         setStatus("idle");
+        setValue("showConfigurationCard", true);
     };
 
     const handleReset = () => {
@@ -181,6 +186,13 @@ export default function Header() {
             <div className="flex justify-between items-center">
                 <h2 className="text-xl font-bold text-neutral-800">Control Panel</h2>
                 <div className="flex space-x-2">
+                    <button
+                        onClick={() => setValue("showConfigurationCard", !watch("showConfigurationCard"))}
+                        className={`${buttonClasses.base} bg-neutral-300 disabled:opacity-50 disabled:cursor-not-allowed`}
+                    >
+                        <Settings className="mr-2" size={20} /> Configuration
+                    </button>
+
                     {status === "idle" && (
                         <button
                             disabled={!watch("selectedBlocks") || watch("selectedBlocks")?.length === 0}
@@ -190,25 +202,21 @@ export default function Header() {
                             <Play className="mr-2" size={20} /> Run
                         </button>
                     )}
-
                     {status === "running" && (
                         <button onClick={handlePause} className={`${buttonClasses.base} ${buttonClasses.pause}`}>
                             <Pause className="mr-2" /> Pause
                         </button>
                     )}
-
                     {status === "paused" && (
                         <button onClick={handleResume} className={`${buttonClasses.base} ${buttonClasses.resume}`}>
                             <Play className="mr-2" /> Resume
                         </button>
                     )}
-
                     {status !== "idle" && (
                         <button onClick={handleStop} className={`${buttonClasses.base} ${buttonClasses.stop}`}>
                             <Square className="mr-2" /> Stop
                         </button>
                     )}
-
                     <button onClick={handleReset} className={`${buttonClasses.base} ${buttonClasses.reset}`}>
                         <RotateCcw className="mr-2" /> Reset
                     </button>

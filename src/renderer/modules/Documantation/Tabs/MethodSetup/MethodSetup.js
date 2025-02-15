@@ -197,14 +197,7 @@ export default function MethodSetup() {
         },
     ];
 
-    const parameters = [
-        "Method name",
-        "Column size in ml",
-        "Synthesis scale in μmol",
-        "Loading time in min",
-        "Amedite excess factor in %",
-        "Amedite concentration in mmol",
-    ];
+    const parameters = ["Method name", "Column size in ml", "Synthesis scale in μmol", "Loading time in min", "Amedite excess factor in %", "Amedite concentration in mmol"];
 
     return (
         <div className="max-w-4xl mx-auto p-6 space-y-8 overflow-auto scrollbar-style h-[calc(100vh-130px)]">
@@ -320,10 +313,10 @@ export default function MethodSetup() {
                             </div>
 
                             {/* Common Process Settings */}
-                            {["De-block", "Coupling", "Oxidization", "Sulfurization", "Capping"].map((process) => {
+                            {["De-block", "Coupling", "Oxidization", "Sulfurization", "Capping"].map((process, index) => {
                                 if (process === "Capping")
                                     return (
-                                        <StepSection icon={FlaskConical} title="Capping Settings" className="border-green-200">
+                                        <StepSection icon={FlaskConical} title="Capping Settings" key={index} className="border-green-200">
                                             <div className="space-y-4">
                                                 <div className="bg-blue-50 p-4 rounded-lg">
                                                     <h5 className="font-medium mb-2">Two-Stage Capping Process</h5>

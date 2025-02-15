@@ -5,7 +5,7 @@ import MethodSetup from "./Tabs/MethodSetup/MethodSetup";
 import AvailableSequence from "./Tabs/AvailableSequence/AvailableSequence";
 import Synthesis from "./Tabs/Synthesis/Synthesis";
 
-export default function Documantation() {
+export default function Documentation() {
     const tabs = [
         { label: "Setting", value: "setting", component: Setting },
         { label: "Method Setup", value: "methodSetup", component: MethodSetup },
