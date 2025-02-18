@@ -4,7 +4,7 @@ import SelectionCard from "./Component/Cards/Selection/SelectionCard";
 import { FormProvider, useForm } from "react-hook-form";
 import RunCard from "./Component/Cards/Run/RunCard";
 import BlockCard from "./Component/Cards/Block/BlockCard";
-import RunningBlockDetailsCard from "./Component/Cards/RunningBlockDetails/RunningBlockDetailsCard";
+import RunningSchematicCard from "./Component/Cards/RunningSchematicCard/RunningSchematicCard";
 import SchematicFlowDetailsCard from "./Component/Cards/SchematicFlowDetails/SchematicFlowDetailsCard";
 
 export default function Demo() {
@@ -18,7 +18,8 @@ export default function Demo() {
                 <div className="p-4">
                     <Header />
 
-                    <div className="h-[80vh] overflow-auto scrollbar-style pr-4 -mr-4">
+                    {/* <div className="overflow-auto scrollbar-style pr-4 -mr-4 space-y-6"> */}
+                    <div className="h-[80vh] overflow-auto scrollbar-style pr-4 -mr-4 space-y-6">
                         <div className="flex flex-row gap-4 items-stretch mb-6">
                             {watch("showConfigurationCard") && (
                                 <>
@@ -30,9 +31,9 @@ export default function Demo() {
                             <BlockCard />
                         </div>
 
-                        <RunningBlockDetailsCard />
-
                         <SchematicFlowDetailsCard />
+
+                        <RunningSchematicCard />
                     </div>
                 </div>
             </FormProvider>
