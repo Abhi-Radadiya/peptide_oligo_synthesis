@@ -47,15 +47,15 @@ const SaveButton = (props) => {
 };
 
 const ModelButton = (props) => {
-    const { onCancel, handleSave } = props;
+    const { onCancel, handleSave, type, label = "Save" } = props;
 
     return (
         <div className="flex flex-row justify-end w-full gap-2 mt-4">
-            <button onClick={onCancel} className="text-sm hover:bg-neutral-100 transition-colors duration-300 rounded-lg px-4 py-1">
+            <button onClick={onCancel} type="button" className="text-sm hover:bg-neutral-100 transition-colors duration-300 rounded-lg px-4 py-1">
                 Cancel
             </button>
 
-            <Button label="Save" onClick={handleSave} bgClassName="bg-green-300" />
+            <Button label={label} type={type} onClick={handleSave} bgClassName="bg-green-300" />
         </div>
     );
 };

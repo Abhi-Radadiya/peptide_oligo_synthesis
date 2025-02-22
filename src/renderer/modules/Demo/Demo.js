@@ -5,6 +5,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import RunCard from "./Component/Cards/Run/RunCard";
 import BlockCard from "./Component/Cards/Block/BlockCard";
 import RunningSchematicCard from "./Component/Cards/RunningSchematicCard/RunningSchematicCard";
+import RunningSchematicCard2 from "./Component/Cards/RunningSchematicCard2/RunningSchematicCard2";
 import SchematicFlowDetailsCard from "./Component/Cards/SchematicFlowDetails/SchematicFlowDetailsCard";
 
 export default function Demo() {
@@ -33,7 +34,9 @@ export default function Demo() {
 
                         <SchematicFlowDetailsCard />
 
-                        <RunningSchematicCard />
+                        <RunningSchematicCard2 />
+
+                        {/* <RunningSchematicCard /> */}
                     </div>
                 </div>
             </FormProvider>

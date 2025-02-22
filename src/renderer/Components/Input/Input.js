@@ -68,4 +68,26 @@ const InputField = (props) => {
     );
 };
 
-export default InputField;
+const Input = (props) => {
+    const { rightFixItem, borderClass = "border border-neutral-300 disabled:border-0", width, className, error, onChange, label, inputClassName } = props;
+
+    return (
+        <>
+            <div className={`space-y-1 ${className}`}>
+                {label && <label className="text-gray-700 leading-[17px] font-normal">{label}</label>}
+
+                <input
+                    {...props}
+                    className={`px-3 py-2 disabled:bg-neutral-200 ${
+                        rightFixItem ? "pl-3 pr-12" : "px-3"
+                    } ${borderClass} shadow-md focus:ring-1 ring-offset-2 ring-neutral-900 rounded-lg disabled:cursor-not-allowed ${
+                        error ? "border-red-500" : "border-neutral-600"
+                    } ${inputClassName} ${width ?? "w-full"}`}
+                    onChange={(e) => onChange(e.target.value)}
+                />
+            </div>
+        </>
+    );
+};
+
+export { Input, InputField as default };
