@@ -2,7 +2,7 @@ import { Controller } from "react-hook-form";
 import React from "react";
 
 export default function ToggleSwitch(props) {
-    const { checked, label, handleChange, disabled } = props;
+    const { checked, label, handleChange, disabled, offBgColor = "bg-neutral-200", checkedBgColor = "checked:bg-slate-800" } = props;
 
     return (
         <>
@@ -19,7 +19,7 @@ export default function ToggleSwitch(props) {
                         onChange={handleChange}
                         id="switch-component"
                         type="checkbox"
-                        className="peer appearance-none w-11 h-5 bg-neutral-200 rounded-full checked:bg-slate-800 cursor-pointer transition-colors duration-300 disabled:cursor-not-allowed"
+                        className={`${offBgColor} ${checkedBgColor} peer appearance-none w-11 h-5 rounded-full cursor-pointer transition-colors duration-300 disabled:cursor-not-allowed`}
                     />
                     <label
                         htmlFor="switch-component"

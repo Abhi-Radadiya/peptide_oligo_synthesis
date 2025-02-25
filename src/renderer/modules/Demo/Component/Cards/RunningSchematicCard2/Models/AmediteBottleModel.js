@@ -1,41 +1,11 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import ModelWrapper from "../../../../../../Components/Model/ModelWrapper";
 import { useSelector } from "react-redux";
 import SingleBottle from "../Components/SingleBottle";
 import BottleOperationModel from "./BottleOperationModel";
-
-class ValveManager {
-    constructor(setStateCallback) {
-        this.entries = [];
-        this.setStateCallback = setStateCallback; // Store the callback
-    }
-
-    addEntry(bottleDetail, time) {
-        const entry = { bottleDetail, time, timestamp: Date.now() };
-
-        this.entries.push(entry);
-        this.setStateCallback([...this.entries]); // Update React state
-
-        if (time === "auto") {
-            return;
-        }
-
-        setTimeout(() => {
-            this.removeEntry(entry.bottleDetail.index);
-        }, time);
-    }
-
-    removeEntry(index) {
-        this.entries = this.entries.filter((e) => {
-            return e.bottleDetail.index !== index;
-        });
-        this.setStateCallback([...this.entries]); // Update React state
-    }
-
-    getEntries() {
-        return this.entries;
-    }
-}
+import { useFormContext } from "react-hook-form";
+import { Button } from "../../../../../../Components/Buttons/Buttons";
+import { ChevronRight } from "lucide-react";
 
 export default function AmediteBottleModel(props) {
     const { amedite, onClose } = props;
@@ -44,9 +14,7 @@ export default function AmediteBottleModel(props) {
 
     const [showBottleOperationModel, setShowBottleOperationModel] = useState(null);
 
-    const [openValveDetails, setOpenValveDetails] = useState([]);
-
-    const valveManagerRef = useRef(new ValveManager(setOpenValveDetails));
+    const { setValue, watch } = useFormContext();
 
     const containerBottles = {
         amedite1: ameditePosition.slice(0, 9).map((el, index) => {
@@ -62,43 +30,35 @@ export default function AmediteBottleModel(props) {
 
     const header = { amedite1: "Amedite Container 1", amedite2: "Amedite Container 2", amedite3: "Amedite Container 3" };
 
-    const handleOpenValve = (time) => {
-        valveManagerRef.current.addEntry(showBottleOperationModel, time);
+    const handleOpenValve = (volume, volumeUnit) => {
+        const newValve = { valveNumber: showBottleOperationModel.index, volume, volumeUnit, valveStatus: "close" };
+
+        setValue(`manualModeRunFlow.${amedite}.valve`, [...watch(`manualModeRunFlow.${amedite}.valve`), newValve]);
 
         setShowBottleOperationModel(null);
     };
 
-    const handleCloseValve = (index) => {
-        valveManagerRef.current.removeEntry(index);
-    };
-
-    const handleClickBottle = (isActive, bottle) => {
-        isActive ? handleCloseValve(bottle.index) : setShowBottleOperationModel(bottle);
-    };
-
-    if (!amedite) return null;
+    const handleNext = () => {};
 
     return (
         <>
             <ModelWrapper header={header[amedite]} width="w-fit" onClose={onClose}>
-                <div className={`border border-neutral-300 rounded-lg shadow-lg h-96 w-96 p-3 mt-2 grid grid-cols-3 relative`}>
+                <div className={`border border-neutral-300 rounded-lg shadow-lg h-fit w-fit gap-y-4 gap-x-12 p-3 mt-2 grid grid-cols-4 relative`}>
                     {containerBottles[amedite].map((el, index) => {
-                        const activeBottleData = openValveDetails.find((openValveEl) => openValveEl.bottleDetail.index === el.index);
+                        const activeBottleData = false;
 
-                        return (
-                            <SingleBottle
-                                isActive={!!activeBottleData}
-                                key={index}
-                                bottleDetails={el}
-                                handleClick={() => handleClickBottle(!!activeBottleData, el)}
-                                activeBottleData={activeBottleData}
-                            />
-                        );
+                        return <SingleBottle isActive={!!activeBottleData} key={index} bottleDetails={el} handleClick={() => setShowBottleOperationModel(el)} />;
                     })}
+                </div>
+
+                <div className="mt-6 flex justify-end">
+                    <Button rightIcon={<ChevronRight />} label="Next" onClick={handleNext} bgClassName="bg-blue-300" />
                 </div>
             </ModelWrapper>
 
-            {!!showBottleOperationModel && <BottleOperationModel handleOpenValve={handleOpenValve} onClose={() => setShowBottleOperationModel(null)} />}
+            {!!showBottleOperationModel && (
+                <BottleOperationModel bottleOperationDetails={showBottleOperationModel} handleOpenValve={handleOpenValve} onClose={() => setShowBottleOperationModel(null)} />
+            )}
         </>
     );
 }

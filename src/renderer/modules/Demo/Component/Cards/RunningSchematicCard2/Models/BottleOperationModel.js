@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import ModelWrapper from "../../../../../../Components/Model/ModelWrapper";
-import ToggleSwitch from "../../../../../../Components/FormController/Switch";
 import { Input } from "../../../../../../Components/Input/Input";
 import { ModelButton } from "../../../../../../Components/Buttons/Buttons";
+import OpenValveToggleSwitch from "../Components/open-valve-toggle-switch";
 
 export default function BottleOperationModel(props) {
-    const { onClose, handleOpenValve } = props;
+    const { onClose, bottleOperationDetails, handleOpenValve } = props;
 
-    const [isAutoClose, setIsAutoClose] = useState(false);
-    const [timeAfterClose, setTimeAfterClose] = useState("");
+    const [isMicroLitre, setIsMicroLitre] = useState(true);
+
+    const [volume, setVolume] = useState("");
 
     const handleSave = (e) => {
         e.preventDefault();
-
-        handleOpenValve(!!timeAfterClose ? Number(timeAfterClose) : "auto");
+        handleOpenValve(volume, isMicroLitre ? "microLitre" : "miliLitre");
     };
 
     return (
@@ -21,38 +21,35 @@ export default function BottleOperationModel(props) {
             <ModelWrapper header="Open Valve" width="w-96" onClose={onClose}>
                 <form onSubmit={handleSave}>
                     <div className="mt-6 space-y-4">
-                        <ToggleSwitch
-                            label="Auto close"
-                            checked={isAutoClose}
-                            handleChange={() => {
-                                setIsAutoClose((prevState) => !prevState);
-                                setTimeAfterClose("");
-                            }}
+                        {/* TODO need to transform this component into radio must not be switch */}
+                        <OpenValveToggleSwitch
+                            isChecked={isMicroLitre}
+                            handleChange={setIsMicroLitre}
+                            leftSwitchLabel="Mili Litre"
+                            label="Volume Unit"
+                            rightSwitchLabel="Micro Litre"
                         />
 
                         <Input
-                            name="timeAfterClose"
-                            required={isAutoClose}
-                            placeholder="Enter time in ms"
+                            name="volume"
+                            required={true}
+                            placeholder={`Enter volume in ${isMicroLitre ? "micro" : "mili"} litre`}
                             type="number"
-                            disabled={!isAutoClose}
-                            value={timeAfterClose}
-                            onChange={setTimeAfterClose}
+                            value={volume}
+                            onChange={setVolume}
+                            label="Volume"
+                            labelClassName="font-medium text-base"
                         />
 
-                        {isAutoClose ? (
+                        {!!volume && (
                             <span className="text-sm italic text-neutral-600">
-                                * After
-                                <strong> {timeAfterClose ?? 0}ms </strong>
-                                this valve will be closed automatically.
-                            </span>
-                        ) : (
-                            <span className="text-sm italic text-neutral-600">
-                                * If you don't enter time, valve <strong> will not be closed automatically</strong>.
+                                *Valve will be opened until Amedite <strong>{bottleOperationDetails.label}</strong> flows{" "}
+                                <strong>
+                                    {volume} {isMicroLitre ? "micro" : "mili"} litre.
+                                </strong>
                             </span>
                         )}
-
-                        <ModelButton onCancel={onClose} label="Open Valve" type={"submit"} />
+                        <ModelButton onCancel={onClose} type={"submit"} />
                     </div>
                 </form>
             </ModelWrapper>

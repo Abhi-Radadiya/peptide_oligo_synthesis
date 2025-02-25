@@ -69,15 +69,34 @@ const InputField = (props) => {
 };
 
 const Input = (props) => {
-    const { rightFixItem, borderClass = "border border-neutral-300 disabled:border-0", width, className, error, onChange, label, inputClassName } = props;
+    const {
+        rightFixItem,
+        borderClass = "border border-neutral-300 disabled:border-0",
+        labelClassName = "text-gray-700 leading-[17px] font-normal",
+        width,
+        className,
+        error,
+        onChange,
+        label,
+        inputClassName,
+        name,
+        required,
+        placeholder,
+        type,
+        value,
+    } = props;
 
     return (
         <>
             <div className={`space-y-1 ${className}`}>
-                {label && <label className="text-gray-700 leading-[17px] font-normal">{label}</label>}
+                {label && <label className={`${labelClassName}`}>{label}</label>}
 
                 <input
-                    {...props}
+                    name={name}
+                    required={required}
+                    placeholder={placeholder}
+                    type={type}
+                    value={value}
                     className={`px-3 py-2 disabled:bg-neutral-200 ${
                         rightFixItem ? "pl-3 pr-12" : "px-3"
                     } ${borderClass} shadow-md focus:ring-1 ring-offset-2 ring-neutral-900 rounded-lg disabled:cursor-not-allowed ${
