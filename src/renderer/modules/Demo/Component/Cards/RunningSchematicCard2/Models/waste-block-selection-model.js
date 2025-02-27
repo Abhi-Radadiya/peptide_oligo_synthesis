@@ -32,7 +32,7 @@ export default function WasteBlockSelectionModel(props) {
                     labelClassName="font-medium text-base"
                     label="Waste block"
                     name="wasteBlock.tempSelectedBlock"
-                    placeholder="Select waste block"
+                    placeholder="Select waste block"    
                     control={control}
                     rules={{ required: "Select waste column" }}
                     menuItem={wasteMenuItems}
