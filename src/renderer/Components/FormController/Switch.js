@@ -34,7 +34,7 @@ export default function ToggleSwitch(props) {
 }
 
 export function ControlledSwitch(props) {
-    const { control, name, label } = props;
+    const { name, label, control, offBgColor = "bg-neutral-200", checkedBgColor = "checked:bg-slate-800" } = props;
 
     return (
         <Controller
@@ -53,7 +53,7 @@ export function ControlledSwitch(props) {
                             onChange={field.onChange}
                             id="switch-component"
                             type="checkbox"
-                            className="peer appearance-none w-11 h-5 bg-slate-100 rounded-full checked:bg-slate-800 cursor-pointer transition-colors duration-300"
+                            className={`${offBgColor} ${checkedBgColor} peer appearance-none w-11 h-5 rounded-full cursor-pointer transition-colors duration-300 disabled:cursor-not-allowed`}
                         />
                         <label
                             htmlFor="switch-component"

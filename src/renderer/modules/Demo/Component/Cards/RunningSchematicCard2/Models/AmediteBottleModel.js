@@ -38,7 +38,9 @@ export default function AmediteBottleModel(props) {
         setShowBottleOperationModel(null);
     };
 
-    const handleNext = () => {};
+    const handleSave = () => {
+        onClose();
+    };
 
     return (
         <>
@@ -59,8 +61,8 @@ export default function AmediteBottleModel(props) {
                 <div className="mt-8 flex justify-end">
                     <Button
                         rightIcon={<ChevronRight size={18} />}
-                        label="Next"
-                        onClick={handleNext}
+                        label="Save"
+                        onClick={handleSave}
                         bgClassName="bg-gradient-to-r from-blue-300 to-blue-400 hover:from-blue-400 hover:to-blue-500"
                     />
                 </div>

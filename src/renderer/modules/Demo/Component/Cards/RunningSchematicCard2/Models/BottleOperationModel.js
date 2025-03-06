@@ -17,6 +17,11 @@ export default function BottleOperationModel(props) {
         handleOpenValve(volume, isMicroLitre ? "microLitre" : "miliLitre");
     };
 
+    const handleChangeUnit = () => {
+        setIsMicroLitre((prevState) => !prevState);
+        setVolume(isMicroLitre ? volume * 1000 : volume / 1000);
+    };
+
     return (
         <>
             <ModelWrapper header="Open Valve" width="w-96" onClose={onClose}>
@@ -37,7 +42,7 @@ export default function BottleOperationModel(props) {
                         {/* TODO need to transform this component into radio must not be switch */}
                         <OpenValveToggleSwitch
                             isChecked={isMicroLitre}
-                            handleChange={setIsMicroLitre}
+                            handleChange={handleChangeUnit}
                             leftSwitchLabel="Mili Litre"
                             label="Volume Unit"
                             rightSwitchLabel="Micro Litre"

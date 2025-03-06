@@ -10,7 +10,7 @@ export default function WasteBlockSelectionModel(props) {
     const { setValue, watch, control, handleSubmit } = useFormContext();
 
     useEffect(() => {
-        setValue("wasteBlock.tempSelectedBlock", watch("wasteBlock.selectedBlock") ?? null);
+        setValue("manualModeRunFlow.wasteBlock.tempSelectedBlock", watch("manualModeRunFlow.wasteBlock.selectedBlock") ?? null);
     }, []);
 
     const wasteMenuItems = [
@@ -22,7 +22,8 @@ export default function WasteBlockSelectionModel(props) {
     ];
 
     const handleSave = () => {
-        setValue("wasteBlock.selectedBlock", watch("wasteBlock.tempSelectedBlock"));
+        setValue("manualModeRunFlow.wasteBlock.selectedBlock", watch("manualModeRunFlow.wasteBlock.tempSelectedBlock"));
+        onClose();
     };
 
     return (
@@ -31,8 +32,8 @@ export default function WasteBlockSelectionModel(props) {
                 <SelectionController
                     labelClassName="font-medium text-base"
                     label="Waste block"
-                    name="wasteBlock.tempSelectedBlock"
-                    placeholder="Select waste block"    
+                    name="manualModeRunFlow.wasteBlock.tempSelectedBlock"
+                    placeholder="Select waste block"
                     control={control}
                     rules={{ required: "Select waste column" }}
                     menuItem={wasteMenuItems}

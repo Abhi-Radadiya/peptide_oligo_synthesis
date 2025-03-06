@@ -31,7 +31,9 @@ export default function ReagentModel(props) {
     };
 
     // TODO : add temp saving option instead direct saving
-    const handleNext = () => {};
+    const handleNext = () => {
+        onClose();
+    };
 
     return (
         <>

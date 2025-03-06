@@ -78,3 +78,8 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
     -moz-appearance: textfield;
 }
+
+.dots-pattern {
+    background-image: radial-gradient(circle, #999999 1px, transparent 1px);
+    background-size: 10px 10px; /* Smaller dots */
+}

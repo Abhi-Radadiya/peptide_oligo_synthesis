@@ -37,6 +37,7 @@ export default function PumpModel(props) {
                 <div className="space-y-4">
                     <OpenValveToggleSwitch
                         isChecked={isFlowRateMicroLitre}
+                        // TODO : transform unit of value
                         handleChange={setIsFlowRateMicroLitre}
                         leftSwitchLabel="Mili Litre / min"
                         label="Flow Rate Unit"
@@ -54,14 +55,12 @@ export default function PumpModel(props) {
                         className="w-72"
                         control={control}
                         name={`manualModeRunFlow.${selectedPump}.tempFlowRate`}
-                        rules={{
-                            max: {
-                                value: watch(`manualModeRunFlow.${selectedPump}.flowRate`),
-                                message: "Flow rate cannot be more than column's maximum flow rate.",
-                            },
-                            required: "Flow rate is required",
-                        }}
+                        rules={{ required: "Flow rate is required" }}
                     />
+                    {watch(`manualModeRunFlow.${selectedPump}.flowRate`) < watch(`manualModeRunFlow.${selectedPump}.tempFlowRate`) && (
+                        // TODO : display flow rate max of column
+                        <p className="text-red-500 text-sm mt-1">Flow rate cannot be more than column's maximum flow rate. </p>
+                    )}
                 </div>
 
                 <div className="mt-6 flex justify-end">
