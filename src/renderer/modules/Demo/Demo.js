@@ -22,17 +22,22 @@ export default function Demo() {
                 amedite3: { valve: [] },
                 column: {
                     columnDetails: {},
-                    columnStatus: "close",
+                    columnStatus: "close"
                 },
                 pump: {
                     flowRate: "",
-                    flowRateUnit: "",
+                    flowRateUnit: ""
                 },
                 wasteBlock: {
-                    selectedBlock: null,
+                    selectedBlock: null
                 },
-            },
-        },
+                isBypassColumn: false,
+                rgValveStatus: "closeValve"
+                // valve2Pump2
+                // reagent2Pump2
+                // closeValve
+            }
+        }
     });
 
     const { watch } = method;
@@ -78,45 +83,45 @@ const manualModeRunFlow = {
             valveNumber: 12,
             volume: 200,
             volumeUnit: "miliLitre",
-            valveStatus: "close",
+            valveStatus: "close"
         },
         {
             valveNumber: 12,
             volume: 200,
             volumeUnit: "miliLitre",
-            valveStatus: "close",
-        },
+            valveStatus: "close"
+        }
     ],
     reagent1: [
         {
             valveNumber: 12,
             volume: 200,
             volumeUnit: "miliLitre",
-            valveStatus: "close",
+            valveStatus: "close"
         },
         {
             valveNumber: 12,
             volume: 200,
             volumeUnit: "miliLitre",
-            valveStatus: "close",
-        },
+            valveStatus: "close"
+        }
     ],
     reagent2: [
         {
             valveNumber: 12,
             volume: 200,
             volumeUnit: "miliLitre",
-            valveStatus: "close",
+            valveStatus: "close"
         },
         {
             valveNumber: 12,
             volume: 200,
             volumeUnit: "miliLitre",
-            valveStatus: "close",
-        },
+            valveStatus: "close"
+        }
     ],
     column: {
         columnDetails: {},
-        columnStatus: "close",
-    },
+        columnStatus: "close"
+    }
 };

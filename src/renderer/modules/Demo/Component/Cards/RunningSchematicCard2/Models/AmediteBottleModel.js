@@ -25,7 +25,7 @@ export default function AmediteBottleModel(props) {
         }),
         amedite3: ameditePosition.slice(17, 24).map((el, index) => {
             return { ...el, index: index + 18 };
-        }),
+        })
     };
 
     const header = { amedite1: "Amedite Container 1", amedite2: "Amedite Container 2", amedite3: "Amedite Container 3" };
@@ -66,63 +66,6 @@ export default function AmediteBottleModel(props) {
                         bgClassName="bg-gradient-to-r from-blue-300 to-blue-400 hover:from-blue-400 hover:to-blue-500"
                     />
                 </div>
-
-                {/* Custom animations */}
-                <style jsx>{`
-                    @keyframes bubble-1 {
-                        0% {
-                            transform: translateY(0) scale(1);
-                            opacity: 0.7;
-                        }
-                        50% {
-                            transform: translateY(-15px) scale(1.2);
-                            opacity: 0.3;
-                        }
-                        100% {
-                            transform: translateY(-30px) scale(0.8);
-                            opacity: 0;
-                        }
-                    }
-
-                    @keyframes bubble-2 {
-                        0% {
-                            transform: translateY(0) scale(0.8);
-                            opacity: 0.5;
-                        }
-                        60% {
-                            transform: translateY(-20px) scale(1.1);
-                            opacity: 0.2;
-                        }
-                        100% {
-                            transform: translateY(-25px) scale(0.7);
-                            opacity: 0;
-                        }
-                    }
-
-                    .animate-bubble-1 {
-                        animation: bubble-1 3s infinite;
-                    }
-
-                    .animate-bubble-2 {
-                        animation: bubble-2 2.5s infinite 0.7s;
-                    }
-
-                    @keyframes pulse-slow {
-                        0% {
-                            opacity: 0;
-                        }
-                        50% {
-                            opacity: 0.5;
-                        }
-                        100% {
-                            opacity: 0;
-                        }
-                    }
-
-                    .animate-pulse-slow {
-                        animation: pulse-slow 4s infinite;
-                    }
-                `}</style>
             </ModelWrapper>
 
             {!!showBottleOperationModel && (
