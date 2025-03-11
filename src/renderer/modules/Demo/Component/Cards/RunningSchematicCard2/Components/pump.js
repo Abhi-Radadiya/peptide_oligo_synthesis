@@ -32,8 +32,6 @@ export default function Pump(props) {
         setShowPumpModel(pumpNumber);
     };
 
-    console.log(`pumpNumber : `, pumpNumber);
-
     return (
         <>
             {/* Pump 1 */}

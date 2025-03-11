@@ -14,6 +14,8 @@ import RGValve from "./Components/rg-valve";
 import Legends from "./Components/legends.js";
 import WasteBlock from "./Components/waste-block";
 import StylingBackground from "./Components/styling-background";
+import ConductivityBlock from "./Components/conductivity-block";
+import UVSensor from "./Components/uv-sensor";
 
 export default function EnhancedRunningSchematicCard() {
     const { watch } = useFormContext();
@@ -148,7 +150,7 @@ export default function EnhancedRunningSchematicCard() {
 
     return (
         <>
-            <div className="w-[1450px] h-[800px] border border-neutral-200 rounded-xl p-8 flex mx-auto flex-col bg-gradient-to-b from-gray-50 to-gray-100 shadow-md relative overflow-hidden">
+            <div className="w-[1450px] h-[1100px] border border-neutral-200 rounded-xl p-8 flex mx-auto flex-col bg-gradient-to-b from-gray-50 to-gray-100 shadow-md relative overflow-hidden">
                 <Button
                     label="Run Synthesis"
                     onClick={runManualSynthesis}
@@ -180,6 +182,10 @@ export default function EnhancedRunningSchematicCard() {
                 <RGValve />
 
                 <WasteValve pipeState={pipeState} />
+
+                <ConductivityBlock />
+
+                <UVSensor />
 
                 <Legends />
             </div>

@@ -59,7 +59,6 @@ export default function ColumnWithValve(props) {
                 </div>
             </div>
             {/* bottom valve waste valve */}
-            <PipeFlow className="w-[165px] z-[1] h-2 top-[655px] left-[915px] -rotate-45 border border-neutral-500 bg-neutral-50" is_flowing={pipeState?.botValveWasteValve} />
             <BypassFlowPipe isFlowing={pipeState?.columnBypass} />
 
             {showColumnSelectionModel && <ColumnSelectionModel onClose={() => setShowColumnSelectionModel(false)} />}
