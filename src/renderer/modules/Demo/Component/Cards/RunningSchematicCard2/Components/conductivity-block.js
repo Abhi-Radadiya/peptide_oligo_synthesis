@@ -13,7 +13,7 @@ export default function ConductivityBlock() {
                 </div>
             </div>
 
-            <PipeFlow className="w-2 z-[1] h-8 top-[773px] left-[773px] border border-neutral-500 bg-neutral-50" is_flowing={false} isVertical />
+            <PipeFlow className="w-2 z-[1] h-8 top-[773px] left-[835px] border border-neutral-500 bg-neutral-50" is_flowing={false} isVertical />
         </>
     );
 }

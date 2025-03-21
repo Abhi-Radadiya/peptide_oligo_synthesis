@@ -4,7 +4,7 @@ import { getUniqueId } from "../../../renderer/Helpers/Constant";
 const amediteSlice = createSlice({
     name: "amedite",
     initialState: {
-        amediteList: [],
+        amediteList: []
     },
     reducers: {
         addAmedite: (state, action) => {
@@ -13,8 +13,6 @@ const amediteSlice = createSlice({
             if (!existingAmedite) {
                 state.amediteList = [{ ...action.payload, id: getUniqueId() }, ...state.amediteList];
             } else {
-                console.log("action.payload.full_name =:= ", action.payload.full_name);
-
                 throw new Error("Amedite with the same name already exists.");
             }
         },
@@ -26,7 +24,7 @@ const amediteSlice = createSlice({
             if (amediteIndex !== -1) {
                 state.amediteList[amediteIndex] = {
                     ...state.amediteList[amediteIndex],
-                    ...action.payload,
+                    ...action.payload
                 };
             } else {
                 throw new Error("Amedite with the specified name not found.");
@@ -38,8 +36,8 @@ const amediteSlice = createSlice({
         },
         deleteAmedite: (state, action) => {
             state.amediteList = state.amediteList.filter((item) => item.id !== action.payload);
-        },
-    },
+        }
+    }
 });
 
 export const { addAmedite, updateAmedite, deleteAmedite, deleteAmedites } = amediteSlice.actions;

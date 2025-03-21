@@ -3,6 +3,7 @@ import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 import storage from "redux-persist/lib/storage";
 
 import sequenceReducer from "./reducers/sequenceReducer";
+import hardwareSetupReducer from "./reducers/settings/hardwareSetup";
 import amediteReducer from "./reducers/settings/amedite";
 import bottleMappingReducer from "./reducers/settings/bottleMapping";
 import primingReducer from "./reducers/settings/prime/primingReducer";
@@ -18,6 +19,7 @@ import toastStateReducer from "./reducers/toastStateReducer/toastStateReducer";
 
 const rootReducer = combineReducers({
     // setting
+    hardwareSetup: hardwareSetupReducer,
     amedite: amediteReducer,
     bottleMapping: bottleMappingReducer,
     priming: primingReducer,
@@ -34,21 +36,34 @@ const rootReducer = combineReducers({
     formState: formStateReducer,
     // toaster
     toastState: toastStateReducer,
-    commands: commandsReducer,
+    commands: commandsReducer
 });
 
 const persistConfig = {
     key: "root",
     version: 1,
     storage,
-    whitelist: ["sequence", "amedite", "bottleMapping", "priming", "liquidDetection", "uvSetting", "pressure", "columnEditor", "reagent", "methodSetup", "commands"],
+    whitelist: [
+        "sequence",
+        "amedite",
+        "bottleMapping",
+        "priming",
+        "liquidDetection",
+        "uvSetting",
+        "pressure",
+        "columnEditor",
+        "reagent",
+        "methodSetup",
+        "hardwareSetup",
+        "commands"
+    ]
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
     reducer: persistedReducer,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: { ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER] } }),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: { ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER] } })
 });
 
 const persistor = persistStore(store);

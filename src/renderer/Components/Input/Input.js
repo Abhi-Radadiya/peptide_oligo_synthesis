@@ -15,7 +15,7 @@ const InputField = (props) => {
         disabled,
         borderClass = "border",
         labelClassName = "text-gray-700 leading-[17px] font-normal",
-        rightFixItem,
+        rightFixItem
     } = props;
 
     const handleKeyDown = (e) => {
@@ -34,7 +34,7 @@ const InputField = (props) => {
 
     const numberInputProps = {
         onKeyDown: handleKeyDown,
-        onWheel: handleWheel,
+        onWheel: handleWheel
     };
 
     return (
@@ -83,7 +83,7 @@ const Input = (props) => {
         required,
         placeholder,
         type,
-        value,
+        value
     } = props;
 
     return (

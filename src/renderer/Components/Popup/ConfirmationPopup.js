@@ -15,7 +15,7 @@ const ConfirmationPopup = (props) => {
         <>
             <ModelWrapper header={header} desc={desc} onClose={closePopup} width={width}>
                 <div className="flex justify-end space-x-3">
-                    <button onClick={closePopup} className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 focus:outline-none">
+                    <button onClick={closePopup} className="text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 focus:outline-none">
                         Cancel
                     </button>
 

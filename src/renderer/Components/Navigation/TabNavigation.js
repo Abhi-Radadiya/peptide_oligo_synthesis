@@ -37,7 +37,7 @@ const routeConfig = {
     "/demo": { name: "demo", Component: Demo },
     "/sequence-command": { name: "Sequence Command", Component: SequenceCommand },
     "/command-editor": { name: "Command Editor", Component: CommandEditor },
-    "/command-editor/:id": { name: "Command Editor", Component: CommandEditor },
+    "/command-editor/:id": { name: "Command Editor", Component: CommandEditor }
 };
 
 const findSequenceName = (sequence, id) => {
@@ -119,7 +119,7 @@ export const TabProvider = ({ children }) => {
                 id: Date.now(),
                 path,
                 component: <Component key={Date.now()} id={id} />,
-                name: name || "Unknown",
+                name: name || "Unknown"
             };
 
             setActiveTabId(newTab.id);

@@ -144,8 +144,6 @@ export default function EnhancedRunningSchematicCard() {
                 return newState;
             });
         }, 2000);
-
-        console.log(`watch : `, watch("manualModeRunFlow"));
     };
 
     return (

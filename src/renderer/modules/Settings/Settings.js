@@ -7,10 +7,12 @@ import Pressure from "./Pressure/Pressure";
 import ColumnEditor from "./ColumnEditor/ColumnEditor";
 import Configuration from "./Configuration/Configuration";
 import ApplicationData from "./ApplicationData/ApplicationData.js";
+import HardwareSetup from "./hardware-setup/hardware-setup";
 import { Tabs } from "../../Components/Tabs/Tab";
 
 export default function Settings() {
     const tabs = [
+        { label: "Hardware Setup", value: "hardwareSetup", component: HardwareSetup },
         { label: "Bottle Mapping", value: "bottleMapping", component: BottleMapping },
         { label: "Prime", value: "prime", component: Prime },
         { label: "Liquid Detection", value: "liquidDetection", component: LiquidDetection },
@@ -18,7 +20,7 @@ export default function Settings() {
         { label: "Pressure", value: "pressure", component: Pressure },
         { label: "Column Editor", value: "columnEditor", component: ColumnEditor },
         { label: "Configuration", value: "configuration", component: Configuration },
-        { label: "Application Data", value: "applicationData", component: ApplicationData },
+        { label: "Application Data", value: "applicationData", component: ApplicationData }
     ];
 
     const [activeTab, setActiveTab] = useState(tabs[0].value);

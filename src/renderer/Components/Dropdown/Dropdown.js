@@ -92,24 +92,24 @@ const customStyles = (width, height) => {
             borderColor: state.isFocused ? "#d4d4d4" : "#d4d4d4",
             boxShadow: state.isFocused ? "0 0 0 1px #333" : "none",
             "&:hover": {
-                borderColor: "#d4d4d4",
+                borderColor: "#d4d4d4"
             },
-            height: height,
+            height: height
         }),
         option: (provided, state) => ({
             ...provided,
             backgroundColor: state.isFocused ? "#f5f5f5" : state.isSelected ? "#dedcdc" : "white",
             color: state.isDisabled ? "#c4c2c2" : "#000",
             "&:hover": {
-                backgroundColor: state.isDisabled ? "#fff" : "#f5f5f5",
-            },
+                backgroundColor: state.isDisabled ? "#fff" : "#f5f5f5"
+            }
         }),
         placeholder: (defaultStyles) => {
             return {
                 ...defaultStyles,
-                color: "#c4c0c0",
+                color: "#c4c0c0"
             };
-        },
+        }
     };
 };
 
@@ -128,7 +128,7 @@ export function SelectionController(props) {
         handleChange,
         isMulti = false,
         label,
-        labelClassName = "text-gray-700 leading-[17px] font-normal",
+        labelClassName = "text-gray-700 leading-[17px] font-normal"
     } = props;
 
     return (
