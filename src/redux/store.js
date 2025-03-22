@@ -54,8 +54,8 @@ const persistConfig = {
         "columnEditor",
         "reagent",
         "methodSetup",
-        "hardwareSetup",
-        "commands"
+        "commands",
+        "hardwareSetup"
     ]
 };
 

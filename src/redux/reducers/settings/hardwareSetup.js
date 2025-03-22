@@ -4,7 +4,9 @@ import { getUniqueId } from "../../../renderer/Helpers/Constant";
 const initialState = {
     amediteContainer: { container1: { bottles: [] }, container2: { bottles: [] }, container3: { bottles: [] } },
     reagentContainer: { container1: { bottles: [] }, container2: { bottles: [] } },
-    wasteContainer: { bottles: [] }
+    wasteContainer: { bottles: [] },
+    analogBoard: [],
+    valveBoard: []
 };
 
 const hardwareSetupSlice = createSlice({
@@ -49,6 +51,20 @@ const hardwareSetupSlice = createSlice({
             const { bottleId } = action.payload;
 
             state.wasteContainer.bottles = state.wasteContainer.bottles.filter((el) => el.id !== bottleId);
+        },
+
+        addBoard: (state, action) => {
+            const { boardType, boardData } = action.payload;
+
+            state[boardType] = [...state[boardType], boardData];
+        },
+
+        deleteBoard: (state, action) => {
+            const { boardType, boardId } = action.payload;
+
+            state[boardType] = state[boardType].filter((el) => {
+                return el.boardId !== boardId;
+            });
         }
     }
 });
@@ -59,7 +75,9 @@ export const {
     addReagentContainerBottle,
     removeReagentContainerBottle,
     addWasteContainerBottle,
-    removeWasteContainerBottle
+    removeWasteContainerBottle,
+    deleteBoard,
+    addBoard
 } = hardwareSetupSlice.actions;
 
 export default hardwareSetupSlice.reducer;

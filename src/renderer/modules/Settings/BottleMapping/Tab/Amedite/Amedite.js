@@ -11,7 +11,7 @@ export default function Amedite() {
 
     const amedites = useSelector((state) => state.amedite.amediteList)?.map((el) => ({
         label: el.full_name,
-        value: el.id,
+        value: el.id
     }));
 
     const ameditePosition = useSelector((state) => state.bottleMapping.amedite);
@@ -20,8 +20,8 @@ export default function Amedite() {
         defaultValues: {
             amedite: ameditePosition?.map((el) => {
                 return el.value ? el : undefined;
-            }),
-        },
+            })
+        }
     });
 
     const onSubmit = async (data) => {
@@ -47,7 +47,7 @@ export default function Amedite() {
                         return (
                             <div key={index} className="flex gap-3 items-center w-full ">
                                 <span className="block font-medium text-gray-700">{index < 9 ? "0" + (index + 1) : index + 1}.</span>
-                                <div className={`${watch(`amedite.${index}`) && "border"} rounded border-neutral-800`}>
+                                <div className={`${!watch(`amedite.${index}`) && "border"} rounded-lg border-neutral-800`}>
                                     <SelectionController
                                         control={control}
                                         name={`amedite.${index}`}

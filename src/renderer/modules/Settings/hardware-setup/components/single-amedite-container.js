@@ -45,11 +45,7 @@ export default function SingleAmediteContainer(props) {
 
     return (
         <>
-            <div
-                className={`${
-                    !isReagent ? "bg-gradient-to-br from-purple-50 to-purple-100" : "bg-gradient-to-r from-amber-50 to-amber-100"
-                } rounded-lg border-neutral-200 border shadow-md p-6 transition-all duration-300 hover:shadow-lg`}
-            >
+            <div className={`bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border-neutral-200 border shadow-md p-6 transition-all duration-300 hover:shadow-lg`}>
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-semibold text-gray-700">{getTitle} </h2>
 
@@ -57,11 +53,12 @@ export default function SingleAmediteContainer(props) {
                         {containerBottles?.bottles?.length}/{isReagent ? MAX_BOTTLE_PER_REAGENT_CONTAINER : MAX_BOTTLES_PER_AMEDITE_CONTAINER}
                     </span>
                 </div>
-
                 {containerBottles?.bottles.length === 0 ? (
-                    <div className="text-center py-8 text-gray-500 italic">No bottles added yet</div>
+                    <div className="flex items-center justify-center h-[calc(100%-87px)] text-gray-500 italic">
+                        <span>No bottles added yet</span>
+                    </div>
                 ) : (
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-3 pr-2 -mr-2 max-h-[300px] overflow-auto scrollbar-style">
                         {containerBottles?.bottles.map((bottle, index) => (
                             <div key={index} className="flex items-center border bg-neutral-100 border-neutral-300 rounded-lg justify-between p-3 text-neutral-700 mb-2">
                                 <div className="flex items-center">
@@ -79,7 +76,7 @@ export default function SingleAmediteContainer(props) {
                     </div>
                 )}
 
-                <div className="mt-4 h-2 bg-gray-200 rounded-full">
+                <div className="mt-4 h-2 bg-gray-300 rounded-full">
                     <div
                         className="h-2 bg-indigo-600 rounded-full transition-all duration-500 ease-in-out"
                         style={{ width: `${(containerBottles.bottles.length / (isReagent ? MAX_BOTTLE_PER_REAGENT_CONTAINER : MAX_BOTTLES_PER_AMEDITE_CONTAINER)) * 100}%` }}

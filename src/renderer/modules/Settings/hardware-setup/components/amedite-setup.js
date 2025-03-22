@@ -96,10 +96,7 @@ const BottleManagementSystem = () => {
 
     return (
         <div className="bg-gradient-to-r from-amber-50 to-purple-50 rounded-3xl border border-amber-400 p-8">
-            <div className="max-w-6xl mx-auto">
-                {/* Add Bottle Form */}
-                <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">Bottle Setup</h1>
-
+            <div className="mx-auto">
                 <div className="bg-white rounded-lg shadow-md p-6 mb-8">
                     <h2 className="text-xl font-semibold mb-4 text-gray-700">Add New Bottle</h2>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

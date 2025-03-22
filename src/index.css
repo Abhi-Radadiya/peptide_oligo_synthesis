@@ -83,3 +83,14 @@ input[type="number"] {
     background-image: radial-gradient(circle, #999999 1px, transparent 1px);
     background-size: 10px 10px; /* Smaller dots */
 }
+
+.select__control {
+    border: 1px solid #d3d2d8 !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+    background-color: #f9f9f9 !important;
+    color: #000000 !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    transition: all 0.3s !important;
+}
