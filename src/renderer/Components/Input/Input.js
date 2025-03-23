@@ -15,7 +15,8 @@ const InputField = (props) => {
         disabled,
         borderClass = "border",
         labelClassName = "text-gray-700 leading-[17px] font-normal",
-        rightFixItem
+        rightFixItem,
+        inputRef
     } = props;
 
     const handleKeyDown = (e) => {
@@ -49,6 +50,7 @@ const InputField = (props) => {
                     <div className="relative">
                         <input
                             {...field}
+                            ref={inputRef}
                             value={field.value ?? ""}
                             type={type}
                             placeholder={placeholder}

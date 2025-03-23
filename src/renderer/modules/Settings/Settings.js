@@ -30,7 +30,7 @@ export default function Settings() {
     return (
         <>
             <div className="px-4 pb-4">
-                <Tabs setActiveTab={setActiveTab} activeTab={activeTab} tabs={tabs} className="mb-4 py-4 border-b border-neutral-300 sticky top-0 bg-white z-10" />
+                <Tabs setActiveTab={setActiveTab} activeTab={activeTab} tabs={tabs} className="mb-4 py-4 border-b border-neutral-500 sticky top-0 bg-white z-10 -mx-4 px-4" />
 
                 <ComponentToRender />
             </div>

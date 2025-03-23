@@ -11,11 +11,7 @@ import ConfirmationPopup from "../../../../Components/Popup/ConfirmationPopup";
 export default function BoardConfiguration() {
     const [showInfoCard, setShowInfoCard] = useState(false);
 
-    const { control, handleSubmit } = useForm({
-        defaultValues: {
-            boardType: ""
-        }
-    });
+    const { control, handleSubmit } = useForm({ defaultValues: { boardType: "" } });
 
     const { analogBoard, valveBoard } = useSelector((state) => state.hardwareSetup);
 
@@ -43,10 +39,15 @@ export default function BoardConfiguration() {
     };
 
     const onSubmit = (data) => {
-        if (data?.boardType?.value === "valveBoard") {
-            dispatch(addBoard({ boardType: "valveBoard", boardData: createValveBoard() }));
-        } else if (data?.boardType?.value === "analogBoard") {
-            dispatch(addBoard({ boardType: "analogBoard", boardData: createAnalogBoard() }));
+        const boardType = data?.boardType?.value;
+
+        if (boardType) {
+            dispatch(
+                addBoard({
+                    boardType,
+                    boardData: boardType === "valveBoard" ? createValveBoard() : createAnalogBoard()
+                })
+            );
         }
     };
 
@@ -64,8 +65,8 @@ export default function BoardConfiguration() {
     return (
         <>
             <div className="bg-gradient-to-r from-amber-50 to-purple-50 rounded-3xl border border-amber-400 p-8">
-                <div className="flex flex-row items-center gap-2">
-                    <form onSubmit={handleSubmit(onSubmit)} className="flex gap-4 mb-8 items-end">
+                <div className="flex flex-row items-center gap-2 mb-8">
+                    <form onSubmit={handleSubmit(onSubmit)} className="flex gap-4 items-end">
                         <SelectionController
                             width={300}
                             height={40}
@@ -76,36 +77,42 @@ export default function BoardConfiguration() {
                             control={control}
                         />
 
-                        <button type="submit" className="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors">
-                            Add Board
-                        </button>
+                        <div className="flex flex-row items-center gap-2">
+                            <button type="submit" className="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors">
+                                Add Board
+                            </button>
+                            <InfoIcon className="cursor-pointer" onClick={() => setShowInfoCard(true)} />
+                        </div>
                     </form>
-                    <InfoIcon className="cursor-pointer" onClick={() => setShowInfoCard(true)} />
                 </div>
+
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Valve Board</h2>
 
-                {valveBoard.map((el, index) => {
-                    return (
-                        <div key={index}>
-                            <div className="flex justify-between">
-                                <p className="text-gray-700 mb-2">Board : {index + 1}</p>
-                                <Trash
-                                    size={18}
-                                    className="cursor-pointer"
-                                    color="red"
-                                    onClick={() => setShowConfirmationBoardDelete({ id: el.boardId, isOpen: true, type: "valveBoard" })}
-                                />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    {valveBoard.map((el, index) => {
+                        return (
+                            <div key={index} className="bg-white p-6 rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
+                                <div className="flex justify-between">
+                                    <p className="text-gray-700 mb-2 font-medium text-base">Board : {index + 1}</p>
+                                    <Trash
+                                        size={18}
+                                        className="cursor-pointer"
+                                        color="red"
+                                        onClick={() => setShowConfirmationBoardDelete({ id: el.boardId, isOpen: true, type: "valveBoard" })}
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-4 gap-2">
+                                    {el?.valve?.map((_, i) => (
+                                        <div key={i} className="bg-gray-200 p-2 text-center rounded-lg text-gray-700">
+                                            Valve {index * 16 + 1 + i}
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                            <div className="grid grid-cols-4 gap-2">
-                                {el?.valve?.map((_, i) => (
-                                    <div key={i} className="bg-gray-200 p-2 text-center rounded-lg text-gray-700">
-                                        Valve {index * 16 + 1 + i}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    );
-                })}
+                        );
+                    })}
+                </div>
 
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Analog Board</h2>
 
@@ -114,7 +121,7 @@ export default function BoardConfiguration() {
                         return (
                             <div key={index} className="bg-white p-6 rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
                                 <div className="flex justify-between">
-                                    <p className="text-gray-700 mb-2">Board : {index + 1}</p>
+                                    <p className="text-gray-700 mb-2 font-medium text-base">Board : {index + 1}</p>
 
                                     <Trash
                                         size={18}
@@ -123,6 +130,8 @@ export default function BoardConfiguration() {
                                         onClick={() => setShowConfirmationBoardDelete({ id: board.boardId, isOpen: true, type: "analogBoard" })}
                                     />
                                 </div>
+
+                                <div className="bg-gray-200 p-2 text-center rounded-lg text-gray-700 mb-4">Pump {index + 1}</div>
 
                                 <div className="grid grid-cols-4 gap-2">
                                     {board?.sensors?.map((_, i) => (
@@ -135,40 +144,6 @@ export default function BoardConfiguration() {
                         );
                     })}
                 </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {/* {boards.map((board, index) => (
-                        <div key={index} className="bg-white p-6 rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
-                            <h2 className="text-xl font-semibold text-gray-800 mb-4">{board.type}</h2>
-                            {board.type === "Valve Board" && (
-                                <div>
-                                    <p className="text-gray-700 mb-2">Valves:</p>
-                                    <div className="grid grid-cols-4 gap-2">
-                                        {board.valves.map((valve, i) => (
-                                            <div key={i} className="bg-gray-200 p-2 text-center rounded-lg text-gray-700">
-                                                {valve} {i + 1}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                            {board.type === "Analog Board" && (
-                                <div>
-                                    <p className="text-gray-700 mb-2">Pump:</p>
-                                    <div className="bg-gray-200 p-2 text-center rounded-lg text-gray-700 mb-4">{board.pump}</div>
-                                    <p className="text-gray-700 mb-2">Liquid Sensors:</p>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        {board.sensors.map((sensor, i) => (
-                                            <div key={i} className="bg-gray-200 p-2 text-center rounded-lg text-gray-700">
-                                                {sensor} {i + 1}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    ))} */}
-                </div>
             </div>
 
             {showInfoCard && <BoardInformationModel onClose={() => setShowInfoCard(false)} />}
@@ -178,7 +153,7 @@ export default function BoardConfiguration() {
                 header="Delete Board"
                 desc="Are you sure to processed?"
                 isOpen={showConfirmationBoardDelete.isOpen}
-                closePopup={() => setShowConfirmationBoardDelete(null)}
+                closePopup={() => setShowConfirmationBoardDelete(initialShowConfirmationBoardDelete)}
             />
         </>
     );

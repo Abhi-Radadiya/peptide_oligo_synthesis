@@ -14,9 +14,9 @@ const hardwareSetupSlice = createSlice({
     initialState,
     reducers: {
         addAmediteContainerBottle: (state, action) => {
-            const { bottleName, containerName } = action.payload;
+            const { bottleName, containerName, valve } = action.payload;
 
-            state.amediteContainer[containerName].bottles = [...(state.amediteContainer?.[containerName]?.bottles ?? []), { id: getUniqueId(), bottleName }];
+            state.amediteContainer[containerName].bottles = [...(state.amediteContainer?.[containerName]?.bottles ?? []), { id: getUniqueId(), bottleName, valve }];
         },
 
         removeAmediteContainerBottle: (state, action) => {
@@ -27,10 +27,18 @@ const hardwareSetupSlice = createSlice({
             state.amediteContainer[containerName].bottles = selectedContainerBottles.filter((el) => el.id !== bottleId);
         },
 
-        addReagentContainerBottle: (state, action) => {
-            const { bottleName, containerName } = action.payload;
+        updateValve: (state, action) => {
+            const { bottleName, containerName, bottleId, containerType } = action.payload;
 
-            state.reagentContainer[containerName].bottles = [...(state.reagentContainer?.[containerName]?.bottles ?? []), { id: getUniqueId(), bottleName }];
+            const updatedBottleIndex = state[containerType][containerName].bottles.findIndex((el) => el.id === bottleId);
+
+            if (bottleName) state[containerType][containerName].bottles[updatedBottleIndex].bottleName = bottleName;
+        },
+
+        addReagentContainerBottle: (state, action) => {
+            const { bottleName, containerName, valve } = action.payload;
+
+            state.reagentContainer[containerName].bottles = [...(state.reagentContainer?.[containerName]?.bottles ?? []), { id: getUniqueId(), bottleName, valve }];
         },
 
         removeReagentContainerBottle: (state, action) => {
@@ -42,9 +50,9 @@ const hardwareSetupSlice = createSlice({
         },
 
         addWasteContainerBottle: (state, action) => {
-            const { bottleName } = action.payload;
+            const { bottleName, valve } = action.payload;
 
-            state.wasteContainer.bottles = [...(state.wasteContainer.bottles ?? []), { id: getUniqueId(), bottleName }];
+            state.wasteContainer.bottles = [...(state.wasteContainer.bottles ?? []), { id: getUniqueId(), bottleName, valve }];
         },
 
         removeWasteContainerBottle: (state, action) => {
@@ -65,19 +73,29 @@ const hardwareSetupSlice = createSlice({
             state[boardType] = state[boardType].filter((el) => {
                 return el.boardId !== boardId;
             });
+        },
+
+        updateWasteContainerValve: (state, action) => {
+            const { bottleName, bottleId } = action.payload;
+
+            const updatedBottleIndex = state.wasteContainer.bottles.findIndex((el) => el.id === bottleId);
+
+            if (bottleName) state.wasteContainer.bottles[updatedBottleIndex].bottleName = bottleName;
         }
     }
 });
 
 export const {
-    addAmediteContainerBottle,
-    removeAmediteContainerBottle,
-    addReagentContainerBottle,
-    removeReagentContainerBottle,
-    addWasteContainerBottle,
-    removeWasteContainerBottle,
+    addBoard,
+    updateValve,
     deleteBoard,
-    addBoard
+    addWasteContainerBottle,
+    addReagentContainerBottle,
+    addAmediteContainerBottle,
+    updateWasteContainerValve,
+    removeWasteContainerBottle,
+    removeAmediteContainerBottle,
+    removeReagentContainerBottle
 } = hardwareSetupSlice.actions;
 
 export default hardwareSetupSlice.reducer;

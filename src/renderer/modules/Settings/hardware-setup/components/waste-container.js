@@ -1,22 +1,11 @@
-import { X } from "lucide-react";
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { removeWasteContainerBottle } from "../../../../../redux/reducers/settings/hardwareSetup";
-import ConfirmationPopup from "../../../../Components/Popup/ConfirmationPopup";
+import React from "react";
+import { useSelector } from "react-redux";
+import SingleWasteBlock from "./single-waste-block";
 
 export const MAX_WASTE_BOTTLES = 5;
 
 export default function WasteContainer() {
     const containerBottles = useSelector((state) => state.hardwareSetup.wasteContainer);
-
-    const dispatch = useDispatch();
-
-    const handleRemoveBottle = () => {
-        dispatch(removeWasteContainerBottle({ bottleId: showDeleteConfirmationId }));
-        setShowDeleteConfirmationId(null);
-    };
-
-    const [showDeleteConfirmationId, setShowDeleteConfirmationId] = useState(null);
 
     return (
         <>
@@ -32,20 +21,9 @@ export default function WasteContainer() {
                 {containerBottles?.bottles.length === 0 ? (
                     <div className="text-center py-8 text-gray-500 italic">No bottles added yet</div>
                 ) : (
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="">
                         {containerBottles?.bottles.map((bottle, index) => (
-                            <div key={index} className="flex items-center border bg-neutral-100 border-neutral-300 rounded-lg justify-between p-3 text-neutral-700 mb-2">
-                                <div className="flex items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <span className="font-medium text-sm truncate w-[75px]">{bottle.bottleName}</span>
-                                </div>
-
-                                <button onClick={() => setShowDeleteConfirmationId(bottle.id)} className="ml-2 text-black opacity-80 hover:opacity-100">
-                                    <X className="h-5 w-5 text-gray-500" />
-                                </button>
-                            </div>
+                            <SingleWasteBlock key={index} bottle={bottle} index={index} />
                         ))}
                     </div>
                 )}
@@ -58,14 +36,6 @@ export default function WasteContainer() {
                 </div>
                 <div className="text-right mt-1 text-xs text-gray-500">{MAX_WASTE_BOTTLES - containerBottles.bottles.length} spaces remaining</div>
             </div>
-
-            <ConfirmationPopup
-                closePopup={() => setShowDeleteConfirmationId(null)}
-                isOpen={!!showDeleteConfirmationId}
-                header="Delete Bottle"
-                desc="Are you sure to proceed?"
-                handleConfirm={handleRemoveBottle}
-            />
         </>
     );
 }
