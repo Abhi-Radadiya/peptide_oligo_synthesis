@@ -1,3 +1,4 @@
+// TODO : Remove this component
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FormProvider } from "react-hook-form";
@@ -27,7 +28,7 @@ export default function SequenceCreation(props) {
         clearErrors,
         handleSubmit,
         setError,
-        formState: { isDirty },
+        formState: { isDirty }
     } = method;
 
     const fileInputRef = useRef(null);
@@ -86,7 +87,7 @@ export default function SequenceCreation(props) {
             id: getUniqueId(),
             name: watch("name"),
             block: watch("block"),
-            sequenceString: watch("sequenceString"),
+            sequenceString: watch("sequenceString")
         };
 
         try {
@@ -101,7 +102,7 @@ export default function SequenceCreation(props) {
             if (error.message === "Sequence with the same name already exists.") {
                 setError(`name`, {
                     type: "manual",
-                    message: "Name already exists!",
+                    message: "Name already exists!"
                 });
             } else {
                 console.log(`error : `, error);

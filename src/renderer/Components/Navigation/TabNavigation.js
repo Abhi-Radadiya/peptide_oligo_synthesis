@@ -1,4 +1,4 @@
-//  TO DO need to change logic for add tab, navigation, changing tabs
+// TODO need to change logic for add tab, navigation, changing tabs
 
 // at component where passing id as props need to handle using routing params
 
@@ -9,13 +9,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Methods from "../../modules/Methods/Methods";
 import MethodSetting from "../../modules/MethodSetup2/MethodSetting";
-import Sequence from "../../modules/Sequence/Sequence";
 import Settings from "../../modules/Settings/Settings";
 import AvailableSequence from "../../modules/AvailableSequence/AvailableSequence";
-import SequenceCreation from "../../modules/SequenceCreation/SequenceCreation";
 import SequenceCreation2 from "../../modules/SequenceCreation2/SequenceCreation2";
 import Documentation from "../../modules/Documantation/Documentation";
 import Demo from "../../modules/Demo/Demo";
+import SynthesisProcedure from "../../modules/synthesis-procedure/synthesis-procedure";
 import SequenceCommand from "../../modules/SequenceCommand/SequenceCommand";
 import CommandEditor from "../../modules/CommandEditor/CommandEditor";
 
@@ -26,7 +25,6 @@ export { TabContext };
 const routeConfig = {
     "/": { name: "Methods", Component: Methods },
     "/settings": { name: "Settings", Component: Settings },
-    "/sequence": { name: "Run Synthesis", Component: Sequence },
     "/available-sequence": { name: "Available Sequence", Component: AvailableSequence },
     "/method-setup": { name: "Methods", Component: Methods },
     "/method-setting/:id": { name: "Method Setting", Component: MethodSetting },
@@ -34,7 +32,8 @@ const routeConfig = {
     "/method-setting": { name: "Method Setting", Component: MethodSetting },
     "/sequence-editor": { name: "Sequence Editor", Component: SequenceCreation2 },
     "/documentation": { name: "Documentation", Component: Documentation },
-    "/demo": { name: "demo", Component: Demo },
+    "/run-synthesis": { name: "Synthesis", Component: Demo },
+    "/synthesis-procedure": { name: "Synthesis Procedure", Component: SynthesisProcedure },
     "/sequence-command": { name: "Sequence Command", Component: SequenceCommand },
     "/command-editor": { name: "Command Editor", Component: CommandEditor },
     "/command-editor/:id": { name: "Command Editor", Component: CommandEditor }

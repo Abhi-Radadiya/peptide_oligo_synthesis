@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LayoutGrid, Settings, Play, Video, List, BookText, ChevronRight, ChevronLeft, Terminal } from "lucide-react";
+import { LayoutGrid, Settings, Play, Video, List, BookText, ChevronRight, ChevronLeft, Terminal, Proportions } from "lucide-react";
 
 export default function NavigationPanel({ isNavOpen, setIsNavOpen }) {
     const location = useLocation();
@@ -12,37 +12,39 @@ export default function NavigationPanel({ isNavOpen, setIsNavOpen }) {
             icon: LayoutGrid,
             to: "method-setup",
             isShowSubLink: true,
-            subLink: [{ label: "Method Editor", to: "method-setting" }],
+            subLink: [{ label: "Method Editor", to: "method-setting" }]
         },
         {
             label: "Settings",
             icon: Settings,
-            to: "settings",
+            to: "settings"
         },
         {
             label: "Run Synthesis",
-            icon: Play,
-            to: "sequence",
-        },
-        {
-            label: "Run Demo",
             icon: Video,
-            to: "demo",
+            // TODO : Change name of tab
+            to: "run-synthesis"
         },
         {
             label: "Available Sequence",
             icon: List,
             to: "available-sequence",
             isShowSubLink: true,
-            subLink: [{ label: "Sequence Editor", to: "sequence-editor" }],
+            subLink: [{ label: "Sequence Editor", to: "sequence-editor" }]
         },
         {
-            label: "Command",
-            icon: Terminal,
-            to: "sequence-command",
-            isShowSubLink: true,
-            subLink: [{ label: "Command Editor", to: "command-editor" }],
-        },
+            label: "Synthesis Procedure",
+            icon: Proportions,
+            to: "synthesis-procedure"
+        }
+        // TODO : if not needed remove command editor
+        // {
+        //     label: "Command",
+        //     icon: Terminal,
+        //     to: "sequence-command",
+        //     isShowSubLink: true,
+        //     subLink: [{ label: "Command Editor", to: "command-editor" }]
+        // }
     ];
 
     const [activeTab, setActiveTab] = useState(() => {

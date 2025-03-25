@@ -1,3 +1,5 @@
+// TODO remove this component
+
 import React from "react";
 import RunSequence from "./Tabs/RunSequence/RunSequence";
 import { FormProvider, useForm } from "react-hook-form";
