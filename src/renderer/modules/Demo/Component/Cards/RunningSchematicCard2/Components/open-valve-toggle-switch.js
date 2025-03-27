@@ -9,7 +9,7 @@ export default function OpenValveToggleSwitch(props) {
             <div className="">
                 <span className="font-medium text-base">{label}</span>
 
-                <div className="flex flex-row items-center gap-2 mt-1">
+                <div className="flex flex-row items-center gap-2 mt-2">
                     <span className="text-sm">{leftSwitchLabel}</span>
 
                     <ToggleSwitch

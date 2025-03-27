@@ -1,0 +1,19 @@
+.radio-container input[type="radio"] {
+    display: none;
+}
+
+.radio-container input[type="radio"]:checked + label {
+    color: #185ee0;
+}
+
+.radio-container input[id="radio-1"]:checked ~ .glider {
+    transform: translateX(0);
+}
+
+.radio-container input[id="radio-2"]:checked ~ .glider {
+    transform: translateX(100%);
+}
+
+.radio-container input[id="radio-3"]:checked ~ .glider {
+    transform: translateX(200%);
+}

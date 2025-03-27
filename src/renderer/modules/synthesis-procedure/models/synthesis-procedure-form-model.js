@@ -7,8 +7,10 @@ export default function SynthesisProcedureFormModel(props) {
 
     return (
         <>
-            <ModelWrapper onClose={onClose} width='w-[600px]' header={isEditing ? "Edit Procedure" : "Create Procedure"}>
-                <ProcedureForm />
+            <ModelWrapper onClose={onClose} width="w-[600px]" header={isEditing ? "Edit Procedure" : "Create Procedure"}>
+                <div className="h-[80vh] overflow-y-auto scrollbar-style">
+                    <ProcedureForm />
+                </div>
             </ModelWrapper>
         </>
     );

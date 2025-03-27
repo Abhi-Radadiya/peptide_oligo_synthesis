@@ -1,5 +1,6 @@
 import React from "react";
 import { Controller } from "react-hook-form";
+import "./styles.css";
 
 export default function RadioButton(props) {
     const {
@@ -15,6 +16,7 @@ export default function RadioButton(props) {
         optionWidth = "w-full",
         indication,
         handleIndicationClick,
+        handleRadioChange
     } = props;
 
     return (
@@ -48,7 +50,10 @@ export default function RadioButton(props) {
                                             value={el.value}
                                             checked={field.value === el.value}
                                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 cursor-pointer"
-                                            onChange={(e) => field.onChange(e.target.value)}
+                                            onChange={(e) => {
+                                                field.onChange(e.target.value);
+                                                handleRadioChange?.(e.target.value);
+                                            }}
                                             disabled={disabled}
                                         />
                                         <label

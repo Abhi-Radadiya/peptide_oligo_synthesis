@@ -95,10 +95,6 @@ const BottleManagementSystem = () => {
         reset();
     };
 
-    // amediteContainer
-    // reagentContainer
-    // wasteContainer
-
     const [usedValveIds, setUsedValveIds] = useState([]);
 
     const getValveIds = () => {
