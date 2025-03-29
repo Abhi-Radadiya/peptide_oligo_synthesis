@@ -9,7 +9,7 @@ export default function WasteContainer() {
 
     return (
         <>
-            <div className="bg-gradient-to-r from-cyan-50 to-cyan-100 rounded-lg border-neutral-200 border shadow-md p-6 transition-all duration-300 hover:shadow-lg">
+            <div className="flex flex-col bg-gradient-to-r from-cyan-50 to-cyan-100 rounded-lg border-neutral-200 border shadow-md p-6 transition-all duration-300 hover:shadow-lg">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-semibold text-gray-700">Waste Container</h2>
 
@@ -27,6 +27,7 @@ export default function WasteContainer() {
                         ))}
                     </div>
                 )}
+                <div className="grow"></div>
 
                 <div className="mt-4 h-2 bg-gray-200 rounded-full">
                     <div

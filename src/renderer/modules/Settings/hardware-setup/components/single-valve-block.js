@@ -62,7 +62,12 @@ export default function SingleValveBlock(props) {
 
     const handleSaveName = (data) => {
         dispatch(
-            updateValve({ bottleName: data[inputName], containerName, bottleId: bottle.id, containerType: containerType === "reagent" ? "reagentContainer" : "amediteContainer" })
+            updateValve({
+                bottleName: data.bottleName[containerType][containerName][index],
+                containerName,
+                bottleId: bottle.id,
+                containerType: containerType === "reagent" ? "reagentContainer" : "amediteContainer"
+            })
         );
 
         setIsModify(false);

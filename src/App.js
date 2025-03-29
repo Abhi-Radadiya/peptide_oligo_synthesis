@@ -5,7 +5,7 @@ import NotifyToaster from "./renderer/modules/NotifyToaster/NotifyToaster";
 import TabNavigation, { RouteHandler, TabProvider } from "./renderer/Components/Navigation/TabNavigation";
 
 export default function App() {
-    const [isNavOpen, setIsNavOpen] = useState(false);
+    const [isNavOpen, setIsNavOpen] = useState(true);
 
     return (
         <>

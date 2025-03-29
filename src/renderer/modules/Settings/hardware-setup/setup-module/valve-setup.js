@@ -1,37 +1,36 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
-import { SelectionController } from "../../../../Components/Dropdown/Dropdown";
-import InputField from "../../../../Components/Input/Input";
-import { useDispatch, useSelector } from "react-redux";
-import { addAmediteContainerBottle, addReagentContainerBottle, addWasteContainerBottle } from "../../../../../redux/reducers/settings/hardwareSetup";
-import SingleAmediteContainer, { MAX_BOTTLE_PER_REAGENT_CONTAINER, MAX_BOTTLES_PER_AMEDITE_CONTAINER } from "./single-amedite-container";
-import WasteContainer from "./waste-container";
-import SensingValve from "./sensing-valve";
-import { MAX_WASTE_BOTTLES } from "./waste-container";
+import React, { useEffect, useMemo, useState } from "react"
+import { useForm } from "react-hook-form"
+import { SelectionController } from "../../../../Components/Dropdown/Dropdown"
+import InputField from "../../../../Components/Input/Input"
+import { useDispatch, useSelector } from "react-redux"
+import { addAmediteContainerBottle, addReagentContainerBottle, addWasteContainerBottle } from "../../../../../redux/reducers/settings/hardwareSetup"
+import SingleAmediteContainer, { MAX_BOTTLE_PER_REAGENT_CONTAINER, MAX_BOTTLES_PER_AMEDITE_CONTAINER } from "../components/single-amedite-container"
+import WasteContainer from "../components/waste-container"
+import SensingValve from "../components/sensing-valve"
+import { MAX_WASTE_BOTTLES } from "../components/waste-container"
 
-const BottleManagementSystem = () => {
+export default function ValveSetup() {
     const { control, handleSubmit, watch, reset } = useForm({
         defaultValues: {
             bottleName: "",
             selectedContainer: "",
             selectedValve: ""
         }
-    });
+    })
 
-    const containerBottles = useSelector((state) => state.hardwareSetup);
+    const containerBottles = useSelector((state) => state.hardwareSetup)
 
-    const { analogBoard, valveBoard } = useSelector((state) => state.hardwareSetup);
+    const { analogBoard, valveBoard } = useSelector((state) => state.hardwareSetup)
 
-    // Calculate remaining space in a container
     const getRemainingSpace = (containerName, containerType) => {
-        if (containerType === "wasteContainer") return MAX_WASTE_BOTTLES - containerBottles.wasteContainer.bottles.length;
+        if (containerType === "wasteContainer") return MAX_WASTE_BOTTLES - containerBottles.wasteContainer.bottles.length
 
-        const container = containerBottles[containerType === "reagent" ? "reagentContainer" : "amediteContainer"]?.[containerName];
+        const container = containerBottles[containerType === "reagent" ? "reagentContainer" : "amediteContainer"]?.[containerName]
 
-        return container ? (containerType === "reagent" ? MAX_BOTTLE_PER_REAGENT_CONTAINER : MAX_BOTTLES_PER_AMEDITE_CONTAINER) - container.bottles.length : 0;
-    };
+        return container ? (containerType === "reagent" ? MAX_BOTTLE_PER_REAGENT_CONTAINER : MAX_BOTTLES_PER_AMEDITE_CONTAINER) - container.bottles.length : 0
+    }
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch()
 
     const containerMenuItem = useMemo(() => {
         return [
@@ -56,8 +55,8 @@ const BottleManagementSystem = () => {
                 label: `Waste Block - ${getRemainingSpace(null, "wasteContainer")}`,
                 isDisabled: !getRemainingSpace(null, "wasteContainer")
             }
-        ];
-    }, [containerBottles]);
+        ]
+    }, [containerBottles])
 
     // Handle adding a new bottle
     const handleAddAmediteContainerBottle = () => {
@@ -69,8 +68,8 @@ const BottleManagementSystem = () => {
                         containerName: watch("selectedContainer.value") === "reagentContainer1" ? "container1" : "container2",
                         valve: watch("selectedValve.value")
                     })
-                );
-                break;
+                )
+                break
 
             case "wasteContainer":
                 dispatch(
@@ -78,8 +77,8 @@ const BottleManagementSystem = () => {
                         bottleName: watch("bottleName"),
                         valve: watch("selectedValve.value")
                     })
-                );
-                break;
+                )
+                break
 
             default:
                 dispatch(
@@ -88,66 +87,73 @@ const BottleManagementSystem = () => {
                         containerName: watch("selectedContainer.value"),
                         valve: watch("selectedValve.value")
                     })
-                );
-                break;
+                )
+                break
         }
 
-        reset();
-    };
+        reset()
+    }
 
-    const [usedValveIds, setUsedValveIds] = useState([]);
+    const [usedValveIds, setUsedValveIds] = useState([])
 
     const getValveIds = () => {
         const amediteValveId_1 = containerBottles.amediteContainer.container1.bottles.map((el) => {
-            return el.valve.id;
-        });
+            return el.valve.id
+        })
 
         const amediteValveId_2 = containerBottles.amediteContainer.container2.bottles.map((el) => {
-            return el.valve.id;
-        });
+            return el.valve.id
+        })
 
         const amediteValveId_3 = containerBottles.amediteContainer.container3.bottles.map((el) => {
-            return el.valve.id;
-        });
+            return el.valve.id
+        })
 
         const reagentValveId_1 = containerBottles.reagentContainer.container1.bottles.map((el) => {
-            return el.valve.id;
-        });
+            return el.valve.id
+        })
 
         const reagentValveId_2 = containerBottles.reagentContainer.container2.bottles.map((el) => {
-            return el.valve.id;
-        });
+            return el.valve.id
+        })
 
         const wasteValveId = containerBottles.wasteContainer.bottles.map((el) => {
-            return el.valve.id;
-        });
+            return el.valve.id
+        })
 
-        setUsedValveIds([...amediteValveId_1, ...amediteValveId_2, ...amediteValveId_3, ...reagentValveId_1, ...reagentValveId_2, ...wasteValveId]);
-    };
+        const otherValveIds = [
+            ...(!!containerBottles.otherValve.topValve?.valve?.id ? [containerBottles.otherValve.topValve?.valve?.id] : []),
+            ...(!!containerBottles.otherValve.bottomValve?.valve?.id ? [containerBottles.otherValve.bottomValve?.valve?.id] : []),
+            ...(!!containerBottles.otherValve.rgValve?.valve?.id ? [containerBottles.otherValve.rgValve?.valve?.id] : []),
+            ...(!!containerBottles.otherValve.wasteValve?.valve?.id ? [containerBottles.otherValve.wasteValve?.valve?.id] : [])
+        ]
+
+        setUsedValveIds([...amediteValveId_1, ...amediteValveId_2, ...amediteValveId_3, ...reagentValveId_1, ...reagentValveId_2, ...wasteValveId, ...otherValveIds])
+    }
 
     useEffect(() => {
-        !!containerBottles.amediteContainer.container1 && getValveIds();
-    }, [containerBottles]);
+        !!containerBottles.amediteContainer.container1 && getValveIds()
+    }, [containerBottles])
 
     const validateUniqueBottleName = (value) => {
         // Flatten the bottles from all containers into a single array
-        const allBottles = Object.values({ ...containerBottles.amediteContainer, ...containerBottles.reagentContainer }).flatMap((container) => container.bottles);
+        const allBottles = Object.values({ ...containerBottles.amediteContainer, ...containerBottles.reagentContainer }).flatMap((container) => container.bottles)
 
         // Check if the value already exists in any bottle
-        const isUnique = !allBottles.some((bottle) => bottle.bottleName === value);
+        const isUnique = !allBottles.some((bottle) => bottle.bottleName === value)
 
         // Return an error message if the name is not unique
-        return isUnique || "Bottle name must be unique";
-    };
+        return isUnique || "Bottle name must be unique"
+    }
 
     // TODO : Need to add valve index while assign valve and while deleting board change index as well
     const valveMenuItem = useMemo(() => {
         return valveBoard.flatMap((board, index) => {
             return board.valve.map((valve, valveIndex) => {
-                return { label: `Valve ${index * 16 + 1 + valveIndex}`, value: { id: valve.id, index: index * 16 + 1 + valveIndex }, isDisabled: usedValveIds.includes(valve.id) };
-            });
-        });
-    }, [valveBoard, usedValveIds]);
+                return { label: `Valve ${index * 16 + 1 + valveIndex}`, value: { id: valve.id, index: index * 16 + 1 + valveIndex }, isDisabled: usedValveIds.includes(valve.id) }
+            })
+        })
+    }, [valveBoard, usedValveIds])
 
     return (
         <div className="bg-gradient-to-r from-amber-50 to-purple-50 rounded-3xl border border-amber-400 p-8">
@@ -203,9 +209,9 @@ const BottleManagementSystem = () => {
                     <h1 className="text-xl font-medium pb-4">Amedite Container</h1>
 
                     <div className="grid grid-cols-2 gap-6">
-                        <SingleAmediteContainer containerName="container1" />
-                        <SingleAmediteContainer containerName="container2" />
-                        <SingleAmediteContainer containerName="container3" />
+                        <SingleAmediteContainer containerType="amedite" containerName="container1" />
+                        <SingleAmediteContainer containerType="amedite" containerName="container2" />
+                        <SingleAmediteContainer containerType="amedite" containerName="container3" />
                     </div>
                 </div>
 
@@ -223,12 +229,11 @@ const BottleManagementSystem = () => {
 
                     <div className="grid grid-cols-2 gap-6">
                         <WasteContainer />
+
                         <SensingValve valveMenuItem={valveMenuItem} />
                     </div>
                 </div>
             </div>
         </div>
-    );
-};
-
-export default BottleManagementSystem;
+    )
+}

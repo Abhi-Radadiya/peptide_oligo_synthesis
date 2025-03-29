@@ -11,7 +11,7 @@ export default function Solvent() {
 
     const solvent = useSelector((state) => state.reagent.reagentList)?.map((el) => ({
         label: el.full_name,
-        value: el.id,
+        value: el.id
     }));
 
     const solventPosition = useSelector((state) => state.bottleMapping.solvent);
@@ -20,8 +20,8 @@ export default function Solvent() {
         defaultValues: {
             solvent: solventPosition.map((el) => {
                 return el.value ? el : undefined;
-            }),
-        },
+            })
+        }
     });
 
     const onSubmit = async (data) => {
@@ -47,7 +47,7 @@ export default function Solvent() {
                         return (
                             <div key={index} className="flex gap-3 items-center w-full ">
                                 <span className="block font-medium text-gray-700">{index < 9 ? "0" + (index + 1) : index + 1}.</span>
-                                <div className={`${watch(`solvent.${index}`) && "border"} rounded border-neutral-800`}>
+                                <div className={`${!watch(`solvent.${index}`) && "border"} rounded border-neutral-800`}>
                                     <SelectionController
                                         control={control}
                                         name={`solvent.${index}`}
