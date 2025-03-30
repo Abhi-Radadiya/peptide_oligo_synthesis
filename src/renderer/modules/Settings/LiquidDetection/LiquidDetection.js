@@ -1,40 +1,64 @@
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useForm } from "react-hook-form";
-import InputField from "../../../Components/Input/Input";
-import { setDetectors } from "../../../../redux/reducers/settings/liquidDetection";
-import { openToast } from "../../../../redux/reducers/toastStateReducer/toastStateReducer";
-import { SUCCESS } from "../../../Helpers/Icons";
+import React, { useMemo } from "react"
+import { useSelector, useDispatch } from "react-redux"
+import { useForm } from "react-hook-form"
+import InputField from "../../../Components/Input/Input"
+import { assignSensor, setDetectors } from "../../../../redux/reducers/settings/liquidDetection"
+import { openToast } from "../../../../redux/reducers/toastStateReducer/toastStateReducer"
+import { SUCCESS } from "../../../Helpers/Icons"
+import { SelectionController } from "../../../Components/Dropdown/Dropdown"
 
 export default function LiquidDetection() {
-    const dispatch = useDispatch();
-    const detectors = useSelector((state) => state.liquidDetection.detectors);
+    const dispatch = useDispatch()
+    const detectors = useSelector((state) => state.liquidDetection.detectors)
 
-    const { control, handleSubmit } = useForm({
+    console.log(`detectors : `, detectors)
+
+    const { control, handleSubmit, getValues } = useForm({
         defaultValues: detectors.reduce((form, item) => {
             form[item.position] = {
                 threshold: item.threshold,
-                checked: item.checked,
-            };
-            return form;
-        }, {}),
-    });
+                checked: item.checked
+            }
+            return form
+        }, {})
+    })
 
     const saveThreshold = async (data) => {
         try {
             const detectorSettings = detectors.map((detector) => ({
                 position: detector.position,
                 threshold: data[detector.position]?.threshold || "",
-                checked: data[detector.position]?.checked || false,
-            }));
+                checked: data[detector.position]?.checked || false
+            }))
 
-            dispatch(openToast({ text: "Liquid detection saved successfully.", icon: SUCCESS }));
+            dispatch(openToast({ text: "Liquid detection saved successfully.", icon: SUCCESS }))
 
-            dispatch(setDetectors(detectorSettings));
+            dispatch(setDetectors(detectorSettings))
+
+            // dispatch(assignSensor(detectorSettings))
         } catch (error) {
-            console.error("Failed to save liquid detection settings:", error);
+            console.error("Failed to save liquid detection settings:", error)
         }
-    };
+    }
+
+    const { sensor } = useSelector((state) => state.hardwareSetup)
+
+    const sensorMenuItem = useMemo(() => {
+        return sensor.map((el) => ({ label: el.sensorName, value: { sensorId: el.sensor.id } }))
+    }, [sensor])
+
+    const validateUniqueSensor = (value) => {
+        console.log(`value : `, value)
+
+        const allSelectedSensors = Object.keys(getValues("detectors"))
+            .map((el) => getValues("detectors")[el]?.sensor?.value?.sensorId)
+            .filter(Boolean)
+
+        //  TODO : Need to be unique sensor
+        const isAlreadyUsed = allSelectedSensors.includes(value?.value?.sensorId)
+
+        return isAlreadyUsed ? "Each selection must have a unique sensor." : true
+    }
 
     return (
         <>
@@ -53,6 +77,7 @@ export default function LiquidDetection() {
                             <th className="py-3 px-6 text-left text-gray-600 font-semibold">Position</th>
                             <th className="py-3 px-6 text-left text-gray-600 font-semibold">Threshold</th>
                             <th className="py-3 px-6 text-left text-gray-600 font-semibold">Disabled</th>
+                            <th className="py-3 px-6 text-left text-gray-600 font-semibold">Sensor</th>
                         </tr>
                     </thead>
 
@@ -69,12 +94,22 @@ export default function LiquidDetection() {
                                     <td className="py-3 px-6">
                                         <InputField width="w-5" className="h-5" control={control} name={`${el.position}.checked`} type={"checkbox"} />
                                     </td>
+                                    <td className="py-3 px-6">
+                                        <SelectionController
+                                            width={300}
+                                            placeholder="Select sensor"
+                                            rules={{ validate: validateUniqueSensor }}
+                                            control={control}
+                                            name={`detectors.${el.position}.sensor`}
+                                            menuItem={sensorMenuItem}
+                                        />
+                                    </td>
                                 </tr>
-                            );
+                            )
                         })}
                     </tbody>
                 </table>
             </div>
         </>
-    );
+    )
 }

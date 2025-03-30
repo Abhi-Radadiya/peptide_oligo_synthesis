@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { Tabs } from "../../../Components/Tabs/Tab"
-import HardwareAssignment from "./components/hardware-assignment.js"
+import HardwareAssignment from "./components/hardware-assignment"
 import BoardConfiguration from "./components/board-configuration"
 import { Button } from "../../../Components/Buttons/Buttons"
 import { HardDrive } from "lucide-react"

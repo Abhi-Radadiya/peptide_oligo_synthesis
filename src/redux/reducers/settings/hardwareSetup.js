@@ -7,7 +7,9 @@ const initialState = {
     wasteContainer: { bottles: [] },
     otherValve: { topValve: {}, bottomValve: {}, rgValve: {}, wasteValve: {} },
     analogBoard: [],
-    valveBoard: []
+    valveBoard: [],
+    pump: [],
+    sensor: []
 }
 
 const hardwareSetupSlice = createSlice({
@@ -89,14 +91,68 @@ const hardwareSetupSlice = createSlice({
             const { valveType, assignedValve } = action.payload
 
             state.otherValve[valveType] = { ...assignedValve, id: getUniqueId() }
+        },
+
+        // Pump operation
+        addPump: (state, action) => {
+            state.pump = [...state.pump, action.payload]
+        },
+
+        removePump: (state, action) => {
+            const { pumpId } = action.payload
+
+            state.pump = state.pump.filter((el) => el.pump.pumpId !== pumpId)
+        },
+
+        updatePump: (state, action) => {
+            const { pumpId, pumpName } = action.payload
+
+            state.pump = state.pump.map((el) => {
+                if (el.pump.pumpId === pumpId) {
+                    return { ...el, pumpName }
+                }
+                return el
+            })
+        },
+
+        // sensor operation
+        addSensor: (state, action) => {
+            state.sensor = [...state.sensor, action.payload]
+        },
+
+        removeSensor: (state, action) => {
+            const { sensorId } = action.payload
+
+            state.sensor = state.sensor.filter((el) => el.sensor.sensorId !== sensorId)
+        },
+
+        updateSensor: (state, action) => {
+            const { sensorId, sensorName } = action.payload
+
+            console.log(`sensorId, sensorName : `, sensorId, sensorName)
+
+            state.sensor = state.sensor.map((el) => {
+                console.log(`el.sensor.sensorId : `, el.sensor.sensorId)
+
+                if (el.sensor.sensorId === sensorId) {
+                    return { ...el, sensorName }
+                }
+                return el
+            })
         }
     }
 })
 
 export const {
+    addPump,
     addBoard,
+    addSensor,
+    removePump,
+    updatePump,
     updateValve,
     deleteBoard,
+    removeSensor,
+    updateSensor,
     updateOtherValve,
     addWasteContainerBottle,
     addReagentContainerBottle,

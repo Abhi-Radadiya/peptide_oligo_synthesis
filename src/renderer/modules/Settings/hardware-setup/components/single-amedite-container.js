@@ -1,32 +1,32 @@
-import React, { useMemo } from "react";
-import { useSelector } from "react-redux";
-import SingleValveBlock from "./single-valve-block";
+import React, { useMemo } from "react"
+import { useSelector } from "react-redux"
+import SingleValveBlock from "./single-valve-block"
 
-export const MAX_BOTTLES_PER_AMEDITE_CONTAINER = 20;
-export const MAX_BOTTLE_PER_REAGENT_CONTAINER = 20;
+export const MAX_BOTTLES_PER_AMEDITE_CONTAINER = 20
+export const MAX_BOTTLE_PER_REAGENT_CONTAINER = 20
 
 export default function SingleAmediteContainer(props) {
-    const { containerName, containerType } = props;
+    const { containerName, containerType } = props
 
-    const isReagent = containerType === "reagent";
+    const isReagent = containerType === "reagent"
 
-    const containerBottles = useSelector((state) => state.hardwareSetup[containerType === "reagent" ? "reagentContainer" : "amediteContainer"]?.[containerName]);
+    const containerBottles = useSelector((state) => state.hardwareSetup[containerType === "reagent" ? "reagentContainer" : "amediteContainer"]?.[containerName])
 
     const getTitle = useMemo(() => {
         switch (containerName) {
             case "container1":
-                return "Container 1";
+                return "Container 1"
 
             case "container2":
-                return "Container 2";
+                return "Container 2"
 
             case "container3":
-                return "Container 3";
+                return "Container 3"
 
             default:
-                break;
+                break
         }
-    }, [containerName]);
+    }, [containerName])
 
     return (
         <>
@@ -49,10 +49,9 @@ export default function SingleAmediteContainer(props) {
                     <>
                         <div className="space-y-3 pr-2 -mr-2 max-h-[210px] pb-2 overflow-auto scrollbar-style">
                             {containerBottles?.bottles.map((bottle, index) => {
-                                return <SingleValveBlock containerName={containerName} containerType={containerType} key={index} index={index} bottle={bottle} />;
+                                return <SingleValveBlock containerName={containerName} containerType={containerType} key={index} index={index} bottle={bottle} />
                             })}
                         </div>
-
                         <div className="grow" />
                     </>
                 )}
@@ -69,5 +68,5 @@ export default function SingleAmediteContainer(props) {
                 </div>
             </div>
         </>
-    );
+    )
 }

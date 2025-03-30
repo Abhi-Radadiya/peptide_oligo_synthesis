@@ -20,7 +20,7 @@ export default function ValveSetup() {
 
     const containerBottles = useSelector((state) => state.hardwareSetup)
 
-    const { analogBoard, valveBoard } = useSelector((state) => state.hardwareSetup)
+    const { valveBoard } = useSelector((state) => state.hardwareSetup)
 
     const getRemainingSpace = (containerName, containerType) => {
         if (containerType === "wasteContainer") return MAX_WASTE_BOTTLES - containerBottles.wasteContainer.bottles.length
