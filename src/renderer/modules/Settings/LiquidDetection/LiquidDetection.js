@@ -48,8 +48,6 @@ export default function LiquidDetection() {
     }, [sensor])
 
     const validateUniqueSensor = (value) => {
-        console.log(`value : `, value)
-
         const allSelectedSensors = Object.keys(getValues("detectors"))
             .map((el) => getValues("detectors")[el]?.sensor?.value?.sensorId)
             .filter(Boolean)

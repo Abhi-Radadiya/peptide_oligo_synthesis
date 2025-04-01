@@ -85,7 +85,7 @@ export default function PumpSetup() {
                             </div>
                         ) : (
                             <>
-                                <div className="space-y-3 pr-2 -mr-2 max-h-[210px] pb-2 overflow-auto scrollbar-style">
+                                <div className="grid grid-cols-3 gap-4">
                                     {pump.map((pump, index) => {
                                         return <SinglePumpBlock key={index} {...pump} />
                                     })}

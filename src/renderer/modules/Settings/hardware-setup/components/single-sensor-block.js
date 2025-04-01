@@ -20,7 +20,7 @@ export default function SinglePumpBlock(props) {
     const inputRef = useRef(null)
 
     const handleRemoveSensor = () => {
-        dispatch(removeSensor({ sensorId: sensor.sensorId }))
+        dispatch(removeSensor({ sensorId: sensor.id }))
 
         setShowDeleteConfirmationModel(false)
     }

@@ -1,45 +1,47 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { SelectionController } from "../../../../Components/Dropdown/Dropdown";
-import { InfoIcon, Trash } from "lucide-react";
-import BoardInformationModel from "../models/board-information-model";
-import { useDispatch, useSelector } from "react-redux";
-import { addBoard, deleteBoard } from "../../../../../redux/reducers/settings/hardwareSetup";
-import { getUniqueId } from "../../../../Helpers/Constant";
-import ConfirmationPopup from "../../../../Components/Popup/ConfirmationPopup";
+import React, { useState } from "react"
+import { useForm } from "react-hook-form"
+import { SelectionController } from "../../../../Components/Dropdown/Dropdown"
+import { InfoIcon, Trash } from "lucide-react"
+import BoardInformationModel from "../models/board-information-model"
+import { useDispatch, useSelector } from "react-redux"
+import { addBoard, deleteBoard } from "../../../../../redux/reducers/settings/hardwareSetup"
+import { getUniqueId } from "../../../../Helpers/Constant"
+import ConfirmationPopup from "../../../../Components/Popup/ConfirmationPopup"
+import { openToast } from "../../../../../redux/reducers/toastStateReducer/toastStateReducer"
+import { SUCCESS } from "../../../../Helpers/Icons"
 
 export default function BoardConfiguration() {
-    const [showInfoCard, setShowInfoCard] = useState(false);
+    const [showInfoCard, setShowInfoCard] = useState(false)
 
-    const { control, handleSubmit } = useForm({ defaultValues: { boardType: "" } });
+    const { control, handleSubmit } = useForm({ defaultValues: { boardType: "" } })
 
-    const { analogBoard, valveBoard } = useSelector((state) => state.hardwareSetup);
+    const { analogBoard, valveBoard } = useSelector((state) => state.hardwareSetup)
 
-    const initialShowConfirmationBoardDelete = { isOpen: false, id: null, type: "" };
+    const initialShowConfirmationBoardDelete = { isOpen: false, id: null, type: "" }
 
-    const [showConfirmationBoardDelete, setShowConfirmationBoardDelete] = useState(initialShowConfirmationBoardDelete);
+    const [showConfirmationBoardDelete, setShowConfirmationBoardDelete] = useState(initialShowConfirmationBoardDelete)
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch()
 
     const createAnalogBoard = () => {
         return {
             boardId: getUniqueId(),
             pumpId: getUniqueId(),
             sensors: [...Array(8)].map(() => {
-                return { id: getUniqueId() };
+                return { id: getUniqueId() }
             })
-        };
-    };
+        }
+    }
 
     const createValveBoard = () => {
         return {
             boardId: getUniqueId(),
             valve: [...Array(16)].map(() => ({ id: getUniqueId() }))
-        };
-    };
+        }
+    }
 
     const onSubmit = (data) => {
-        const boardType = data?.boardType?.value;
+        const boardType = data?.boardType?.value
 
         if (boardType) {
             dispatch(
@@ -47,20 +49,22 @@ export default function BoardConfiguration() {
                     boardType,
                     boardData: boardType === "valveBoard" ? createValveBoard() : createAnalogBoard()
                 })
-            );
+            )
+
+            dispatch(openToast({ text: boardType === "valveBoard" ? "Valve board added successfully." : "Analog board added successfully.", icon: SUCCESS }))
         }
-    };
+    }
 
     const handleDeleteBoard = () => {
-        dispatch(deleteBoard({ boardType: showConfirmationBoardDelete.type, boardId: showConfirmationBoardDelete.id }));
+        dispatch(deleteBoard({ boardType: showConfirmationBoardDelete.type, boardId: showConfirmationBoardDelete.id }))
 
-        setShowConfirmationBoardDelete(initialShowConfirmationBoardDelete);
-    };
+        setShowConfirmationBoardDelete(initialShowConfirmationBoardDelete)
+    }
 
     const boardMenuItem = [
         { label: "Valve Board", value: "valveBoard" },
         { label: "Analog Board", value: "analogBoard" }
-    ];
+    ]
 
     return (
         <>
@@ -110,7 +114,7 @@ export default function BoardConfiguration() {
                                     ))}
                                 </div>
                             </div>
-                        );
+                        )
                     })}
                 </div>
 
@@ -141,7 +145,7 @@ export default function BoardConfiguration() {
                                     ))}
                                 </div>
                             </div>
-                        );
+                        )
                     })}
                 </div>
             </div>
@@ -156,5 +160,5 @@ export default function BoardConfiguration() {
                 closePopup={() => setShowConfirmationBoardDelete(initialShowConfirmationBoardDelete)}
             />
         </>
-    );
+    )
 }

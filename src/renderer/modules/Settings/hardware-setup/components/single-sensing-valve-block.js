@@ -66,7 +66,7 @@ export default function SingleSensingValveBlock(props) {
                     <>
                         {isEmpty(valveSelection) ? (
                             <>
-                                <SelectionController width={300} height={40} placeholder="Select Valve Type" menuItem={valveMenuItem} name={valveType} control={control} />
+                                <SelectionController width={250} height={40} placeholder="Select Valve Type" menuItem={valveMenuItem} name={valveType} control={control} />
                                 <button
                                     onClick={handleSubmit(assignValve)}
                                     disabled={!watch(valveType)}

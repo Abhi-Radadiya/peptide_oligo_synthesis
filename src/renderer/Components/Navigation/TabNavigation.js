@@ -4,23 +4,23 @@
 
 // While saving form close exiting tab and redirect to given tab
 
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
-import Methods from "../../modules/Methods/Methods";
-import MethodSetting from "../../modules/MethodSetup2/MethodSetting";
-import Settings from "../../modules/Settings/Settings";
-import AvailableSequence from "../../modules/AvailableSequence/AvailableSequence";
-import SequenceCreation2 from "../../modules/SequenceCreation2/SequenceCreation2";
-import Documentation from "../../modules/Documantation/Documentation";
-import Demo from "../../modules/Demo/Demo";
-import SynthesisProcedure from "../../modules/synthesis-procedure/synthesis-procedure";
-import SequenceCommand from "../../modules/SequenceCommand/SequenceCommand";
-import CommandEditor from "../../modules/CommandEditor/CommandEditor";
+import React, { createContext, useContext, useState, useEffect } from "react"
+import { useNavigate, useLocation } from "react-router-dom"
+import { useSelector } from "react-redux"
+import Methods from "../../modules/Methods/Methods"
+import MethodSetting from "../../modules/MethodSetup2/MethodSetting"
+import Settings from "../../modules/Settings/Settings"
+import AvailableSequence from "../../modules/AvailableSequence/AvailableSequence"
+import SequenceCreation2 from "../../modules/SequenceCreation2/SequenceCreation2"
+import Documentation from "../../modules/Documantation/Documentation"
+import Demo from "../../modules/Demo/Demo"
+import SynthesisProcedure from "../../modules/synthesis-procedure/create-synthesis-procedure"
+import SequenceCommand from "../../modules/SequenceCommand/SequenceCommand"
+import CommandEditor from "../../modules/CommandEditor/CommandEditor"
 
-const TabContext = createContext();
+const TabContext = createContext()
 
-export { TabContext };
+export { TabContext }
 
 const routeConfig = {
     "/": { name: "Methods", Component: Methods },
@@ -37,129 +37,129 @@ const routeConfig = {
     "/sequence-command": { name: "Sequence Command", Component: SequenceCommand },
     "/command-editor": { name: "Command Editor", Component: CommandEditor },
     "/command-editor/:id": { name: "Command Editor", Component: CommandEditor }
-};
+}
 
 const findSequenceName = (sequence, id) => {
-    const selectedSequence = sequence.find((el) => el.id === id);
+    const selectedSequence = sequence.find((el) => el.id === id)
 
-    return selectedSequence?.name;
-};
+    return selectedSequence?.name
+}
 
 const findMethodSettingName = (method, id) => {
-    const selectedMethod = method.find((el) => el.id === id);
-    return selectedMethod?.method_name;
-};
+    const selectedMethod = method.find((el) => el.id === id)
+    return selectedMethod?.method_name
+}
 
 const findCommandEditorFileName = (commands, id) => {
-    const selectedMethod = commands.find((el) => el.id === id);
-    return selectedMethod?.fileName;
-};
+    const selectedMethod = commands.find((el) => el.id === id)
+    return selectedMethod?.fileName
+}
 
 export const TabProvider = ({ children }) => {
-    const [tabs, setTabs] = useState([]);
+    const [tabs, setTabs] = useState([])
 
-    const [activeTabId, setActiveTabId] = useState(null);
+    const [activeTabId, setActiveTabId] = useState(null)
 
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
-    const sequence = useSelector((state) => state.sequence.sequence);
+    const sequence = useSelector((state) => state.sequence.sequence)
 
-    const methods = useSelector((state) => state.methodSetup.method);
+    const methods = useSelector((state) => state.methodSetup.method)
 
-    const commands = useSelector((state) => state.commands.commands);
+    const commands = useSelector((state) => state.commands.commands)
 
     const addTab = (path) => {
         setTabs((prev) => {
-            const existingTab = prev.find((tab) => tab.path === path);
+            const existingTab = prev.find((tab) => tab.path === path)
 
             if (existingTab) {
-                setActiveTabId(existingTab.id);
-                return prev;
+                setActiveTabId(existingTab.id)
+                return prev
             }
 
-            let id = null;
+            let id = null
 
-            let pathSegments;
+            let pathSegments
 
             const matchedRoute = Object.keys(routeConfig).find((routeKey) => {
-                pathSegments = path.split("/");
+                pathSegments = path.split("/")
 
-                const routeKeySegments = routeKey.split("/");
+                const routeKeySegments = routeKey.split("/")
 
                 if (pathSegments.length !== routeKeySegments.length) {
-                    return false;
+                    return false
                 }
 
-                id = pathSegments.length === 3 ? pathSegments[pathSegments.length - 1] : null;
+                id = pathSegments.length === 3 ? pathSegments[pathSegments.length - 1] : null
 
-                return routeKeySegments.every((segment, index) => segment.startsWith(":") || segment === pathSegments[index]);
-            });
+                return routeKeySegments.every((segment, index) => segment.startsWith(":") || segment === pathSegments[index])
+            })
 
             if (!matchedRoute) {
-                console.warn(`No route found for path: ${path}`);
-                return prev;
+                console.warn(`No route found for path: ${path}`)
+                return prev
             }
 
-            let additionalName = null;
+            let additionalName = null
 
             if (pathSegments[1] === "sequence-editor") {
-                additionalName = findSequenceName(sequence, id);
+                additionalName = findSequenceName(sequence, id)
             } else if (pathSegments[1] === "method-setting") {
-                additionalName = findMethodSettingName(methods, id);
+                additionalName = findMethodSettingName(methods, id)
             } else if (pathSegments[1] === "command-editor") {
-                additionalName = findCommandEditorFileName(commands, id);
+                additionalName = findCommandEditorFileName(commands, id)
             }
 
-            const name = `${routeConfig[matchedRoute]?.name}${!additionalName ? "" : ` /  ${additionalName}`}`;
+            const name = `${routeConfig[matchedRoute]?.name}${!additionalName ? "" : ` /  ${additionalName}`}`
 
-            const { Component } = routeConfig[matchedRoute];
+            const { Component } = routeConfig[matchedRoute]
 
             const newTab = {
                 id: Date.now(),
                 path,
                 component: <Component key={Date.now()} id={id} />,
                 name: name || "Unknown"
-            };
+            }
 
-            setActiveTabId(newTab.id);
+            setActiveTabId(newTab.id)
 
-            return [...prev, newTab];
-        });
-    };
+            return [...prev, newTab]
+        })
+    }
 
     const closeTab = (tabId) => {
         setTabs((prev) => {
-            const tabIndex = prev.findIndex((tab) => tab.id === tabId);
-            const newTabs = prev.filter((tab) => tab.id !== tabId);
+            const tabIndex = prev.findIndex((tab) => tab.id === tabId)
+            const newTabs = prev.filter((tab) => tab.id !== tabId)
 
             if (activeTabId === tabId && newTabs.length > 0) {
-                const newActiveIndex = Math.min(tabIndex, newTabs.length - 1);
+                const newActiveIndex = Math.min(tabIndex, newTabs.length - 1)
 
-                const activeTab = tabs.find((el) => el.id === newTabs[newActiveIndex].id);
+                const activeTab = tabs.find((el) => el.id === newTabs[newActiveIndex].id)
 
-                navigate(activeTab.path);
+                navigate(activeTab.path)
 
-                setActiveTabId(newTabs[newActiveIndex].id);
+                setActiveTabId(newTabs[newActiveIndex].id)
             }
 
-            return newTabs;
-        });
-    };
+            return newTabs
+        })
+    }
 
-    return <TabContext.Provider value={{ tabs, activeTabId, addTab, closeTab, setActiveTabId }}>{children}</TabContext.Provider>;
-};
+    return <TabContext.Provider value={{ tabs, activeTabId, addTab, closeTab, setActiveTabId }}>{children}</TabContext.Provider>
+}
 
 export const TabNavigation = (props) => {
-    const { isNavOpen } = props;
+    const { isNavOpen } = props
 
-    const { tabs, activeTabId, closeTab, setActiveTabId } = useContext(TabContext);
+    const { tabs, activeTabId, closeTab, setActiveTabId } = useContext(TabContext)
 
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
     const handleTabClick = (tab) => {
-        setActiveTabId(tab.id);
-        navigate(tab.path);
-    };
+        setActiveTabId(tab.id)
+        navigate(tab.path)
+    }
 
     return (
         <div className="flex flex-col h-full">
@@ -182,8 +182,8 @@ export const TabNavigation = (props) => {
                             {tabs.length > 1 && (
                                 <button
                                     onClick={(e) => {
-                                        e.stopPropagation();
-                                        closeTab(tab.id);
+                                        e.stopPropagation()
+                                        closeTab(tab.id)
                                     }}
                                     className="ml-2 px-2 py-1 rounded-full hover:bg-gray-200"
                                 >
@@ -201,28 +201,28 @@ export const TabNavigation = (props) => {
                         <div key={tab.id} className={`h-full ${activeTabId === tab.id ? "block" : "hidden"}`}>
                             {tab.component}
                         </div>
-                    );
+                    )
                 })}
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default TabNavigation;
+export default TabNavigation
 
 export const RouteHandler = () => {
-    const location = useLocation();
-    const navigate = useNavigate();
-    const { addTab } = useContext(TabContext);
+    const location = useLocation()
+    const navigate = useNavigate()
+    const { addTab } = useContext(TabContext)
 
     useEffect(() => {
         if (location.pathname === "/") {
-            addTab("/method-setup");
-            navigate("/method-setup");
+            addTab("/method-setup")
+            navigate("/method-setup")
         } else {
-            addTab(location.pathname);
+            addTab(location.pathname)
         }
-    }, [location.pathname, addTab, navigate]);
+    }, [location.pathname, addTab, navigate])
 
-    return null;
-};
+    return null
+}

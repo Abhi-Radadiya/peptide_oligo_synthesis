@@ -1,3 +1,4 @@
+// TODO : define schema for all states
 import { createSlice } from "@reduxjs/toolkit"
 import { getUniqueId } from "../../../renderer/Helpers/Constant"
 
@@ -123,18 +124,14 @@ const hardwareSetupSlice = createSlice({
         removeSensor: (state, action) => {
             const { sensorId } = action.payload
 
-            state.sensor = state.sensor.filter((el) => el.sensor.sensorId !== sensorId)
+            state.sensor = state.sensor.filter((el) => el.sensor.id !== sensorId)
         },
 
         updateSensor: (state, action) => {
             const { sensorId, sensorName } = action.payload
 
-            console.log(`sensorId, sensorName : `, sensorId, sensorName)
-
             state.sensor = state.sensor.map((el) => {
-                console.log(`el.sensor.sensorId : `, el.sensor.sensorId)
-
-                if (el.sensor.sensorId === sensorId) {
+                if (el.sensor.id === sensorId) {
                     return { ...el, sensorName }
                 }
                 return el

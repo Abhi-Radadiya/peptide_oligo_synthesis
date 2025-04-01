@@ -11,7 +11,7 @@ export default function HardwareSetup() {
         { label: "Valve Configuration", value: "solvent" }
     ]
 
-    const [activeTab, setActiveTab] = useState(tabs[1].value)
+    const [activeTab, setActiveTab] = useState(tabs[0].value)
 
     return (
         <>
