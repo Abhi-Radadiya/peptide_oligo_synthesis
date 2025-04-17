@@ -2,7 +2,7 @@ import React from "react"
 import { useForm } from "react-hook-form"
 import StepForm from "../components/step-form"
 
-export default function SynthesisProcedure() {
+export default function CreateSynthesisProcedure() {
     const data = [
         {
             type: "valve",

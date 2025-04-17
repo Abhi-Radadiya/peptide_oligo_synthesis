@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { Button } from "../Buttons/Buttons";
+import React, { useEffect, useState } from "react"
+import { Button } from "../Buttons/Buttons"
 
 const Tabs = (props) => {
-    const { tabs, className } = props;
+    const { tabs, className } = props
 
-    const [activeTab, setActiveTab] = useState(tabs[0].value);
+    const [activeTab, setActiveTab] = useState(tabs[0].value)
 
     const onChangeTab = (tabValue) => {
-        setActiveTab(tabValue);
-        props.setActiveTab(tabValue);
-    };
+        setActiveTab(tabValue)
+        props.setActiveTab(tabValue)
+    }
 
     useEffect(() => {
-        setActiveTab(props.activeTab);
-    }, [props.activeTab]);
+        setActiveTab(props.activeTab)
+    }, [props.activeTab])
 
     return (
         <>
@@ -23,15 +23,15 @@ const Tabs = (props) => {
                         <React.Fragment key={index}>
                             <Button {...el} active={activeTab === el.value} onClick={() => onChangeTab(el.value)} />
                         </React.Fragment>
-                    );
+                    )
                 })}
             </div>
         </>
-    );
-};
+    )
+}
 
 const Tab = (props) => {
-    const { onClick, label, isActive } = props;
+    const { onClick, label, isActive } = props
     return (
         <>
             <button
@@ -43,7 +43,7 @@ const Tab = (props) => {
                 {label}
             </button>
         </>
-    );
-};
+    )
+}
 
-export { Tabs, Tab };
+export { Tabs, Tab }

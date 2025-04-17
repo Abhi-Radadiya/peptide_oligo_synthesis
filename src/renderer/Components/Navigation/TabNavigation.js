@@ -14,9 +14,11 @@ import AvailableSequence from "../../modules/AvailableSequence/AvailableSequence
 import SequenceCreation2 from "../../modules/SequenceCreation2/SequenceCreation2"
 import Documentation from "../../modules/Documantation/Documentation"
 import Demo from "../../modules/Demo/Demo"
-import SynthesisProcedure from "../../modules/synthesis-procedure/create-synthesis-procedure"
+// import SynthesisProcedure from "../../modules/synthesis-procedure/create-synthesis-procedure"
 import SequenceCommand from "../../modules/SequenceCommand/SequenceCommand"
 import CommandEditor from "../../modules/CommandEditor/CommandEditor"
+import SynthesisProcedure from "../../modules/synthesis-procedure"
+// import SynthesisProcedure from "../../modules/synthesis-procedure/procedure-list"
 
 const TabContext = createContext()
 

@@ -16,6 +16,7 @@ import methodSetupReducer from "./reducers/methodSetup/methodSetup"
 import formStateReducer from "./reducers/formState/formState"
 import commandsReducer from "./reducers/commands/commands"
 import toastStateReducer from "./reducers/toastStateReducer/toastStateReducer"
+import synthesisProcedureReducer from "./reducers/synthesis-procedure"
 
 const rootReducer = combineReducers({
     // setting
@@ -36,7 +37,9 @@ const rootReducer = combineReducers({
     formState: formStateReducer,
     // toaster
     toastState: toastStateReducer,
-    commands: commandsReducer
+    commands: commandsReducer,
+    // synthesisProcedure
+    synthesisProcedure: synthesisProcedureReducer
 })
 
 const persistConfig = {
@@ -55,7 +58,8 @@ const persistConfig = {
         "reagent",
         "methodSetup",
         "commands",
-        "hardwareSetup"
+        "hardwareSetup",
+        "synthesisProcedure"
     ]
 }
 

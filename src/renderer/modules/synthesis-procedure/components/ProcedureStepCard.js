@@ -1,5 +1,5 @@
 import React from "react"
-import { useFieldArray, Controller, useWatch } from "react-hook-form"
+import { useFieldArray, Controller, useFormContext, useWatch } from "react-hook-form"
 import { containerList, procedureTypes, pumpBasisOptions, pumpList, sensorList, valveList, valveSections } from "./data/procedure-options"
 import { ChevronDownIcon, ChevronUpIcon, PlusIcon, TrashIcon } from "lucide-react"
 import StyledDropdown from "./styled-dropdown"
@@ -31,6 +31,8 @@ function ActionFields({ stepType, control, stepIndex, actionIndex, removeAction,
         control,
         name: `steps.${stepIndex}.procedure.${actionIndex}.runningParameter`
     })
+
+    const { setValue, watch } = useFormContext()
 
     return (
         <div className="bg-gray-50 p-4 rounded-md border border-gray-200 relative space-y-4 mb-4">
@@ -75,7 +77,51 @@ function ActionFields({ stepType, control, stepIndex, actionIndex, removeAction,
                         rules={{ required: "Valve selection is required" }}
                         render={({ field }) => <StyledDropdown label="Valve" options={valveList} {...field} placeholder="Select Valve" error={actionErrors.valve} />}
                     />
-                    <Controller
+                    {watch("inputType") === "time" && (
+                        <Controller
+                            name={`steps.${stepIndex}.procedure.${actionIndex}.time`}
+                            control={control}
+                            rules={{
+                                required: "Time is required",
+                                pattern: { value: /^[0-9]+$/, message: "Time must be a number" },
+                                min: { value: 0, message: "Cannot be negative" }
+                            }}
+                            render={({ field }) => (
+                                <StyledInput
+                                    label="Time (ms)"
+                                    id={`pump-time-${stepIndex}-${actionIndex}`}
+                                    type="number"
+                                    placeholder="e.g., 5000"
+                                    {...field}
+                                    error={actionErrors.time}
+                                />
+                            )}
+                        />
+                    )}
+                    {watch("inputType") === "volume" && (
+                        <Controller
+                            name={`steps.${stepIndex}.procedure.${actionIndex}.dischargeableVolume`}
+                            control={control}
+                            rules={{
+                                required: "Volume is required",
+                                pattern: { value: /^[0-9]+(\.[0-9]+)?$/, message: "Volume must be a number" },
+                                min: { value: 0, message: "Cannot be negative" }
+                            }}
+                            render={({ field }) => (
+                                <StyledInput
+                                    label="Volume (mL)"
+                                    id={`pump-volume-${stepIndex}-${actionIndex}`}
+                                    type="number"
+                                    step="0.1"
+                                    placeholder="e.g., 100.5"
+                                    {...field}
+                                    error={actionErrors.dischargeableVolume}
+                                />
+                            )}
+                        />
+                    )}
+
+                    {/* <Controller
                         name={`steps.${stepIndex}.procedure.${actionIndex}.afterCloseTime`}
                         control={control}
                         rules={{ required: "Close time is required", min: { value: 0, message: "Cannot be negative" } }}
@@ -89,7 +135,7 @@ function ActionFields({ stepType, control, stepIndex, actionIndex, removeAction,
                                 error={actionErrors.afterCloseTime}
                             />
                         )}
-                    />
+                    /> */}
                 </div>
             )}
 
@@ -114,7 +160,7 @@ function ActionFields({ stepType, control, stepIndex, actionIndex, removeAction,
                     <div className="space-y-3 lg:col-span-1">
                         {" "}
                         {/* Group toggle and its inputs */}
-                        <Controller
+                        {/* <Controller
                             name={`steps.${stepIndex}.procedure.${actionIndex}.runningParameter`}
                             control={control}
                             render={({ field }) => (
@@ -125,8 +171,8 @@ function ActionFields({ stepType, control, stepIndex, actionIndex, removeAction,
                                     optionLabels={{ true: pumpBasisOptions.liquidVolume, false: pumpBasisOptions.time }}
                                 />
                             )}
-                        />
-                        {watchedPumpBasis === "time" && (
+                        /> */}
+                        {watch("inputType") === "time" && (
                             <Controller
                                 name={`steps.${stepIndex}.procedure.${actionIndex}.time`}
                                 control={control}
@@ -147,7 +193,7 @@ function ActionFields({ stepType, control, stepIndex, actionIndex, removeAction,
                                 )}
                             />
                         )}
-                        {watchedPumpBasis === "liquidVolume" && (
+                        {watch("inputType") === "volume" && (
                             <Controller
                                 name={`steps.${stepIndex}.procedure.${actionIndex}.dischargeableVolume`}
                                 control={control}

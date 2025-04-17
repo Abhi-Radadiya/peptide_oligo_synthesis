@@ -1,8 +1,8 @@
-import React from "react";
-import ToggleSwitch from "../../../../../../Components/FormController/Switch";
+import React from "react"
+import ToggleSwitch from "../../../../../../Components/FormController/Switch"
 
 export default function OpenValveToggleSwitch(props) {
-    const { isChecked, handleChange, leftSwitchLabel, rightSwitchLabel, label } = props;
+    const { isChecked, handleChange, leftSwitchLabel, rightSwitchLabel, label } = props
 
     return (
         <>
@@ -15,7 +15,7 @@ export default function OpenValveToggleSwitch(props) {
                     <ToggleSwitch
                         checked={isChecked}
                         handleChange={() => {
-                            handleChange((prevState) => !prevState);
+                            handleChange((prevState) => !prevState)
                         }}
                     />
 
@@ -23,5 +23,5 @@ export default function OpenValveToggleSwitch(props) {
                 </div>
             </div>
         </>
-    );
+    )
 }

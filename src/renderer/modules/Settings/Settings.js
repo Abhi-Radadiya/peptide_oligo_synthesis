@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import BottleMapping from "./BottleMapping/BottleMapping";
+import BottleMapping from "./BottleMapping/bottle-mapping.js";
 import Prime from "./Prime/Prime";
 import LiquidDetection from "./LiquidDetection/LiquidDetection";
 import UVSetting from "./UVSetting/UVSetting";
