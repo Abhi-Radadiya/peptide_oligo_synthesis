@@ -1,8 +1,8 @@
-import { Activity, RouteOff } from "lucide-react";
-import React from "react";
+import { Activity, RouteOff } from "lucide-react"
+import React from "react"
 
 export default function StylingBackground(props) {
-    const { pipeState } = props;
+    const { pipeState } = props
 
     return (
         <>
@@ -26,5 +26,5 @@ export default function StylingBackground(props) {
                 </>
             )}
         </>
-    );
+    )
 }

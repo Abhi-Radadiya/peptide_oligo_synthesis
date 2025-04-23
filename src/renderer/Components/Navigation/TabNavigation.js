@@ -16,7 +16,7 @@ import Documentation from "../../modules/Documantation/Documentation"
 import Demo from "../../modules/Demo/Demo"
 // import SynthesisProcedure from "../../modules/synthesis-procedure/create-synthesis-procedure"
 import SequenceCommand from "../../modules/SequenceCommand/SequenceCommand"
-import CommandEditor from "../../modules/CommandEditor/CommandEditor"
+import CommandEditor from "../../modules/CommandEditor"
 import SynthesisProcedure from "../../modules/synthesis-procedure"
 // import SynthesisProcedure from "../../modules/synthesis-procedure/procedure-list"
 
@@ -37,8 +37,7 @@ const routeConfig = {
     "/run-synthesis": { name: "Synthesis", Component: Demo },
     "/synthesis-procedure": { name: "Synthesis Procedure", Component: SynthesisProcedure },
     "/sequence-command": { name: "Sequence Command", Component: SequenceCommand },
-    "/command-editor": { name: "Command Editor", Component: CommandEditor },
-    "/command-editor/:id": { name: "Command Editor", Component: CommandEditor }
+    "/command-editor": { name: "Command Editor", Component: CommandEditor }
 }
 
 const findSequenceName = (sequence, id) => {

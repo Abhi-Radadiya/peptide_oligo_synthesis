@@ -1,16 +1,16 @@
-import React, { useRef, useState } from "react";
-import { Play, Pause, Square, RotateCcw, Settings } from "lucide-react";
-import { useFormContext } from "react-hook-form";
-import { useSelector } from "react-redux";
-import { processWiseFlag } from "../../../../Helpers/Constant";
-import { SmallButton } from "../../../../Components/Buttons/Buttons";
+import React, { useRef, useState } from "react"
+import { Play, Pause, Square, RotateCcw, Settings } from "lucide-react"
+import { useFormContext } from "react-hook-form"
+import { useSelector } from "react-redux"
+import { processWiseFlag } from "../../../../Helpers/Constant"
+import { SmallButton } from "../../../../Components/Buttons/Buttons"
 
 export default function Header() {
-    const [status, setStatus] = useState("idle");
+    const [status, setStatus] = useState("idle")
 
-    const { watch, setValue } = useFormContext();
+    const { watch, setValue } = useFormContext()
 
-    const intervalRef = useRef(null); // Store the interval ID
+    const intervalRef = useRef(null) // Store the interval ID
 
     const buttonClasses = {
         base: "flex items-center justify-center py-2 px-3 rounded-md transition-all duration-200",
@@ -18,14 +18,14 @@ export default function Header() {
         pause: "bg-amber-300 hover:bg-amber-400 text-black",
         stop: "bg-red-400 hover:bg-red-500 text-black",
         resume: "bg-blue-300 hover:bg-blue-400 text-black",
-        reset: "bg-neutral-500 hover:bg-neutral-600 text-white",
-    };
+        reset: "bg-neutral-500 hover:bg-neutral-600 text-white"
+    }
 
-    const methods = useSelector((state) => state.methodSetup.method);
+    const methods = useSelector((state) => state.methodSetup.method)
 
     const getMethodDetailsById = (id) => {
-        return methods.find((el) => el.id === id);
-    };
+        return methods.find((el) => el.id === id)
+    }
 
     const operation = [
         { label: "Column wash", value: "columnWash", index: 0 },
@@ -37,149 +37,149 @@ export default function Header() {
         { label: "Capping", value: "capping", index: 6 },
         { label: "Extra", value: "extra", index: 7 },
         { label: "De block", value: "lastDeBlock", index: 8 },
-        { label: "DEA", value: "dea", index: 9 },
-    ];
+        { label: "DEA", value: "dea", index: 9 }
+    ]
 
     function formatMethodData(method, block, blockIndex) {
-        let formattedMethod = {};
+        let formattedMethod = {}
 
         for (const [key, values] of Object.entries(processWiseFlag)) {
-            formattedMethod[key] = {};
+            formattedMethod[key] = {}
             values.forEach((value) => {
                 if (method.hasOwnProperty(value)) {
-                    formattedMethod[key][value] = method[value];
+                    formattedMethod[key][value] = method[value]
                 }
-            });
+            })
 
             if (Object.keys(formattedMethod[key]).length === 0) {
-                delete formattedMethod[key];
+                delete formattedMethod[key]
             }
         }
 
         const operationWiseFormation = operation.map((el) => {
-            return { ...el, block, operationData: formattedMethod[el.value], blockIndex };
-        });
+            return { ...el, block, operationData: formattedMethod[el.value], blockIndex }
+        })
 
-        return operationWiseFormation;
+        return operationWiseFormation
     }
 
     function filterOperations(operations) {
-        let seenColumnWash = false;
-        let seenPriming = false;
-        let lastDeBlockIndex = -1;
-        let lastDeaIndex = -1;
+        let seenColumnWash = false
+        let seenPriming = false
+        let lastDeBlockIndex = -1
+        let lastDeaIndex = -1
 
         // Find the last occurrence of lastDeBlock and dea
         operations.forEach((op, index) => {
-            if (op.value === "lastDeBlock") lastDeBlockIndex = index;
-            if (op.value === "dea") lastDeaIndex = index;
-        });
+            if (op.value === "lastDeBlock") lastDeBlockIndex = index
+            if (op.value === "dea") lastDeaIndex = index
+        })
 
         return operations.filter((op, index) => {
             if (op.value === "columnWash") {
                 if (!seenColumnWash) {
-                    seenColumnWash = true;
-                    return true;
+                    seenColumnWash = true
+                    return true
                 }
-                return false;
+                return false
             }
 
             if (op.value === "priming") {
                 if (!seenPriming) {
-                    seenPriming = true;
-                    return true;
+                    seenPriming = true
+                    return true
                 }
-                return false;
+                return false
             }
             if (op.value === "lastDeBlock" && index === lastDeBlockIndex) {
-                return true;
+                return true
             }
 
             if (op.value === "dea" && index === lastDeaIndex) {
-                return true;
+                return true
             }
 
-            return !["columnWash", "priming", "lastDeBlock", "dea"].includes(op.value);
-        });
+            return !["columnWash", "priming", "lastDeBlock", "dea"].includes(op.value)
+        })
     }
 
-    const indexRef = useRef(0);
+    const indexRef = useRef(0)
 
-    const operationsRef = useRef([]);
+    const operationsRef = useRef([])
 
     const formatSequenceOperation = async (sequence) => {
-        const formattedSequenceMethod = sequence.map((el, index) => formatMethodData(el.method, el.block, index)).flat();
+        const formattedSequenceMethod = sequence.map((el, index) => formatMethodData(el.method, el.block, index)).flat()
 
-        const formattedOperations = filterOperations(formattedSequenceMethod);
-        operationsRef.current = formattedOperations;
-        indexRef.current = 0;
+        const formattedOperations = filterOperations(formattedSequenceMethod)
+        operationsRef.current = formattedOperations
+        indexRef.current = 0
 
-        startExecution();
-    };
+        startExecution()
+    }
 
     const startExecution = () => {
-        if (intervalRef.current) clearInterval(intervalRef.current);
+        if (intervalRef.current) clearInterval(intervalRef.current)
 
         intervalRef.current = setInterval(() => {
-            setValue("executingCurrentBlock", operationsRef.current[indexRef.current]);
+            setValue("executingCurrentBlock", operationsRef.current[indexRef.current])
 
-            setValue("activeBlockIndex", operationsRef.current[indexRef.current].blockIndex);
+            setValue("activeBlockIndex", operationsRef.current[indexRef.current].blockIndex)
 
-            indexRef.current++;
+            indexRef.current++
 
             if (indexRef.current >= operationsRef.current.length) {
-                clearInterval(intervalRef.current);
-                intervalRef.current = null;
-                setStatus("idle");
+                clearInterval(intervalRef.current)
+                intervalRef.current = null
+                setStatus("idle")
             }
-        }, 1000);
+        }, 1000)
 
-        setStatus("running");
-    };
+        setStatus("running")
+    }
 
     const handleRun = () => {
-        const selectedBlock = watch("selectedBlocks");
+        const selectedBlock = watch("selectedBlocks")
 
         const blocksWithMethodDetails = selectedBlock.map((el) => ({
             ...el,
-            method: { ...el.method, ...getMethodDetailsById(el.method.id) },
-        }));
+            method: { ...el.method, ...getMethodDetailsById(el.method.id) }
+        }))
 
-        setValue("showConfigurationCard", false);
+        setValue("showConfigurationCard", false)
 
-        formatSequenceOperation(blocksWithMethodDetails);
-    };
+        formatSequenceOperation(blocksWithMethodDetails)
+    }
 
     const handlePause = () => {
         if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-            setStatus("paused");
+            clearInterval(intervalRef.current)
+            intervalRef.current = null
+            setStatus("paused")
         }
-        setValue("showConfigurationCard", false);
-    };
+        setValue("showConfigurationCard", false)
+    }
 
     const handleResume = () => {
         if (status === "paused") {
-            startExecution();
+            startExecution()
         }
-        setValue("showConfigurationCard", false);
-    };
+        setValue("showConfigurationCard", false)
+    }
 
     const handleStop = () => {
         if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
+            clearInterval(intervalRef.current)
+            intervalRef.current = null
         }
-        indexRef.current = 0;
-        setValue("executingCurrentBlock", null);
-        setStatus("idle");
-        setValue("showConfigurationCard", true);
-    };
+        indexRef.current = 0
+        setValue("executingCurrentBlock", null)
+        setStatus("idle")
+        setValue("showConfigurationCard", true)
+    }
 
     const handleReset = () => {
-        handleStop();
-    };
+        handleStop()
+    }
 
     return (
         <div className="bg-gradient-to-r from-neutral-100 to-neutral-200 p-4 rounded-lg shadow-md mb-6">
@@ -223,5 +223,5 @@ export default function Header() {
                 </div>
             </div>
         </div>
-    );
+    )
 }

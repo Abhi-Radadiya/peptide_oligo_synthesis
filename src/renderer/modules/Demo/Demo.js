@@ -1,12 +1,15 @@
-import React from "react";
-import Header from "./Component/Header/Header";
-import SelectionCard from "./Component/Cards/Selection/SelectionCard";
-import { FormProvider, useForm } from "react-hook-form";
-import RunCard from "./Component/Cards/Run/RunCard";
-import BlockCard from "./Component/Cards/Block/BlockCard";
-import RunningSchematicCard from "./Component/Cards/RunningSchematicCard/RunningSchematicCard";
-import RunningSchematicCard2 from "./Component/Cards/RunningSchematicCard2/RunningSchematicCard2";
-import SchematicFlowDetailsCard from "./Component/Cards/SchematicFlowDetails/SchematicFlowDetailsCard";
+import React from "react"
+import Header from "./Component/Header/Header"
+import SelectionCard from "./Component/Cards/Selection/SelectionCard"
+import { FormProvider, useForm } from "react-hook-form"
+import RunCard from "./Component/Cards/Run/RunCard"
+import BlockCard from "./Component/Cards/Block/BlockCard"
+import RunningSchematicCard from "./Component/Cards/RunningSchematicCard/RunningSchematicCard"
+import RunningSchematicCard2 from "./Component/Cards/RunningSchematicCard2/RunningSchematicCard2"
+import SchematicFlowDetailsCard from "./Component/Cards/SchematicFlowDetails/SchematicFlowDetailsCard"
+import HeaderManualMode from "./Component/Header/header-manual-mode"
+import { SynthesisStateProvider } from "./context/synthesis-state-provider"
+import DynamicLiquidCard from "./Component/Cards/dynamic-liquid-card"
 
 export default function Demo() {
     const method = useForm({
@@ -38,19 +41,22 @@ export default function Demo() {
                 // closeValve
             }
         }
-    });
-
-    const { watch } = method;
+    })
 
     return (
         <>
-            <FormProvider {...method}>
-                <div className="p-4">
-                    <Header />
+            <SynthesisStateProvider>
+                <FormProvider {...method}>
+                    <div className="p-4">
+                        {/* below has auto mode setting */}
+                        {/* <Header /> */}
 
-                    {/* <div className="overflow-auto scrollbar-style pr-4 -mr-4 space-y-6"> */}
-                    <div className="h-[80vh] overflow-auto scrollbar-style pr-4 -mr-4">
-                        {/* <div className="flex flex-row gap-4 items-stretch mb-6">
+                        {/* below has manual mode setting */}
+                        {/* <HeaderManualMode /> */}
+
+                        {/* <div className="overflow-auto scrollbar-style pr-4 -mr-4 space-y-6"> */}
+                        <div className="h-[80vh] overflow-auto scrollbar-style pr-4 -mr-4">
+                            {/* <div className="flex flex-row gap-4 items-stretch mb-6">
                             {watch("showConfigurationCard") && (
                                 <>
                                     <SelectionCard />
@@ -63,16 +69,18 @@ export default function Demo() {
 
                         <SchematicFlowDetailsCard />
  */}
-                        <div className=" mb-10">
-                            <RunningSchematicCard2 />
-                        </div>
+                            <div className="">
+                                {/* <RunningSchematicCard2 /> */}
+                                <DynamicLiquidCard />
+                            </div>
 
-                        {/* <RunningSchematicCard /> */}
+                            {/* <RunningSchematicCard /> */}
+                        </div>
                     </div>
-                </div>
-            </FormProvider>
+                </FormProvider>
+            </SynthesisStateProvider>
         </>
-    );
+    )
 }
 
 // Manual mode schema
@@ -124,4 +132,4 @@ const manualModeRunFlow = {
         columnDetails: {},
         columnStatus: "close"
     }
-};
+}

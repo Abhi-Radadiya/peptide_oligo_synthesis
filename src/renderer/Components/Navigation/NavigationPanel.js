@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LayoutGrid, Settings, Play, Video, List, BookText, ChevronRight, ChevronLeft, Terminal, Proportions } from "lucide-react";
+import React, { useState } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import { LayoutGrid, Settings, Play, Video, List, BookText, ChevronRight, ChevronLeft, Terminal, Proportions } from "lucide-react"
 
 export default function NavigationPanel({ isNavOpen, setIsNavOpen }) {
-    const location = useLocation();
-    const navigate = useNavigate();
+    const location = useLocation()
+    const navigate = useNavigate()
 
     const links = [
         {
@@ -36,36 +36,33 @@ export default function NavigationPanel({ isNavOpen, setIsNavOpen }) {
             label: "Synthesis Procedure",
             icon: Proportions,
             to: "synthesis-procedure"
+        },
+        {
+            label: "Command",
+            icon: Terminal,
+            to: "command-editor"
         }
-        // TODO : if not needed remove command editor
-        // {
-        //     label: "Command",
-        //     icon: Terminal,
-        //     to: "sequence-command",
-        //     isShowSubLink: true,
-        //     subLink: [{ label: "Command Editor", to: "command-editor" }]
-        // }
-    ];
+    ]
 
     const [activeTab, setActiveTab] = useState(() => {
-        const currentPath = location.pathname.split("/").pop();
-        const foundLink = links.find((link) => link.to === currentPath);
-        if (foundLink) return foundLink.to;
+        const currentPath = location.pathname.split("/").pop()
+        const foundLink = links.find((link) => link.to === currentPath)
+        if (foundLink) return foundLink.to
 
         for (const link of links) {
             if (link.isShowSubLink) {
-                const foundSubLink = link.subLink.find((subLink) => subLink.to === currentPath);
-                if (foundSubLink) return link.to;
+                const foundSubLink = link.subLink.find((subLink) => subLink.to === currentPath)
+                if (foundSubLink) return link.to
             }
         }
 
-        return links[0].to;
-    });
+        return links[0].to
+    })
 
     const handleNavigation = (to) => {
-        navigate(to);
-        setActiveTab(to);
-    };
+        navigate(to)
+        setActiveTab(to)
+    }
 
     return (
         <>
@@ -139,5 +136,5 @@ export default function NavigationPanel({ isNavOpen, setIsNavOpen }) {
                 </button>
             )}
         </>
-    );
+    )
 }
