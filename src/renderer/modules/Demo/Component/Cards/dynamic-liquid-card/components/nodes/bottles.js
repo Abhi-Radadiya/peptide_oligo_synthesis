@@ -1,6 +1,9 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { memo } from "react"
+import { useSelector } from "react-redux"
 import { Handle, Position } from "reactflow"
+import StyledDropdown from "../../../../../../synthesis-procedure/components/styled-dropdown"
+import ToggleSwitch from "../../../../../../../Components/FormController/Switch"
 
 export const BottleNode = memo(({ id, data, selected }) => {
     const updateConfig = useCallback(
@@ -14,32 +17,63 @@ export const BottleNode = memo(({ id, data, selected }) => {
         [id, data.updateNodeConfig]
     )
 
+    const [selectedBlock, setSelectedBlock] = useState(null)
+
     const handleDelete = useCallback(() => {
         if (data.deleteNode) {
-            data.deleteNode(id) // Call the function passed from FlowBuilder
+            data.deleteNode(id)
         } else {
             console.warn("deleteNode function not passed to node:", id)
         }
-    }, [id, data.deleteNode]) // Depend on id and the passed function
+    }, [id, data.deleteNode])
 
     const handleStatusChange = (event) => {
         updateConfig("status", event.target.checked ? "on" : "off")
     }
 
-    const handleVolumeChange = (event) => {
-        const value = event.target.value === "" ? undefined : parseFloat(event.target.value)
-        if (value === undefined || (!isNaN(value) && value >= 0)) {
-            updateConfig("dischargeVolume", value)
-        }
+    const hardwareSetup = useSelector((state) => state.hardwareSetup)
+
+    const handleSelectBlock = (selection) => {
+        setSelectedBlock(selection)
     }
+
+    const blockWiseBottle = useMemo(() => {
+        switch (selectedBlock) {
+            case "amedite1":
+                return hardwareSetup.amediteContainer.container1.bottles.map((el) => ({ name: el.bottleName, id: el.id, value: el.valve }))
+
+            case "amedite2":
+                return hardwareSetup.amediteContainer.container2.bottles.map((el) => ({ name: el.bottleName, id: el.id, value: el.valve }))
+
+            case "amedite3":
+                return hardwareSetup.amediteContainer.container3.bottles.map((el) => ({ name: el.bottleName, id: el.id, value: el.valve }))
+
+            case "reagent1":
+                return hardwareSetup.reagentContainer.container1.bottles.map((el) => ({ name: el.bottleName, id: el.id, value: el.valve }))
+
+            case "reagent2":
+                return hardwareSetup.reagentContainer.container2.bottles.map((el) => ({ name: el.bottleName, id: el.id, value: el.valve }))
+
+            default:
+                break
+        }
+    }, [selectedBlock])
+
+    const [toFromBottle, setToFromBottle] = useState({ to: null, from: null })
+
+    const handleSelectFromBottle = (selection) => {
+        setToFromBottle((prev) => ({ ...prev, from: selection }))
+    }
+
+    const handleSelectToBlock = (selection) => {
+        setToFromBottle((prev) => ({ ...prev, to: selection }))
+    }
+
+    const [isRangeSelection, setIsRangeSelection] = useState(false)
 
     return (
         <div className={`bg-purple-50 rounded-lg shadow border-2 ${selected ? "border-purple-600" : "border-purple-300"} p-3 w-[350px] transition-colors duration-150 ease-in-out`}>
-            <div className="text-xs text-purple-600 mb-1">
-                {data.blockName || "Block"} - Bottle {data.index}
-            </div>
             <div className="font-semibold text-sm mb-2 text-purple-800">{data.name || "Bottle"}</div>
-
             <button
                 onClick={handleDelete}
                 className="absolute top-0 right-0 -mt-1 -mr-1 p-0.5 bg-red-500 text-white rounded-full text-xs leading-none hover:bg-red-700 transition-colors focus:outline-none"
@@ -54,36 +88,54 @@ export const BottleNode = memo(({ id, data, selected }) => {
                     />
                 </svg>
             </button>
-            {/* Configuration Inputs */}
-            <div className="space-y-2 text-xs">
-                <label className="flex items-center justify-between text-gray-700">
-                    <span>Status:</span>
-                    <div className="flex items-center">
-                        <input type="checkbox" className="toggle-switch nodrag" checked={data.config?.status === "on"} onChange={handleStatusChange} />
-                        <span className="ml-1.5 text-xs font-medium">{data.config?.status === "on" ? "ON" : "OFF"}</span>
-                    </div>
-                </label>
-                <label className="flex items-center justify-between text-gray-700">
-                    <span>Volume (ml):</span>
-                    <input
-                        type="number"
-                        min="0"
-                        step="0.1"
-                        className="nodrag border border-gray-300 rounded px-1 py-0.5 w-16 text-right text-xs"
-                        value={data.config?.dischargeVolume ?? ""}
-                        onChange={handleVolumeChange}
-                        placeholder="e.g. 10"
-                    />
-                </label>
+
+            <StyledDropdown
+                label="Valve Section"
+                options={[
+                    { name: "Amedite Block 1", id: "amedite1" },
+                    { name: "Amedite Block 2", id: "amedite2" },
+                    { name: "Amedite Block 3", id: "amedite3" },
+                    { name: "Reagent Block 1", id: "reagent1" },
+                    { name: "Reagent Block 2", id: "reagent2" }
+                ]}
+                placeholder="Select Block"
+                onChange={handleSelectBlock}
+                value={selectedBlock}
+            />
+
+            <ToggleSwitch
+                id="selectRange"
+                className="justify-between w-full my-3"
+                checked={isRangeSelection}
+                label="Select Range"
+                handleChange={({ target }) => {
+                    setIsRangeSelection(target.checked)
+                }}
+            />
+
+            {selectedBlock &&
+                (isRangeSelection ? (
+                    <>
+                        <StyledDropdown
+                            label="From Bottle Section"
+                            options={blockWiseBottle}
+                            placeholder="Select From Block"
+                            onChange={handleSelectFromBottle}
+                            value={toFromBottle.from}
+                        />
+                        <StyledDropdown label="To Bottle Section" options={blockWiseBottle} placeholder="Select To Block" onChange={handleSelectToBlock} value={toFromBottle.to} />
+                    </>
+                ) : (
+                    <StyledDropdown label="Bottle Section" options={blockWiseBottle} placeholder="Select Block" onChange={handleSelectFromBottle} value={toFromBottle.from} />
+                ))}
+
+            <div className="flex flex-row items-center w-full mt-2">
+                <ToggleSwitch id="status" className="justify-between w-full" checked={data.config?.status === "on"} label="Status" handleChange={handleStatusChange} />
+                <span className="ml-1.5 text-xs font-medium">{data.config?.status === "on" ? "ON" : "OFF"}</span>
             </div>
 
-            {/* Only Output Handle */}
-            <Handle
-                type="source"
-                position={Position.Right}
-                id={`${id}-source`} // Unique handle ID
-                className="!bg-purple-500"
-            />
+            <Handle type="target" position={Position.Left} id={`${id}-target`} className="!bg-gray-400" style={{ height: 12, width: 12 }} />
+            <Handle type="source" position={Position.Right} id={`${id}-source`} className="!bg-purple-500" style={{ height: 12, width: 12 }} />
         </div>
     )
 })

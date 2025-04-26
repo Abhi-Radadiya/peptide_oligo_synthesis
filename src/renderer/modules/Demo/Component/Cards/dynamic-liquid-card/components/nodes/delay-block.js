@@ -1,22 +1,26 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useState } from "react"
 import { memo } from "react"
-import { useSelector } from "react-redux"
 import { Handle, Position } from "reactflow"
+import InputField from "../../../../../../../Components/Input/Input"
+import { useForm } from "react-hook-form"
 
-export const ValveNode = memo(({ id, data, selected }) => {
+export const DelayBlock = memo(({ id, data, selected }) => {
     const updateConfig = useCallback(
         (field, value) => {
             if (data.updateNodeConfig) {
                 data.updateNodeConfig(id, { [field]: value })
             } else {
-                console.warn("updateNodeConfig not passed to ValveNode:", id)
+                console.warn("updateNodeConfig not passed to DelayNode:", id)
             }
         },
         [id, data.updateNodeConfig]
     )
 
-    const handleStatusChange = (event) => {
-        updateConfig("status", event.target.checked ? "on" : "off")
+    const handleDelayTimeChange = (event) => {
+        const value = event.target.value === "" ? undefined : parseFloat(event.target.value)
+        if (value === undefined || (!isNaN(value) && value >= 0)) {
+            updateConfig("delayNode", value)
+        }
     }
 
     const handleDelete = useCallback(() => {
@@ -27,8 +31,11 @@ export const ValveNode = memo(({ id, data, selected }) => {
         }
     }, [id, data.deleteNode])
 
+    const { control } = useForm()
+
     return (
-        <div className={`bg-orange-50 rounded-lg shadow border-2 ${selected ? "border-orange-600" : "border-orange-300"} p-3 w-52 transition-colors duration-150 ease-in-out`}>
+        <div className={`bg-pink-50 rounded-lg shadow border-2 ${selected ? "border-pink-600" : "border-pink-300"} p-3 w-60 transition-colors duration-150 ease-in-out`}>
+            <div className="font-semibold text-sm mb-2 text-pink-800">{data.name || "Delay Block"}</div>
             <button
                 onClick={handleDelete}
                 className="absolute top-0 right-0 -mt-1 -mr-1 p-0.5 bg-red-500 text-white rounded-full text-xs leading-none hover:bg-red-700 transition-colors focus:outline-none"
@@ -44,23 +51,28 @@ export const ValveNode = memo(({ id, data, selected }) => {
                 </svg>
             </button>
 
-            <div className="font-semibold text-sm mb-2 text-orange-800">{data.name || "Valve"}</div>
+            <InputField control={control} name="delayTIme" label="Delay Time" placeholder="Enter Delay Time in ms" />
 
-            <div className="space-y-2 text-xs">
+            {/* <div className="space-y-2 text-xs">
                 <label className="flex items-center justify-between text-gray-700">
-                    <span>Status:</span>
-                    <div className="flex items-center">
-                        <input type="checkbox" className="toggle-switch nodrag" checked={data.config?.status === "on"} onChange={handleStatusChange} />
-                        <span className="ml-1.5 text-xs font-medium">{data.config?.status === "on" ? "ON" : "OFF"}</span>
-                    </div>
+                    <span>Delay Time :</span>
+                    <input
+                        type="number"
+                        min="0"
+                        step="0.1"
+                        className="nodrag border border-gray-300 rounded px-1 py-0.5 w-16 text-right text-xs"
+                        value={data.config?.delayTime ?? ""}
+                        onChange={handleDelayTimeChange}
+                        placeholder="e.g. 5"
+                    />
                 </label>
-            </div>
+            </div> */}
 
             {/* Input and Output Handles */}
             <Handle type="target" position={Position.Left} id={`${id}-target`} className="!bg-gray-400" style={{ height: 12, width: 12 }} />
-            <Handle type="source" position={Position.Right} id={`${id}-source`} className="!bg-orange-500" style={{ height: 12, width: 12 }} />
+            <Handle type="source" position={Position.Right} id={`${id}-source`} className="!bg-pink-500" style={{ height: 12, width: 12 }} />
         </div>
     )
 })
 
-ValveNode.displayName = "ValveNode"
+DelayBlock.displayName = "DelayBlock"

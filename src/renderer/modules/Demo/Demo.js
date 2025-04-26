@@ -55,7 +55,7 @@ export default function Demo() {
                         {/* <HeaderManualMode /> */}
 
                         {/* <div className="overflow-auto scrollbar-style pr-4 -mr-4 space-y-6"> */}
-                        <div className="h-[80vh] overflow-auto scrollbar-style pr-4 -mr-4">
+                        <div className="h-[92vh] overflow-auto scrollbar-style pr-4 -mr-4">
                             {/* <div className="flex flex-row gap-4 items-stretch mb-6">
                             {watch("showConfigurationCard") && (
                                 <>
