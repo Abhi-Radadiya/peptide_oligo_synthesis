@@ -6,9 +6,9 @@ export const Sidebar = ({ onAddNode }) => {
         <div className="mb-4">
             <h3 className="font-semibold text-gray-700 mb-2 border-b pb-1">{title}</h3>
             <div className="space-y-1">
-                {items.map((item) => (
+                {items.map((item, index) => (
                     <button
-                        key={item.id}
+                        key={index}
                         onClick={() => onAddNode(nodeType, dataExtractor(item))}
                         className="block w-full text-left px-2 py-1 text-sm bg-white hover:bg-indigo-100 border border-gray-200 rounded shadow-sm transition-colors duration-150 ease-in-out"
                     >
@@ -40,6 +40,8 @@ export const Sidebar = ({ onAddNode }) => {
         { name: "Waste Valve", ...hardwareSetup.otherValve.wasteValve }
     ]
 
+    const columnOptions = useSelector((state) => state.columnEditor.positions)
+
     return (
         <div className="w-64 h-full bg-gray-100 border-r border-gray-300 p-4 overflow-y-auto scrollbar-style shadow-lg">
             <h2 className="text-lg font-bold text-gray-800 mb-4">Components</h2>
@@ -63,6 +65,7 @@ export const Sidebar = ({ onAddNode }) => {
             {renderSection("Valves", valveOptions, "valveNode", (item) => ({ name: item.name, originalId: item.id }))}
             {renderSection("Pumps", pumpOption, "pumpNode", (item) => ({ name: item.name, originalId: item.id }))}
             {renderSection("Liquid Sensors", sensorOptions, "sensorNode", (item) => ({ name: item.name, originalId: item.id }))}
+            {renderSection("Column Valves", columnOptions, "columnNode", (item) => ({ name: item.name, originalId: item.id }))}
             {renderSection("Waste Valves", wasteOption, "wasteValveNode", (item) => ({ name: item.name, originalId: item.id }))}
         </div>
     )
