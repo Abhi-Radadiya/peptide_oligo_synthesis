@@ -1,8 +1,8 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useRef, useState } from "react"
 import { memo } from "react"
-import { useForm } from "react-hook-form"
 import { Handle, Position } from "reactflow"
-import InputField from "../../../../../../../Components/Input/Input"
+import { Input } from "../../../../../../../Components/Input/Input"
+import StyledDropdown from "../../../../../../synthesis-procedure/components/styled-dropdown"
 
 export const SensorNode = memo(({ id, data, selected }) => {
     const updateConfig = useCallback(
@@ -20,23 +20,6 @@ export const SensorNode = memo(({ id, data, selected }) => {
         updateConfig("status", event.target.checked ? "on" : "off")
     }
 
-    const handleThresholdChange = (event) => {
-        const value = event.target.value === "" ? undefined : parseFloat(event.target.value)
-        if (value === undefined || !isNaN(value)) {
-            // Allow any number for threshold
-            updateConfig("threshold", value)
-        }
-    }
-
-    const handleTimeChange = (event) => {
-        const value = event.target.value === "" ? undefined : parseInt(event.target.value, 10)
-        if (value === undefined || (!isNaN(value) && value >= 0)) {
-            updateConfig("measureTime", value)
-        }
-    }
-
-    const { control } = useForm()
-
     const handleDelete = useCallback(() => {
         if (data.deleteNode) {
             data.deleteNode(id)
@@ -44,6 +27,46 @@ export const SensorNode = memo(({ id, data, selected }) => {
             console.warn("deleteNode function not passed to node:", id)
         }
     }, [id, data.deleteNode])
+
+    const [tempValue, setTempValue] = useState(data?.config?.threshold ?? "")
+
+    const inputRef = useRef(null)
+
+    const handleBlur = () => {
+        const value = parseFloat(tempValue)
+        if (value >= 0.1 && value <= 5.0) {
+            updateConfig("threshold", value)
+        } else {
+            inputRef.current.focus()
+        }
+    }
+
+    const handleSelectTimeUnit = (timeUnit) => {
+        let currentTime = data?.config?.time
+
+        if (!currentTime) {
+            updateConfig("timeUnit", timeUnit)
+
+            return
+        }
+
+        const currentTimeUnit = data?.config?.timeUnit
+
+        if (currentTimeUnit === "minutes") {
+            currentTime *= 60 * 1000
+        } else if (currentTimeUnit === "seconds") {
+            currentTime *= 1000
+        }
+
+        if (timeUnit === "minutes") {
+            currentTime /= 60 * 1000
+        } else if (timeUnit === "seconds") {
+            currentTime /= 1000
+        }
+
+        updateConfig("timeUnit", timeUnit)
+        updateConfig("time", currentTime)
+    }
 
     return (
         <div className={`bg-teal-50 rounded-lg shadow border-2 ${selected ? "border-teal-600" : "border-teal-300"} p-3 w-56 transition-colors duration-150 ease-in-out`}>
@@ -64,7 +87,7 @@ export const SensorNode = memo(({ id, data, selected }) => {
 
             <div className="font-semibold text-sm mb-2 text-teal-800">{data.name || "Sensor"}</div>
 
-            <div className="space-y-2 text-xs">
+            <div className="space-y-2 text-xs flex flex-col">
                 <label className="flex items-center justify-between text-gray-700">
                     <span>Status:</span>
                     <div className="flex items-center">
@@ -73,18 +96,42 @@ export const SensorNode = memo(({ id, data, selected }) => {
                     </div>
                 </label>
 
-                <InputField
-                    wrapperClassName="w-full"
-                    control={control}
-                    name="Threshold"
-                    placeholder="Enter Threshold : [ 0.1 - 5.0 ]"
-                    rules={{
-                        min: { value: 0.1, message: "Value must be between 0.1 - 5.0" },
-                        max: { value: 5.0, message: "Value must be between 0.1 - 5.0" }
-                    }}
-                />
+                <div className="">
+                    <label className="text-gray-700 leading-[17px] font-medium mb-1">Threshold</label>
 
-                <InputField wrapperClassName="w-full" control={control} name="time" placeholder="Enter Time in ms" />
+                    <input
+                        placeholder="Enter Threshold : [ 0.1 - 5.0 ]"
+                        ref={inputRef}
+                        className={`px-3 py-2 w-full disabled:bg-neutral-200 border shadow-md focus:ring-1 ring-offset-2 ring-blue-300 rounded-lg ${
+                            !!tempValue && (tempValue < 0.1 || tempValue > 5) ? "border-red-500" : "border-neutral-600"
+                        }`}
+                        type="number"
+                        value={tempValue}
+                        onChange={(e) => setTempValue(e.target.value)}
+                        onBlur={handleBlur}
+                        step="0.1"
+                        min="0.1"
+                        max="5.0"
+                    />
+
+                    <span className="ml-2 -mt-0.5">
+                        * Must be value between <strong>0.1</strong> - <strong>5.0</strong>
+                    </span>
+                </div>
+
+                <Input label="Time" wrapperClassName="w-full" value={data?.config?.time ?? ""} onChange={(time) => updateConfig("time", time)} placeholder="Enter Time" />
+
+                <StyledDropdown
+                    label="Time Unit"
+                    options={[
+                        { name: "Minutes", id: "minutes" },
+                        { name: "Seconds", id: "seconds" },
+                        { name: "Milli Seconds", id: "milliSeconds" }
+                    ]}
+                    placeholder="Select Time Unit"
+                    onChange={(timeUnit) => handleSelectTimeUnit(timeUnit)}
+                    value={data?.config?.timeUnit ?? null}
+                />
             </div>
 
             {/* Input and Output Handles */}

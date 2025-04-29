@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react"
+import React, { useCallback, useMemo } from "react"
 import { memo } from "react"
 import { useSelector } from "react-redux"
 import { Handle, Position } from "reactflow"
@@ -17,8 +17,6 @@ export const BottleNode = memo(({ id, data, selected }) => {
         [id, data.updateNodeConfig]
     )
 
-    const [selectedBlock, setSelectedBlock] = useState(null)
-
     const handleDelete = useCallback(() => {
         if (data.deleteNode) {
             data.deleteNode(id)
@@ -34,11 +32,11 @@ export const BottleNode = memo(({ id, data, selected }) => {
     const hardwareSetup = useSelector((state) => state.hardwareSetup)
 
     const handleSelectBlock = (selection) => {
-        setSelectedBlock(selection)
+        updateConfig("selectedBlock", selection)
     }
 
     const blockWiseBottle = useMemo(() => {
-        switch (selectedBlock) {
+        switch (data?.config?.selectedBlock) {
             case "amedite1":
                 return hardwareSetup.amediteContainer.container1.bottles.map((el) => ({ name: el.bottleName, id: el.id, value: el.valve }))
 
@@ -57,19 +55,15 @@ export const BottleNode = memo(({ id, data, selected }) => {
             default:
                 break
         }
-    }, [selectedBlock])
-
-    const [toFromBottle, setToFromBottle] = useState({ to: null, from: null })
+    }, [data?.config?.selectedBlock])
 
     const handleSelectFromBottle = (selection) => {
-        setToFromBottle((prev) => ({ ...prev, from: selection }))
+        updateConfig("selectedToFromBottle", { ...(data?.config?.selectedToFromBottle ?? {}), from: selection })
     }
 
     const handleSelectToBlock = (selection) => {
-        setToFromBottle((prev) => ({ ...prev, to: selection }))
+        updateConfig("selectedToFromBottle", { ...(data?.config?.selectedToFromBottle ?? {}), to: selection })
     }
-
-    const [isRangeSelection, setIsRangeSelection] = useState(false)
 
     return (
         <div className={`bg-purple-50 rounded-lg shadow border-2 ${selected ? "border-purple-600" : "border-purple-300"} p-3 w-[350px] transition-colors duration-150 ease-in-out`}>
@@ -100,33 +94,45 @@ export const BottleNode = memo(({ id, data, selected }) => {
                 ]}
                 placeholder="Select Block"
                 onChange={handleSelectBlock}
-                value={selectedBlock}
+                value={data?.config?.selectedBlock ?? null}
             />
 
             <ToggleSwitch
                 id="selectRange"
                 className="justify-between w-full my-3"
-                checked={isRangeSelection}
+                checked={data?.config?.isRangeSelection ?? false}
                 label="Select Range"
                 handleChange={({ target }) => {
-                    setIsRangeSelection(target.checked)
+                    updateConfig("isRangeSelection", target.checked)
                 }}
             />
 
-            {selectedBlock &&
-                (isRangeSelection ? (
+            {data?.config?.selectedBlock &&
+                (data?.config?.isRangeSelection ? (
                     <>
                         <StyledDropdown
                             label="From Bottle Section"
                             options={blockWiseBottle}
                             placeholder="Select From Block"
                             onChange={handleSelectFromBottle}
-                            value={toFromBottle.from}
+                            value={data?.config?.selectedToFromBottle?.from ?? null}
                         />
-                        <StyledDropdown label="To Bottle Section" options={blockWiseBottle} placeholder="Select To Block" onChange={handleSelectToBlock} value={toFromBottle.to} />
+                        <StyledDropdown
+                            label="To Bottle Section"
+                            options={blockWiseBottle}
+                            placeholder="Select To Block"
+                            onChange={handleSelectToBlock}
+                            value={data?.config?.selectedToFromBottle?.to ?? null}
+                        />
                     </>
                 ) : (
-                    <StyledDropdown label="Bottle Section" options={blockWiseBottle} placeholder="Select Block" onChange={handleSelectFromBottle} value={toFromBottle.from} />
+                    <StyledDropdown
+                        label="Bottle Section"
+                        options={blockWiseBottle}
+                        placeholder="Select Block"
+                        onChange={handleSelectFromBottle}
+                        value={data.config.selectedToFromBottle.from}
+                    />
                 ))}
 
             <div className="flex flex-row items-center w-full mt-2">

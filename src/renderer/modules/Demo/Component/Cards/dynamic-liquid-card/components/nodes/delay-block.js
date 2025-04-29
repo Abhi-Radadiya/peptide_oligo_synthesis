@@ -1,8 +1,8 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback } from "react"
 import { memo } from "react"
 import { Handle, Position } from "reactflow"
-import InputField from "../../../../../../../Components/Input/Input"
-import { useForm } from "react-hook-form"
+import { Input } from "../../../../../../../Components/Input/Input"
+import StyledDropdown from "../../../../../../synthesis-procedure/components/styled-dropdown"
 
 export const DelayBlock = memo(({ id, data, selected }) => {
     const updateConfig = useCallback(
@@ -31,7 +31,32 @@ export const DelayBlock = memo(({ id, data, selected }) => {
         }
     }, [id, data.deleteNode])
 
-    const { control } = useForm()
+    const handleSelectTimeUnit = (timeUnit) => {
+        let currentTime = data?.config?.delayTime
+
+        if (!currentTime) {
+            updateConfig("timeUnit", timeUnit)
+
+            return
+        }
+
+        const currentTimeUnit = data?.config?.timeUnit
+
+        if (currentTimeUnit === "minutes") {
+            currentTime *= 60 * 1000
+        } else if (currentTimeUnit === "seconds") {
+            currentTime *= 1000
+        }
+
+        if (timeUnit === "minutes") {
+            currentTime /= 60 * 1000
+        } else if (timeUnit === "seconds") {
+            currentTime /= 1000
+        }
+
+        updateConfig("timeUnit", timeUnit)
+        updateConfig("delayTime", currentTime)
+    }
 
     return (
         <div className={`bg-pink-50 rounded-lg shadow border-2 ${selected ? "border-pink-600" : "border-pink-300"} p-3 w-60 transition-colors duration-150 ease-in-out`}>
@@ -51,22 +76,25 @@ export const DelayBlock = memo(({ id, data, selected }) => {
                 </svg>
             </button>
 
-            <InputField control={control} name="delayTIme" label="Delay Time" placeholder="Enter Delay Time in ms" />
+            <Input
+                label="Delay Time"
+                wrapperClassName="w-full"
+                value={data?.config?.delayTime ?? ""}
+                onChange={(delayTime) => updateConfig("delayTime", delayTime)}
+                placeholder="Enter Delay Time"
+            />
 
-            {/* <div className="space-y-2 text-xs">
-                <label className="flex items-center justify-between text-gray-700">
-                    <span>Delay Time :</span>
-                    <input
-                        type="number"
-                        min="0"
-                        step="0.1"
-                        className="nodrag border border-gray-300 rounded px-1 py-0.5 w-16 text-right text-xs"
-                        value={data.config?.delayTime ?? ""}
-                        onChange={handleDelayTimeChange}
-                        placeholder="e.g. 5"
-                    />
-                </label>
-            </div> */}
+            <StyledDropdown
+                label="Time Unit"
+                options={[
+                    { name: "Minutes", id: "minutes" },
+                    { name: "Seconds", id: "seconds" },
+                    { name: "Milli Seconds", id: "milliSeconds" }
+                ]}
+                placeholder="Select Time Unit"
+                onChange={(timeUnit) => handleSelectTimeUnit(timeUnit)}
+                value={data?.config?.timeUnit ?? null}
+            />
 
             {/* Input and Output Handles */}
             <Handle type="target" position={Position.Left} id={`${id}-target`} className="!bg-gray-400" style={{ height: 12, width: 12 }} />

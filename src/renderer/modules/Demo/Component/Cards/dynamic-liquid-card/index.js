@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect } from "react"
+import React, { useCallback, useMemo, useEffect } from "react"
 import "./index.css" // Import Tailwind CSS
 import ReactFlow, {
     addEdge,
@@ -19,7 +19,7 @@ import { DelayBlock } from "./components/nodes/delay-block"
 import { ColumnNode } from "./components/nodes/column-node"
 import { Sidebar } from "./components/sidebar"
 import { useDispatch, useSelector } from "react-redux"
-import { addSynthesisProcedure, clearCurrentFlow, selectCurrentProcedureData } from "../../../../../../redux/reducers/synthesis-procedure"
+import { addSynthesisProcedure, clearCurrentFlow, selectCurrentProcedureData, updateSynthesisProcedure } from "../../../../../../redux/reducers/synthesis-procedure"
 import { getUniqueId } from "../../../../../Helpers/Constant"
 // import {
 //     addSynthesisProcedure,
@@ -47,6 +47,8 @@ export default function FlowBuilder() {
     )
 
     const currentProcedure = useSelector(selectCurrentProcedureData)
+
+    const selectedProcedureId = useSelector((state) => state.synthesisProcedure.currentlyLoadedId)
 
     // Callback for connecting nodes
     const onConnect = useCallback((params) => setEdges((eds) => addEdge({ ...params, animated: true, style: { strokeWidth: 2 } }, eds)), [setEdges])
@@ -113,6 +115,69 @@ export default function FlowBuilder() {
         [setNodes, updateNodeConfig] // updateNodeConfig is stable due to its own useCallback
     )
 
+    const processNodesAndEdges = (data) => {
+        const { nodes, edges } = data
+
+        // Create maps to track sources and targets
+        const sourceMap = new Map()
+        const targetMap = new Map()
+
+        // Populate the maps with edge information
+        edges.forEach((edge) => {
+            if (!sourceMap.has(edge.source)) {
+                sourceMap.set(edge.source, [])
+            }
+            sourceMap.get(edge.source).push(edge.target)
+
+            if (!targetMap.has(edge.target)) {
+                targetMap.set(edge.target, [])
+            }
+            targetMap.get(edge.target).push(edge.source)
+        })
+
+        // Identify initialize and end nodes
+        const initializeNodes = []
+        const endNodes = []
+
+        nodes.forEach((node) => {
+            const nodeId = node.id
+            if (sourceMap.has(nodeId) && !targetMap.has(nodeId)) {
+                initializeNodes.push(node)
+            }
+            if (!sourceMap.has(nodeId) && targetMap.has(nodeId)) {
+                endNodes.push(node)
+            }
+        })
+
+        // Create a flow structure
+        const flowStructure = {
+            initializeNodes,
+            endNodes,
+            flow: []
+        }
+
+        // Build the flow from initialize to end nodes
+        const visited = new Set()
+        initializeNodes.forEach((initNode) => {
+            const flow = []
+            buildFlow(initNode.id, flow, visited, sourceMap)
+            flowStructure.flow.push(flow)
+        })
+
+        return flowStructure
+    }
+
+    const buildFlow = (nodeId, flow, visited, sourceMap) => {
+        if (visited.has(nodeId)) return
+        visited.add(nodeId)
+
+        const targets = sourceMap.get(nodeId) || []
+        targets.forEach((targetId) => {
+            flow.push({ from: nodeId, to: targetId })
+            buildFlow(targetId, flow, visited, sourceMap)
+        })
+    }
+
     // --- Function to log the current flow state ---
     const handleLogFlow = useCallback(() => {
         console.log("Logging Current Flow State...")
@@ -138,9 +203,17 @@ export default function FlowBuilder() {
             timestamp: new Date().toISOString() // Optional: Add a timestamp
         }
 
+        // // Log the structured data as a pretty-printed JSON string to the console
+        // console.log("-------------------- FLOW STATE --------------------")
+        // console.log(JSON.stringify(flowData, null, 2)) // null, 2 for pretty printing
+        // console.log("----------------------------------------------------")
+
+        // Example usage
+        const flowStructure = processNodesAndEdges(flowData)
+
         // Log the structured data as a pretty-printed JSON string to the console
         console.log("-------------------- FLOW STATE --------------------")
-        console.log(JSON.stringify(flowData, null, 2)) // null, 2 for pretty printing
+        console.log(JSON.stringify(flowStructure, null, 2)) // null, 2 for pretty printing
         console.log("----------------------------------------------------")
 
         // You can add further actions here, like sending data to an API
@@ -157,16 +230,31 @@ export default function FlowBuilder() {
 
     const handleNewFlow = () => {
         if (window.confirm("Are you sure you want to start a new flow? Any unsaved changes will be lost.")) {
+            const flowName = getUniqueId()
+
+            const cleanedNodes = nodes.map((node) => {
+                const { updateNodeConfig, deleteNode, ...restOfData } = node.data // Remove both functions
+                return {
+                    ...node,
+                    data: { ...restOfData }
+                }
+            })
+
+            const flowDataToSave = {
+                name: flowName,
+                nodes: cleanedNodes,
+                edges: edges,
+                savedAt: new Date().toISOString() // Add save timestamp
+            }
+
+            dispatch(addSynthesisProcedure(flowDataToSave))
+
             dispatch(clearCurrentFlow()) // Dispatch action to clear loaded state in Redux
             // The useEffect above will handle clearing the nodes/edges state
         }
     }
 
     const handleSaveFlow = useCallback(() => {
-        const flowName = getUniqueId()
-
-        console.log(`Saving flow as: ${flowName}`)
-
         // Clean nodes (remove functions) before saving
         const cleanedNodes = nodes.map((node) => {
             const { updateNodeConfig, deleteNode, ...restOfData } = node.data // Remove both functions
@@ -177,7 +265,7 @@ export default function FlowBuilder() {
         })
 
         const flowDataToSave = {
-            name: flowName,
+            name: selectedProcedureId,
             nodes: cleanedNodes,
             edges: edges,
             savedAt: new Date().toISOString() // Add save timestamp
@@ -186,9 +274,8 @@ export default function FlowBuilder() {
         // Dispatch action to add/save the procedure
         // TODO: Add logic here later to *update* if currentProcedure exists,
         // for now, it always adds as new.
-        dispatch(addSynthesisProcedure(flowDataToSave))
 
-        alert(`Procedure "${flowName}" saved successfully!`)
+        dispatch(updateSynthesisProcedure({ id: selectedProcedureId, updatedData: flowDataToSave }))
     }, [nodes, edges, dispatch]) // Dependencies
 
     useEffect(() => {
@@ -277,192 +364,3 @@ export default function FlowBuilder() {
         </>
     )
 }
-
-// // src/FlowBuilder.jsx
-// import React, { useState, useCallback, useMemo, useEffect } from "react" // Add useEffect
-// import { useSelector, useDispatch } from "react-redux" // Add Redux hooks
-// import "./index.css"
-// import ReactFlow, { addEdge, Background, Controls, MiniMap, useEdgesState, useNodesState } from "reactflow"
-// import "reactflow/dist/style.css"
-// import { v4 as uuidv4 } from "uuid"
-// // --- Node and Sidebar Imports ---
-// import BottleNode from "./components/nodes/bottles"
-// import { PumpNode } from "./components/nodes/pump"
-// import { ValveNode } from "./components/nodes/valve"
-// import { SensorNode } from "./components/nodes/sensor"
-// import { WasteValveNode } from "./components/nodes/waste-valve"
-// import { DelayBlock } from "./components/nodes/delay-block"
-// import { ColumnNode } from "./components/nodes/column-node"
-// import { Sidebar } from "./components/sidebar"
-// // --- Redux Actions and Selectors ---
-// import {
-//     addSynthesisProcedure,
-//     selectCurrentProcedureData, // Selector for loaded data
-//     clearCurrentFlow // Action to clear flow
-//     // Potentially updateSynthesisProcedure later
-// } from "./store/synthesisProcedureSlice" // Adjust path
-
-// export default function FlowBuilder() {
-//     const [nodes, setNodes, onNodesChange] = useNodesState([])
-//     const [edges, setEdges, onEdgesChange] = useEdgesState([])
-//     const dispatch = useDispatch() // Get dispatch function
-
-//     // --- Get currently loaded flow data from Redux ---
-//     const currentProcedure = useSelector(selectCurrentProcedureData)
-
-//     const nodeTypes = useMemo(
-//         () => ({
-//             bottleNode: BottleNode,
-//             pumpNode: PumpNode,
-//             valveNode: ValveNode,
-//             sensorNode: SensorNode,
-//             wasteValveNode: WasteValveNode,
-//             delayBlock: DelayBlock,
-//             columnNode: ColumnNode
-//         }),
-//         []
-//     )
-
-//         const onConnect = useCallback((params) => setEdges((eds) => addEdge({ ...params, animated: true, style: { strokeWidth: 2 } }, eds)), [setEdges])
-
-//     const updateNodeConfig = useCallback(/* ...updateNodeConfig definition as before... */)
-//     const deleteNodeById = useCallback(/* ...deleteNodeById definition as before... */)
-
-//     // --- Modify addNode to include deleteNodeById ---
-//     const addNode = useCallback(
-//         (nodeType, specificData = {}) => {
-//             const newNode = {
-//                 id: `${nodeType}-${uuidv4()}`,
-//                 type: nodeType,
-//                 position: {
-//                     /* ...position... */
-//                 },
-//                 data: {
-//                     ...specificData,
-//                     config: {},
-//                     updateNodeConfig: updateNodeConfig, // Pass the update function
-//                     deleteNode: deleteNodeById // Pass the delete function
-//                 }
-//             }
-//             setNodes((nds) => nds.concat(newNode))
-//         },
-//         [setNodes, updateNodeConfig, deleteNodeById] // Add deleteNodeById dependency
-//     )
-
-//     // --- Modify handleLogFlow to SAVE to Redux ---
-// const handleSaveFlow = useCallback(() => {
-//     const flowName = prompt("Enter a name for this synthesis procedure:")
-//     if (!flowName) {
-//         alert("Save cancelled: Procedure name is required.")
-//         return
-//     }
-
-//     console.log(`Saving flow as: ${flowName}`)
-
-//     // Clean nodes (remove functions) before saving
-//     const cleanedNodes = nodes.map((node) => {
-//         const { updateNodeConfig, deleteNode, ...restOfData } = node.data // Remove both functions
-//         return {
-//             ...node,
-//             data: { ...restOfData }
-//         }
-//     })
-
-//     const flowDataToSave = {
-//         name: flowName,
-//         nodes: cleanedNodes,
-//         edges: edges,
-//         savedAt: new Date().toISOString() // Add save timestamp
-//     }
-
-//     // Dispatch action to add/save the procedure
-//     // TODO: Add logic here later to *update* if currentProcedure exists,
-//     // for now, it always adds as new.
-//     dispatch(addSynthesisProcedure(flowDataToSave))
-
-//     alert(`Procedure "${flowName}" saved successfully!`)
-// }, [nodes, edges, dispatch]) // Dependencies
-
-//     // --- Effect to LOAD flow from Redux ---
-// useEffect(() => {
-//     if (currentProcedure) {
-//         console.log("Loading procedure from Redux:", currentProcedure.id, currentProcedure.name)
-//         // IMPORTANT: Inject functions back into loaded nodes
-//         const nodesWithFunctions = currentProcedure.nodes.map((node) => ({
-//             ...node,
-//             data: {
-//                 ...node.data, // Keep loaded config, name etc.
-//                 updateNodeConfig: updateNodeConfig, // Add function back
-//                 deleteNode: deleteNodeById // Add function back
-//             }
-//         }))
-//         setNodes(nodesWithFunctions)
-//         setEdges(currentProcedure.edges || []) // Load edges
-//     } else {
-//         console.log("Clearing flow editor (no procedure loaded).")
-//         // No procedure selected in Redux, clear the canvas
-//         setNodes([])
-//         setEdges([])
-//     }
-//     // Need to include the functions in dependency array because they are recreated
-//     // if their own dependencies change.
-// }, [currentProcedure, setNodes, setEdges, updateNodeConfig, deleteNodeById])
-
-//     const deleteEdgeById = useCallback(/* ...deleteEdgeById definition as before... */)
-//     const handleDeleteEdge = useCallback(/* ...handleDeleteEdge definition as before... */)
-
-//     // Function to start a new, empty flow
-// const handleNewFlow = () => {
-//     if (window.confirm("Are you sure you want to start a new flow? Any unsaved changes will be lost.")) {
-//         dispatch(clearCurrentFlow()) // Dispatch action to clear loaded state in Redux
-//         // The useEffect above will handle clearing the nodes/edges state
-//     }
-// }
-
-//     return (
-//         <>
-//             {/* Update button text and add New button */}
-//             <div className="p-2 bg-gray-100 border-b flex gap-2">
-//                 <button onClick={handleNewFlow} className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700">
-//                     New Flow
-//                 </button>
-//                 <button onClick={handleSaveFlow} className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
-//                     Save Current Flow
-//                 </button>
-//                 {/* Add more controls here if needed */}
-//             </div>
-
-//             <div className="flex h-[calc(92vh-40px)]">
-//                 {" "}
-//                 {/* Adjust height calculation based on header */}
-//                 {/* Sidebar */}
-//                 <Sidebar onAddNode={addNode} />
-//                 {/* React Flow Canvas */}
-//                 <div className="flex-grow h-full bg-gradient-to-br from-gray-50 to-gray-200">
-//                     <ReactFlow
-//                         nodes={nodes}
-//                         edges={edges}
-//                         onNodesChange={onNodesChange}
-//                         onEdgesChange={onEdgesChange}
-//                         onConnect={onConnect}
-//                         nodeTypes={nodeTypes}
-//                         onEdgeDoubleClick={handleDeleteEdge} // Keep edge deletion
-//                         fitView
-//                         fitViewOptions={{ padding: 0.1 }}
-//                         attributionPosition="bottom-left"
-//                     >
-//                         <Controls className="bg-white shadow-lg rounded-md border border-gray-200 p-1" />
-//                         <Background variant="dots" gap={16} size={0.8} color="#a1a1aa" />
-//                         <MiniMap
-//                             nodeStrokeWidth={3}
-//                             nodeColor={(n) => {
-//                                 /* ...minimap colors... */
-//                             }}
-//                         />
-//                     </ReactFlow>
-//                 </div>
-//             </div>
-//         </>
-//     )
-// }   )
-// }

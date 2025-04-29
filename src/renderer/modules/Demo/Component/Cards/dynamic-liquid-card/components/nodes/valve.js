@@ -1,6 +1,5 @@
 import React, { useCallback } from "react"
 import { memo } from "react"
-import { useSelector } from "react-redux"
 import { Handle, Position } from "reactflow"
 
 export const ValveNode = memo(({ id, data, selected }) => {
