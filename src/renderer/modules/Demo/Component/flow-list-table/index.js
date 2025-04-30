@@ -24,7 +24,7 @@ export const FlowListTable = () => {
             {" "}
             {/* Example Height */}
             <h2 className="text-lg font-semibold mb-3 text-gray-700">Saved Synthesis Procedures</h2>
-            {savedFlows.length === 0 ? (
+            {savedFlows?.length === 0 ? (
                 <p className="text-sm text-gray-500">No saved procedures yet.</p>
             ) : (
                 <table className="w-full text-sm text-left text-gray-600 table-auto">
@@ -45,7 +45,7 @@ export const FlowListTable = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {savedFlows.map((flow) => (
+                        {savedFlows?.map((flow) => (
                             <tr key={flow.id} className="bg-white border-b hover:bg-gray-50">
                                 <td className="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">{flow.name || `Procedure ${flow.id.substring(0, 6)}`}</td>
                                 <td className="px-4 py-2">{flow.nodes?.length || 0}</td>
@@ -59,6 +59,7 @@ export const FlowListTable = () => {
                                     <button onClick={() => handleDelete(flow.id)} className="px-2 py-1 text-xs font-medium text-white bg-red-600 rounded hover:bg-red-700">
                                         Delete
                                     </button>
+                                    <button className="px-2 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-red-700">RUN</button>
                                 </td>
                             </tr>
                         ))}

@@ -131,7 +131,7 @@ export const BottleNode = memo(({ id, data, selected }) => {
                         options={blockWiseBottle}
                         placeholder="Select Block"
                         onChange={handleSelectFromBottle}
-                        value={data.config.selectedToFromBottle.from}
+                        value={data?.config?.selectedToFromBottle?.from}
                     />
                 ))}
 
