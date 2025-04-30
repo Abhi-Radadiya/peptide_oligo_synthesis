@@ -72,6 +72,7 @@ export const PumpNode = memo(({ id, data, selected }) => {
     return (
         <div className={`bg-pink-50 rounded-lg shadow border-2 ${selected ? "border-pink-600" : "border-pink-300"} p-3 w-60 transition-colors duration-150 ease-in-out relative`}>
             {" "}
+            {id}
             {/* Added relative positioning */}
             <div className="font-semibold text-sm mb-2 text-pink-800">{data.name || "Pump"}</div>
             <button

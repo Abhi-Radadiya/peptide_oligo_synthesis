@@ -151,7 +151,7 @@ function App() {
             <FlowListTable />
 
             {/* Flow Builder takes most of the screen */}
-            <div className="h-[80vh] overflow-auto scrollbar-style pr-4 -mr-4">
+            <div className="h-full overflow-auto scrollbar-style pr-4 -mr-4">
                 <FlowBuilder />
             </div>
             {/* Table for saved flows at the bottom */}

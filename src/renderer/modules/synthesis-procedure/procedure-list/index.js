@@ -150,7 +150,7 @@ export default function ProcedureTable() {
     // --- Effect to update Select All checkbox state ---
     // This runs when selectedIds or the main procedureList changes
     useEffect(() => {
-        if (procedureList.length > 0 && selectedIds.length === procedureList.length) {
+        if (procedureList?.length > 0 && selectedIds.length === procedureList?.length) {
             setIsSelectAll(true)
         } else {
             setIsSelectAll(false)
@@ -234,7 +234,7 @@ export default function ProcedureTable() {
                                         checked={isSelectAll}
                                         onChange={handleSelectAll}
                                         // Disable if there's no data
-                                        disabled={procedureList.length === 0}
+                                        disabled={procedureList?.length === 0}
                                         aria-label="Select all procedures"
                                     />
                                 </th>
@@ -244,14 +244,14 @@ export default function ProcedureTable() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
-                            {procedureList.length === 0 ? (
+                            {!procedureList?.length ? (
                                 <tr>
                                     <td colSpan="4" className="px-5 py-5 text-center text-gray-500">
                                         No procedures found.
                                     </td>
                                 </tr>
                             ) : (
-                                procedureList.map((procedure) => {
+                                procedureList?.map((procedure) => {
                                     const isSelected = selectedIds.includes(procedure.id)
                                     return (
                                         <tr
