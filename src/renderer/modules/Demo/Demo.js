@@ -147,11 +147,11 @@ import { FlowListTable } from "./Component/flow-list-table"
 function App() {
     return (
         // <Provider store={store}> {/* Ensure Redux Provider is set up */}
-        <div className="App flex flex-col h-screen">
+        <div className="App flex flex-col h-screen overflow-auto scrollbar-style pr-4 -mr-4">
             <FlowListTable />
 
             {/* Flow Builder takes most of the screen */}
-            <div className="h-full overflow-auto scrollbar-style pr-4 -mr-4">
+            <div className="pr-4 -mr-4">
                 <FlowBuilder />
             </div>
             {/* Table for saved flows at the bottom */}

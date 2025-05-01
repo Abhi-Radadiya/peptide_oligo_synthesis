@@ -1,11 +1,11 @@
-import React from "react";
-import { useFormContext } from "react-hook-form";
-import AmediteSection, { RadioSection, WasteColumnSelection } from "../../../Components/AmediteSection/AmediteSection";
+import React from "react"
+import { useFormContext } from "react-hook-form"
+import AmediteSection, { RadioSection, WasteColumnSelection } from "../../../Components/AmediteSection/AmediteSection"
 
 export default function Sulfurization(props) {
-    const { disabled } = props;
+    const { disabled } = props
 
-    const { control } = useFormContext();
+    const { control } = useFormContext()
 
     return (
         <>
@@ -15,7 +15,13 @@ export default function Sulfurization(props) {
 
                     <AmediteSection
                         disabled={disabled}
-                        names={{ solvent: "n_sulfurizationSolvent", volume: "n_sulfurizationVolume", xFactor: "n_sulfurizationXFactor", flowRate: "n_sulfurizationFlowRate" }}
+                        names={{
+                            solvent: "n_sulfurizationSolvent",
+                            volume: "n_sulfurizationVolume",
+                            xFactor: "n_sulfurizationXFactor",
+                            flowRate: "n_sulfurizationFlowRate",
+                            synthesisProcedureName: "n_sulfurizationProcedure"
+                        }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                     />
 
@@ -26,6 +32,7 @@ export default function Sulfurization(props) {
                             volume: "n_sulfurizationWashVolume",
                             xFactor: "n_sulfurizationWashXFactor",
                             flowRate: "n_sulfurizationWashFlowRate",
+                            synthesisProcedureName: "n_sulfurizationWashProcedure"
                         }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                         title="Wash Setting"
@@ -37,5 +44,5 @@ export default function Sulfurization(props) {
                 <WasteColumnSelection disabled={disabled} name="n_sulfurizationWaste" control={control} />
             </div>
         </>
-    );
+    )
 }

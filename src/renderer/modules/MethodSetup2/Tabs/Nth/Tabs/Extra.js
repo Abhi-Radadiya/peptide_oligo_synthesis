@@ -1,11 +1,11 @@
-import React from "react";
-import { useFormContext } from "react-hook-form";
-import AmediteSection, { WasteColumnSelection } from "../../../Components/AmediteSection/AmediteSection";
+import React from "react"
+import { useFormContext } from "react-hook-form"
+import AmediteSection, { WasteColumnSelection } from "../../../Components/AmediteSection/AmediteSection"
 
 export default function Extra(props) {
-    const { disabled } = props;
+    const { disabled } = props
 
-    const { control } = useFormContext();
+    const { control } = useFormContext()
 
     return (
         <>
@@ -15,12 +15,24 @@ export default function Extra(props) {
 
                     <AmediteSection
                         disabled={disabled}
-                        names={{ solvent: "n_extraSolvent", volume: "n_extraVolume", xFactor: "n_extraXFactor", flowRate: "n_extraFlowRate" }}
+                        names={{
+                            solvent: "n_extraSolvent",
+                            volume: "n_extraVolume",
+                            xFactor: "n_extraXFactor",
+                            flowRate: "n_extraFlowRate",
+                            synthesisProcedureName: "n_extraProcedure"
+                        }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                     />
                     <AmediteSection
                         disabled={disabled}
-                        names={{ solvent: "n_extraWashSolvent", volume: "n_extraWashVolume", xFactor: "n_extraWashXFactor", flowRate: "n_extraWashFlowRate" }}
+                        names={{
+                            solvent: "n_extraWashSolvent",
+                            volume: "n_extraWashVolume",
+                            xFactor: "n_extraWashXFactor",
+                            flowRate: "n_extraWashFlowRate",
+                            synthesisProcedureName: "n_extraWashProcedure"
+                        }}
                         title="Wash setting"
                     />
                 </div>
@@ -28,5 +40,5 @@ export default function Extra(props) {
                 <WasteColumnSelection disabled={disabled} control={control} name="n_extraWaste" />
             </div>
         </>
-    );
+    )
 }

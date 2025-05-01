@@ -1,9 +1,9 @@
-import React from "react";
-import { useFormContext } from "react-hook-form";
-import AmediteSection, { RadioSection, WasteColumnSelection } from "../../../Components/AmediteSection/AmediteSection";
+import React from "react"
+import { useFormContext } from "react-hook-form"
+import AmediteSection, { RadioSection, WasteColumnSelection } from "../../../Components/AmediteSection/AmediteSection"
 
 export default function DeBlock() {
-    const { control } = useFormContext();
+    const { control } = useFormContext()
 
     return (
         <>
@@ -12,11 +12,23 @@ export default function DeBlock() {
                     <h3 className="font-bold text-xl mb-4">De - Block Settings</h3>
 
                     <AmediteSection
-                        names={{ solvent: "last_deSolvent", volume: "last_deVolume", xFactor: "last_deXFactor", flowRate: "last_deFlowRate" }}
+                        names={{
+                            solvent: "last_deSolvent",
+                            volume: "last_deVolume",
+                            xFactor: "last_deXFactor",
+                            flowRate: "last_deFlowRate",
+                            synthesisProcedureName: "last_deBlockProcedure"
+                        }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                     />
                     <AmediteSection
-                        names={{ solvent: "last_deWashSolvent", volume: "last_deWashVolume", xFactor: "last_deWashXFactor", flowRate: "last_deWashFlowRate" }}
+                        names={{
+                            solvent: "last_deWashSolvent",
+                            volume: "last_deWashVolume",
+                            xFactor: "last_deWashXFactor",
+                            flowRate: "last_deWashFlowRate",
+                            synthesisProcedureName: "last_deBlockWashProcedure"
+                        }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                         title="Wash Setting"
                     />
@@ -27,5 +39,5 @@ export default function DeBlock() {
                 <WasteColumnSelection name="last_deWaste" control={control} />
             </div>
         </>
-    );
+    )
 }

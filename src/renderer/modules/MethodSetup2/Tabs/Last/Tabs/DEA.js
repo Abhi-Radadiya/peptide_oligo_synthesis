@@ -1,9 +1,9 @@
-import React from "react";
-import { useFormContext } from "react-hook-form";
-import AmediteSection, { WasteColumnSelection } from "../../../Components/AmediteSection/AmediteSection";
+import React from "react"
+import { useFormContext } from "react-hook-form"
+import AmediteSection, { WasteColumnSelection } from "../../../Components/AmediteSection/AmediteSection"
 
 export default function DEA() {
-    const { control } = useFormContext();
+    const { control } = useFormContext()
 
     return (
         <>
@@ -12,11 +12,23 @@ export default function DEA() {
                     <h3 className="font-bold text-xl mb-4">DEA Settings</h3>
 
                     <AmediteSection
-                        names={{ solvent: "last_deaSolvent", volume: "last_deaVolume", xFactor: "last_deaXFactor", flowRate: "last_deaFlowRate" }}
+                        names={{
+                            solvent: "last_deaSolvent",
+                            volume: "last_deaVolume",
+                            xFactor: "last_deaXFactor",
+                            flowRate: "last_deaFlowRate",
+                            synthesisProcedureName: "last_deaProcedure"
+                        }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                     />
                     <AmediteSection
-                        names={{ solvent: "last_deaWashSolvent", volume: "last_deaWashVolume", xFactor: "last_deaWashXFactor", flowRate: "last_deaWashFlowRate" }}
+                        names={{
+                            solvent: "last_deaWashSolvent",
+                            volume: "last_deaWashVolume",
+                            xFactor: "last_deaWashXFactor",
+                            flowRate: "last_deaWashFlowRate",
+                            synthesisProcedureName: "last_deaWashProcedure"
+                        }}
                         title="Wash Setting"
                     />
                 </div>
@@ -24,5 +36,5 @@ export default function DEA() {
                 <WasteColumnSelection name="last_deaWaste" control={control} />
             </div>
         </>
-    );
+    )
 }

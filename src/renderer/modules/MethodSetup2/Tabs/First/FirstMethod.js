@@ -1,31 +1,38 @@
-import React, { useState } from "react";
-import { useFormContext } from "react-hook-form";
-import AmediteSection, { WasteColumnSelection } from "../../Components/AmediteSection/AmediteSection";
-import { SelectionController } from "../../../../Components/Dropdown/Dropdown";
-import { useSelector } from "react-redux";
-import InputField from "../../../../Components/Input/Input";
-import { isObject } from "lodash";
+import React, { useState } from "react"
+import { useFormContext } from "react-hook-form"
+import AmediteSection, { WasteColumnSelection } from "../../Components/AmediteSection/AmediteSection"
+import { SelectionController } from "../../../../Components/Dropdown/Dropdown"
+import { useSelector } from "react-redux"
+import InputField from "../../../../Components/Input/Input"
+import { isObject } from "lodash"
+import { selectSavedProcedures } from "../../../../../redux/reducers/synthesis-procedure"
 
 export default function FirstMethod() {
-    const { control, setValue } = useFormContext();
+    const { control, setValue } = useFormContext()
 
-    const primingMenuItem = [...Array(24)].map((_, index) => ({ label: index < 9 ? `0${index + 1}` : index + 1, value: index + 1 }));
+    const primingMenuItem = [...Array(24)].map((_, index) => ({ label: index < 9 ? `0${index + 1}` : index + 1, value: index + 1 }))
 
-    const ameditePosition = useSelector((state) => state.bottleMapping.amedite);
+    const ameditePosition = useSelector((state) => state.bottleMapping.amedite)
 
-    const [selectPrimingAmediteDetail, setSelectPrimingAmediteDetail] = useState({});
+    const [selectPrimingAmediteDetail, setSelectPrimingAmediteDetail] = useState({})
 
-    const amediteList = useSelector((state) => state.amedite.amediteList);
+    const amediteList = useSelector((state) => state.amedite.amediteList)
 
     const handleSelectPrimingPosition = (position) => {
-        const selectedAmedite = ameditePosition?.[position?.value - 1];
+        const selectedAmedite = ameditePosition?.[position?.value - 1]
 
-        const selectPrimingAmediteDetail = amediteList?.find((el) => el?.id === selectedAmedite?.value);
+        const selectPrimingAmediteDetail = amediteList?.find((el) => el?.id === selectedAmedite?.value)
 
-        setValue("1_primingFlowRate", selectPrimingAmediteDetail?.flowRate);
+        setValue("1_primingFlowRate", selectPrimingAmediteDetail?.flowRate)
 
-        setSelectPrimingAmediteDetail(selectPrimingAmediteDetail);
-    };
+        setSelectPrimingAmediteDetail(selectPrimingAmediteDetail)
+    }
+
+    const synthesisProcedure = useSelector(selectSavedProcedures)
+
+    const synthesisProcedureList = synthesisProcedure?.map((el) => {
+        return { label: el.name, value: el.id }
+    })
 
     return (
         <>
@@ -33,7 +40,9 @@ export default function FirstMethod() {
                 <div className="max-w-[650px] w-full">
                     <h3 className="font-bold text-xl mb-6">Column Wash Settings</h3>
 
-                    <AmediteSection names={{ solvent: "1_solvent", volume: "1_volume", xFactor: "1_XFactor", flowRate: "1_flowRate" }} />
+                    <AmediteSection
+                        names={{ solvent: "1_solvent", volume: "1_volume", xFactor: "1_XFactor", flowRate: "1_flowRate", synthesisProcedureName: "1_columnProcedure" }}
+                    />
                 </div>
 
                 <WasteColumnSelection name="1_waste" control={control} />
@@ -71,7 +80,7 @@ export default function FirstMethod() {
                         </div>
                     </div>
 
-                    <div className="flex flex-row justify-between items-center my-4 pb-4 border-b border-neutral-300">
+                    <div className="flex flex-row justify-between items-center my-4">
                         <div className="flex flex-row items-center gap-2">
                             <span className="font-bold text-neutral-600">Volume</span>
                             <InputField
@@ -87,15 +96,20 @@ export default function FirstMethod() {
 
                         <div className="flex flex-row items-center gap-2">
                             <span className="font-bold text-neutral-600">Loop</span>
-                            <InputField
-                                name="1_primingXFactor"
-                                width="w-[220px]"
-                                wrapperClassName="max-w-[220px]"
-                                control={control}
-                                type="number"
-                                placeholder="Enter X factor"
-                            />
+                            <InputField name="1_primingXFactor" width="w-[220px]" wrapperClassName="max-w-[220px]" control={control} type="number" placeholder="Enter X factor" />
                         </div>
+                    </div>
+
+                    <div className="flex flex-row items-center gap-2 pb-4 border-b border-neutral-300">
+                        <span className="font-bold text-neutral-600">Procedure</span>
+                        <SelectionController
+                            rules={{ required: "Please select procedure" }}
+                            width={220}
+                            menuItem={synthesisProcedureList}
+                            control={control}
+                            name="1_primingProcedure"
+                            placeholder="Select procedure"
+                        />
                     </div>
 
                     <div className="">
@@ -143,5 +157,5 @@ export default function FirstMethod() {
                 <WasteColumnSelection name="1_primingWaste" control={control} />
             </div>
         </>
-    );
+    )
 }

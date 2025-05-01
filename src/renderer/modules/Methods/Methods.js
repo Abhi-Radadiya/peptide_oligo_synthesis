@@ -1,43 +1,44 @@
-import React, { useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import ConfirmationPopup from "../../Components/Popup/ConfirmationPopup";
-import { ReactComponent as EditIcon } from "../../Assets/edit.svg";
-import { Button } from "../../Components/Buttons/Buttons";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteMethodSetup } from "../../../redux/reducers/methodSetup/methodSetup";
-import { openToast } from "../../../redux/reducers/toastStateReducer/toastStateReducer";
-import { SUCCESS } from "../../Helpers/Icons";
+import React, { useMemo, useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
+import ConfirmationPopup from "../../Components/Popup/ConfirmationPopup"
+import { ReactComponent as EditIcon } from "../../Assets/edit.svg"
+import { Button } from "../../Components/Buttons/Buttons"
+import { useDispatch, useSelector } from "react-redux"
+import { deleteMethodSetup } from "../../../redux/reducers/methodSetup/methodSetup"
+import { openToast } from "../../../redux/reducers/toastStateReducer/toastStateReducer"
+import { SUCCESS } from "../../Helpers/Icons"
 
 export default function Methods() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedRows, setSelectedRows] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false)
 
-    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedRows, setSelectedRows] = useState([])
 
-    const methods = useSelector((state) => state.methodSetup.method);
+    const [searchTerm, setSearchTerm] = useState("")
 
-    const filteredData = useMemo(() => methods.filter((item) => item?.method_name?.toLowerCase().includes(searchTerm.toLowerCase())), [searchTerm, methods]);
+    const methods = useSelector((state) => state.methodSetup.method)
+
+    const filteredData = useMemo(() => methods.filter((item) => item?.method_name?.toLowerCase().includes(searchTerm.toLowerCase())), [searchTerm, methods])
 
     const handleSelectRow = (e, id) => {
         if (e.target.checked) {
-            setSelectedRows([...selectedRows, id]);
+            setSelectedRows([...selectedRows, id])
         } else {
-            setSelectedRows(selectedRows.filter((rowId) => rowId !== id));
+            setSelectedRows(selectedRows.filter((rowId) => rowId !== id))
         }
-    };
+    }
 
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch()
 
     const handleDeleteSelectedMethod = () => {
-        dispatch(deleteMethodSetup(selectedRows));
+        dispatch(deleteMethodSetup(selectedRows))
 
-        dispatch(openToast({ text: "Method deleted successfully.", icon: SUCCESS }));
+        dispatch(openToast({ text: "Method deleted successfully.", icon: SUCCESS }))
 
-        setSelectedRows([]);
-        setIsModalOpen(false);
-    };
+        setSelectedRows([])
+        setIsModalOpen(false)
+    }
 
     return (
         <>
@@ -133,5 +134,5 @@ export default function Methods() {
                 />
             </div>
         </>
-    );
+    )
 }

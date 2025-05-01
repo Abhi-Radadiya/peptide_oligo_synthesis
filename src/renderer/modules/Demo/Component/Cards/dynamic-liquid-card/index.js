@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useEffect } from "react"
+import React, { useCallback, useMemo, useEffect, useState } from "react"
 import "./index.css" // Import Tailwind CSS
 import ReactFlow, {
     addEdge,
@@ -21,6 +21,9 @@ import { Sidebar } from "./components/sidebar"
 import { useDispatch, useSelector } from "react-redux"
 import { addSynthesisProcedure, clearCurrentFlow, selectCurrentProcedureData, updateSynthesisProcedure } from "../../../../../../redux/reducers/synthesis-procedure"
 import { getUniqueId } from "../../../../../Helpers/Constant"
+import { Input } from "../../../../../Components/Input/Input"
+import { useExtractCommandData } from "./functions/extract-command-data"
+import CommandModel from "./models/command-model"
 // import {
 //     addSynthesisProcedure,
 //     selectCurrentProcedureData, // Selector for loaded data
@@ -103,8 +106,8 @@ export default function FlowBuilder() {
                 },
                 data: {
                     // Ensure initial data structure is consistent
-                    ...specificData, // Include name etc. from sidebar selection
                     config: {}, // Initialize empty config for user settings
+                    ...specificData, // Include name etc. from sidebar selection
                     updateNodeConfig: updateNodeConfig, // Pass the update function,
                     deleteNode: deleteNodeById
                 }
@@ -230,7 +233,6 @@ export default function FlowBuilder() {
             ],
             ["bottleNode-85e171c0-b915-4589-ac11-60397b4d9a39", "bottleNode-25dd0506-216d-45e0-b920-e1507131bfec", "bottleNode-ac7c1fbd-b9a6-4a1b-8ed0-c0f5224336ea"]
         ]
-        console.log(`flowData : `, flowData)
     }, [nodes, edges]) // Function depends on the current nodes and edges
 
     const deleteEdgeById = useCallback((edgeId) => {
@@ -242,30 +244,18 @@ export default function FlowBuilder() {
     }
 
     const handleNewFlow = () => {
-        if (window.confirm("Are you sure you want to start a new flow? Any unsaved changes will be lost.")) {
-            const flowName = getUniqueId()
+        dispatch(clearCurrentFlow()) // Dispatch action to clear loaded state in Redux
+        setName("")
+        // const flowDataToSave = {
+        //     savedAt: new Date().toISOString() // Add save timestamp
+        // }
 
-            const cleanedNodes = nodes.map((node) => {
-                const { updateNodeConfig, deleteNode, ...restOfData } = node.data // Remove both functions
-                return {
-                    ...node,
-                    data: { ...restOfData }
-                }
-            })
+        // dispatch(addSynthesisProcedure(flowDataToSave))
 
-            const flowDataToSave = {
-                name: flowName,
-                nodes: cleanedNodes,
-                edges: edges,
-                savedAt: new Date().toISOString() // Add save timestamp
-            }
-
-            dispatch(addSynthesisProcedure(flowDataToSave))
-
-            dispatch(clearCurrentFlow()) // Dispatch action to clear loaded state in Redux
-            // The useEffect above will handle clearing the nodes/edges state
-        }
+        // The useEffect above will handle clearing the nodes/edges state
     }
+
+    const [name, setName] = useState("")
 
     const handleSaveFlow = useCallback(() => {
         // Clean nodes (remove functions) before saving
@@ -278,18 +268,20 @@ export default function FlowBuilder() {
         })
 
         const flowDataToSave = {
-            name: selectedProcedureId,
             nodes: cleanedNodes,
             edges: edges,
-            savedAt: new Date().toISOString() // Add save timestamp
+            savedAt: new Date().toISOString(), // Add save timestamp
+            name
         }
+
+        console.log(`flowDataToSave : `, flowDataToSave.name)
 
         // Dispatch action to add/save the procedure
         // TODO: Add logic here later to *update* if currentProcedure exists,
         // for now, it always adds as new.
 
-        dispatch(updateSynthesisProcedure({ id: selectedProcedureId, updatedData: flowDataToSave }))
-    }, [nodes, edges, dispatch]) // Dependencies
+        !currentProcedure ? dispatch(addSynthesisProcedure(flowDataToSave)) : dispatch(updateSynthesisProcedure({ id: selectedProcedureId, updatedData: flowDataToSave }))
+    }, [nodes, edges, dispatch, name]) // Dependencies
 
     /**
      * Groups nodes based on their flow connections in a directed graph
@@ -490,6 +482,623 @@ export default function FlowBuilder() {
         return flowGroups
     }
 
+    const original = {
+        nodes: [
+            {
+                id: "bottleNode-cde9dfcd-94cf-4544-a857-ce89e180b349",
+                type: "bottleNode",
+                position: {
+                    x: -252.7484587162868,
+                    y: 72.86375382607628
+                },
+                data: {
+                    config: {
+                        selectedBlock: "amedite1",
+                        selectedToFromBottle: {
+                            from: "d0225c90-35b3-4d5d-a73d-a5bb1d903c9a"
+                        },
+                        status: "on"
+                    }
+                },
+                width: 350,
+                height: 303,
+                selected: false,
+                positionAbsolute: {
+                    x: -252.7484587162868,
+                    y: 72.86375382607628
+                },
+                dragging: false
+            },
+            {
+                id: "sensorNode-a6389e2f-0390-4728-82ec-a979bd7e8201",
+                type: "sensorNode",
+                position: {
+                    x: 518.9880034822074,
+                    y: 234.2034410712074
+                },
+                data: {
+                    name: "Liquid Sensor 2",
+                    originalId: "5e443ae3-8a84-4931-88af-706f765ba154",
+                    config: {
+                        threshold: 1,
+                        time: 0.12,
+                        timeUnit: "seconds"
+                    }
+                },
+                width: 224,
+                height: 328,
+                selected: false,
+                positionAbsolute: {
+                    x: 518.9880034822074,
+                    y: 234.2034410712074
+                },
+                dragging: false
+            },
+            {
+                id: "pumpNode-71196205-6957-41d0-b1f4-0772c74f8aba",
+                type: "pumpNode",
+                position: {
+                    x: 196.5223647228221,
+                    y: 313.08219240460824
+                },
+                data: {
+                    name: "Pump3",
+                    config: {}
+                },
+                width: 240,
+                height: 202,
+                selected: false,
+                positionAbsolute: {
+                    x: 196.5223647228221,
+                    y: 313.08219240460824
+                },
+                dragging: false
+            },
+            {
+                id: "pumpNode-e1299d22-5304-4792-a3ad-0713f3ad419c",
+                type: "pumpNode",
+                position: {
+                    x: 425.3965317449381,
+                    y: 629.8910233455464
+                },
+                data: {
+                    name: "Pump1",
+                    config: {}
+                },
+                width: 240,
+                height: 202,
+                selected: false,
+                positionAbsolute: {
+                    x: 425.3965317449381,
+                    y: 629.8910233455464
+                },
+                dragging: false
+            },
+            {
+                id: "bottleNode-5825ffda-093e-43b4-adcc-8798a1c79706",
+                type: "bottleNode",
+                position: {
+                    x: -268.8665438229483,
+                    y: 403.0048409855319
+                },
+                data: {
+                    config: {
+                        selectedBlock: "amedite2",
+                        selectedToFromBottle: {
+                            from: "f76bb02b-3361-4af7-b528-ce78ac13c300"
+                        }
+                    }
+                },
+                width: 350,
+                height: 303,
+                selected: false,
+                positionAbsolute: {
+                    x: -268.8665438229483,
+                    y: 403.0048409855319
+                },
+                dragging: false
+            },
+            {
+                id: "valveNode-599e85ce-fe3c-4890-aab4-5c6fcf39afe8",
+                type: "valveNode",
+                position: {
+                    x: 1758.3463557818113,
+                    y: 399.13095961159706
+                },
+                data: {
+                    name: "Waste Valve",
+                    originalId: "8d6b6e1a-f92d-4dc5-adad-6086026aa31c",
+                    config: {
+                        status: "on"
+                    }
+                },
+                width: 208,
+                height: 115,
+                selected: false,
+                positionAbsolute: {
+                    x: 1758.3463557818113,
+                    y: 399.13095961159706
+                },
+                dragging: false
+            },
+            {
+                id: "wasteValveNode-494e45b4-f888-4be9-9441-77ba7038ed40",
+                type: "wasteValveNode",
+                position: {
+                    x: 2036.7301943601942,
+                    y: 400.40658259639446
+                },
+                data: {
+                    name: "waste 1",
+                    originalId: "12e6a06e-b524-414d-8b79-a4e6b2ef968f",
+                    config: {
+                        status: "on"
+                    }
+                },
+                width: 208,
+                height: 135,
+                selected: false,
+                positionAbsolute: {
+                    x: 2036.7301943601942,
+                    y: 400.40658259639446
+                },
+                dragging: false
+            },
+            {
+                id: "bottleNode-4016c783-074b-49d5-9af0-b86822feca6e",
+                type: "bottleNode",
+                position: {
+                    x: -21.99460742932513,
+                    y: 737.4753847667314
+                },
+                data: {
+                    config: {
+                        selectedBlock: "reagent1",
+                        selectedToFromBottle: {
+                            from: "db71bac2-71ca-4607-8f22-cdcc4cdb3018"
+                        }
+                    }
+                },
+                width: 350,
+                height: 303,
+                selected: false,
+                positionAbsolute: {
+                    x: -21.99460742932513,
+                    y: 737.4753847667314
+                },
+                dragging: false
+            },
+            {
+                id: "columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716",
+                type: "columnNode",
+                position: {
+                    x: 1106.374798066161,
+                    y: 355.18660004024593
+                },
+                data: {
+                    name: "50 Barrel",
+                    originalId: "fd8a0c6a-1632-4add-8e5b-da1139e0e6d1",
+                    config: {}
+                },
+                width: 256,
+                height: 363,
+                selected: false,
+                positionAbsolute: {
+                    x: 1106.374798066161,
+                    y: 355.18660004024593
+                },
+                dragging: false
+            },
+            {
+                id: "valveNode-364d9df4-7142-4aaa-9b2c-9023e94c9fcf",
+                type: "valveNode",
+                position: {
+                    x: 858.1478739423283,
+                    y: 378.0749598894638
+                },
+                data: {
+                    name: "Top Valve",
+                    originalId: "b5b7a01f-4d08-46c4-b78a-98172cc533a4",
+                    config: {
+                        status: "on"
+                    }
+                },
+                width: 208,
+                height: 115,
+                selected: false,
+                positionAbsolute: {
+                    x: 858.1478739423283,
+                    y: 378.0749598894638
+                },
+                dragging: false
+            },
+            {
+                id: "valveNode-ba44fe77-1196-4a17-a7ed-050d02d99d6b",
+                type: "valveNode",
+                position: {
+                    x: 1458.4428047869155,
+                    y: 430.9371146186895
+                },
+                data: {
+                    name: "Bottom Valve",
+                    originalId: "7435f36e-f167-4526-8d30-a4e651f8fb5f",
+                    config: {
+                        status: "on"
+                    }
+                },
+                width: 208,
+                height: 115,
+                selected: false,
+                positionAbsolute: {
+                    x: 1458.4428047869155,
+                    y: 430.9371146186895
+                },
+                dragging: false
+            },
+            {
+                id: "pumpNode-2f2bbe04-6201-47c6-aa52-5b4e9554b7ee",
+                type: "pumpNode",
+                position: {
+                    x: 1420.607687911223,
+                    y: 633.571600327618
+                },
+                data: {
+                    name: "Pump3",
+                    config: {
+                        status: "on",
+                        flowRate: 1200,
+                        timeDuration: 6000
+                    }
+                },
+                width: 240,
+                height: 202,
+                selected: false,
+                positionAbsolute: {
+                    x: 1420.607687911223,
+                    y: 633.571600327618
+                },
+                dragging: false
+            },
+            {
+                id: "pumpNode-5a4e24a7-1b02-4584-a35e-d154e89a8c3a",
+                type: "pumpNode",
+                position: {
+                    x: 1388.7806952885123,
+                    y: 102.55305331728289
+                },
+                data: {
+                    name: "Pump1",
+                    config: {
+                        status: "on",
+                        flowRate: 120,
+                        controlMode: "rpm",
+                        rpm: 600
+                    }
+                },
+                width: 240,
+                height: 202,
+                selected: false,
+                positionAbsolute: {
+                    x: 1388.7806952885123,
+                    y: 102.55305331728289
+                },
+                dragging: false
+            },
+            {
+                id: "sensorNode-226e15c9-5d71-47fc-ab58-098ac5c2817b",
+                type: "sensorNode",
+                position: {
+                    x: 1416.7561575368231,
+                    y: 860.9864640753987
+                },
+                data: {
+                    name: "Liquid Sensor 2",
+                    originalId: "5e443ae3-8a84-4931-88af-706f765ba154",
+                    config: {
+                        threshold: 3,
+                        time: 1.2,
+                        timeUnit: "seconds"
+                    }
+                },
+                width: 224,
+                height: 328,
+                selected: true,
+                positionAbsolute: {
+                    x: 1416.7561575368231,
+                    y: 860.9864640753987
+                },
+                dragging: false
+            },
+            {
+                id: "bottleNode-85e171c0-b915-4589-ac11-60397b4d9a39",
+                type: "bottleNode",
+                position: {
+                    x: 1740.5124003520395,
+                    y: 60.61368404257087
+                },
+                data: {
+                    config: {
+                        selectedBlock: "reagent1",
+                        selectedToFromBottle: {
+                            from: "6752b9a6-2218-4faf-af1e-c3378b36cbf0"
+                        }
+                    }
+                },
+                width: 350,
+                height: 303,
+                selected: false,
+                positionAbsolute: {
+                    x: 1740.5124003520395,
+                    y: 60.61368404257087
+                },
+                dragging: false
+            },
+            {
+                id: "bottleNode-25dd0506-216d-45e0-b920-e1507131bfec",
+                type: "bottleNode",
+                position: {
+                    x: 1751.7952062351033,
+                    y: 528.4348741656676
+                },
+                data: {
+                    config: {
+                        selectedBlock: "amedite3",
+                        selectedToFromBottle: {
+                            from: "4d10aebe-63db-4228-97f3-ee9601867685"
+                        }
+                    }
+                },
+                width: 350,
+                height: 303,
+                selected: false,
+                positionAbsolute: {
+                    x: 1751.7952062351033,
+                    y: 528.4348741656676
+                },
+                dragging: false
+            },
+            {
+                id: "bottleNode-ac7c1fbd-b9a6-4a1b-8ed0-c0f5224336ea",
+                type: "bottleNode",
+                position: {
+                    x: 1745.1406056312035,
+                    y: 855.4857224376997
+                },
+                data: {
+                    config: {
+                        selectedBlock: "amedite3",
+                        selectedToFromBottle: {
+                            from: "c3d502b3-d4e0-47b6-afad-f79cb46e84e4"
+                        }
+                    }
+                },
+                width: 350,
+                height: 303,
+                selected: false,
+                positionAbsolute: {
+                    x: 1745.1406056312035,
+                    y: 855.4857224376997
+                },
+                dragging: false
+            },
+            {
+                id: "sensorNode-4e5652d2-c8b0-4578-a84b-d0b0cd5517e0",
+                type: "sensorNode",
+                position: {
+                    x: 755.4941662335734,
+                    y: 639.2957773257892
+                },
+                data: {
+                    name: "Liquid Sensor 2",
+                    originalId: "5e443ae3-8a84-4931-88af-706f765ba154",
+                    config: {
+                        threshold: 1.2,
+                        time: 0.012,
+                        timeUnit: "seconds"
+                    }
+                },
+                width: 224,
+                height: 328,
+                selected: false,
+                positionAbsolute: {
+                    x: 755.4941662335734,
+                    y: 639.2957773257892
+                },
+                dragging: false
+            }
+        ],
+        edges: [
+            {
+                source: "bottleNode-cde9dfcd-94cf-4544-a857-ce89e180b349",
+                sourceHandle: "bottleNode-cde9dfcd-94cf-4544-a857-ce89e180b349-source",
+                target: "pumpNode-71196205-6957-41d0-b1f4-0772c74f8aba",
+                targetHandle: "pumpNode-71196205-6957-41d0-b1f4-0772c74f8aba-target",
+                animated: true,
+                style: {
+                    strokeWidth: 2
+                },
+                id: "reactflow__edge-bottleNode-cde9dfcd-94cf-4544-a857-ce89e180b349bottleNode-cde9dfcd-94cf-4544-a857-ce89e180b349-source-pumpNode-71196205-6957-41d0-b1f4-0772c74f8abapumpNode-71196205-6957-41d0-b1f4-0772c74f8aba-target"
+            },
+            {
+                source: "pumpNode-71196205-6957-41d0-b1f4-0772c74f8aba",
+                sourceHandle: "pumpNode-71196205-6957-41d0-b1f4-0772c74f8aba-source",
+                target: "sensorNode-a6389e2f-0390-4728-82ec-a979bd7e8201",
+                targetHandle: "sensorNode-a6389e2f-0390-4728-82ec-a979bd7e8201-target",
+                animated: true,
+                style: {
+                    strokeWidth: 2
+                },
+                id: "reactflow__edge-pumpNode-71196205-6957-41d0-b1f4-0772c74f8abapumpNode-71196205-6957-41d0-b1f4-0772c74f8aba-source-sensorNode-a6389e2f-0390-4728-82ec-a979bd7e8201sensorNode-a6389e2f-0390-4728-82ec-a979bd7e8201-target"
+            },
+            {
+                source: "valveNode-599e85ce-fe3c-4890-aab4-5c6fcf39afe8",
+                sourceHandle: "valveNode-599e85ce-fe3c-4890-aab4-5c6fcf39afe8-source",
+                target: "wasteValveNode-494e45b4-f888-4be9-9441-77ba7038ed40",
+                targetHandle: "wasteValveNode-494e45b4-f888-4be9-9441-77ba7038ed40-target",
+                animated: true,
+                style: {
+                    strokeWidth: 2
+                },
+                id: "reactflow__edge-valveNode-599e85ce-fe3c-4890-aab4-5c6fcf39afe8valveNode-599e85ce-fe3c-4890-aab4-5c6fcf39afe8-source-wasteValveNode-494e45b4-f888-4be9-9441-77ba7038ed40wasteValveNode-494e45b4-f888-4be9-9441-77ba7038ed40-target"
+            },
+            {
+                source: "bottleNode-5825ffda-093e-43b4-adcc-8798a1c79706",
+                sourceHandle: "bottleNode-5825ffda-093e-43b4-adcc-8798a1c79706-source",
+                target: "pumpNode-71196205-6957-41d0-b1f4-0772c74f8aba",
+                targetHandle: "pumpNode-71196205-6957-41d0-b1f4-0772c74f8aba-target",
+                animated: true,
+                style: {
+                    strokeWidth: 2
+                },
+                id: "reactflow__edge-bottleNode-5825ffda-093e-43b4-adcc-8798a1c79706bottleNode-5825ffda-093e-43b4-adcc-8798a1c79706-source-pumpNode-71196205-6957-41d0-b1f4-0772c74f8abapumpNode-71196205-6957-41d0-b1f4-0772c74f8aba-target"
+            },
+            {
+                source: "bottleNode-4016c783-074b-49d5-9af0-b86822feca6e",
+                sourceHandle: "bottleNode-4016c783-074b-49d5-9af0-b86822feca6e-source",
+                target: "pumpNode-e1299d22-5304-4792-a3ad-0713f3ad419c",
+                targetHandle: "pumpNode-e1299d22-5304-4792-a3ad-0713f3ad419c-target",
+                animated: true,
+                style: {
+                    strokeWidth: 2
+                },
+                id: "reactflow__edge-bottleNode-4016c783-074b-49d5-9af0-b86822feca6ebottleNode-4016c783-074b-49d5-9af0-b86822feca6e-source-pumpNode-e1299d22-5304-4792-a3ad-0713f3ad419cpumpNode-e1299d22-5304-4792-a3ad-0713f3ad419c-target"
+            },
+            {
+                source: "valveNode-364d9df4-7142-4aaa-9b2c-9023e94c9fcf",
+                sourceHandle: "valveNode-364d9df4-7142-4aaa-9b2c-9023e94c9fcf-source",
+                target: "columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716",
+                targetHandle: "columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716-target",
+                animated: true,
+                style: {
+                    strokeWidth: 2
+                },
+                id: "reactflow__edge-valveNode-364d9df4-7142-4aaa-9b2c-9023e94c9fcfvalveNode-364d9df4-7142-4aaa-9b2c-9023e94c9fcf-source-columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716-target"
+            },
+            {
+                source: "valveNode-ba44fe77-1196-4a17-a7ed-050d02d99d6b",
+                sourceHandle: "valveNode-ba44fe77-1196-4a17-a7ed-050d02d99d6b-source",
+                target: "valveNode-599e85ce-fe3c-4890-aab4-5c6fcf39afe8",
+                targetHandle: "valveNode-599e85ce-fe3c-4890-aab4-5c6fcf39afe8-target",
+                animated: true,
+                style: {
+                    strokeWidth: 2
+                },
+                id: "reactflow__edge-valveNode-ba44fe77-1196-4a17-a7ed-050d02d99d6bvalveNode-ba44fe77-1196-4a17-a7ed-050d02d99d6b-source-valveNode-599e85ce-fe3c-4890-aab4-5c6fcf39afe8valveNode-599e85ce-fe3c-4890-aab4-5c6fcf39afe8-target"
+            },
+            {
+                source: "sensorNode-a6389e2f-0390-4728-82ec-a979bd7e8201",
+                sourceHandle: "sensorNode-a6389e2f-0390-4728-82ec-a979bd7e8201-source",
+                target: "valveNode-364d9df4-7142-4aaa-9b2c-9023e94c9fcf",
+                targetHandle: "valveNode-364d9df4-7142-4aaa-9b2c-9023e94c9fcf-target",
+                animated: true,
+                style: {
+                    strokeWidth: 2
+                },
+                id: "reactflow__edge-sensorNode-a6389e2f-0390-4728-82ec-a979bd7e8201sensorNode-a6389e2f-0390-4728-82ec-a979bd7e8201-source-valveNode-364d9df4-7142-4aaa-9b2c-9023e94c9fcfvalveNode-364d9df4-7142-4aaa-9b2c-9023e94c9fcf-target"
+            },
+            {
+                source: "columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716",
+                sourceHandle: "columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716-source",
+                target: "pumpNode-5a4e24a7-1b02-4584-a35e-d154e89a8c3a",
+                targetHandle: "pumpNode-5a4e24a7-1b02-4584-a35e-d154e89a8c3a-target",
+                animated: true,
+                style: {
+                    strokeWidth: 2
+                },
+                id: "reactflow__edge-columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716-source-pumpNode-5a4e24a7-1b02-4584-a35e-d154e89a8c3apumpNode-5a4e24a7-1b02-4584-a35e-d154e89a8c3a-target"
+            },
+            {
+                source: "columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716",
+                sourceHandle: "columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716-source",
+                target: "pumpNode-2f2bbe04-6201-47c6-aa52-5b4e9554b7ee",
+                targetHandle: "pumpNode-2f2bbe04-6201-47c6-aa52-5b4e9554b7ee-target",
+                animated: true,
+                style: {
+                    strokeWidth: 2
+                },
+                id: "reactflow__edge-columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716-source-pumpNode-2f2bbe04-6201-47c6-aa52-5b4e9554b7eepumpNode-2f2bbe04-6201-47c6-aa52-5b4e9554b7ee-target"
+            },
+            {
+                source: "columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716",
+                sourceHandle: "columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716-source",
+                target: "sensorNode-226e15c9-5d71-47fc-ab58-098ac5c2817b",
+                targetHandle: "sensorNode-226e15c9-5d71-47fc-ab58-098ac5c2817b-target",
+                animated: true,
+                style: {
+                    strokeWidth: 2
+                },
+                id: "reactflow__edge-columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716-source-sensorNode-226e15c9-5d71-47fc-ab58-098ac5c2817bsensorNode-226e15c9-5d71-47fc-ab58-098ac5c2817b-target"
+            },
+            {
+                source: "pumpNode-2f2bbe04-6201-47c6-aa52-5b4e9554b7ee",
+                sourceHandle: "pumpNode-2f2bbe04-6201-47c6-aa52-5b4e9554b7ee-source",
+                target: "bottleNode-25dd0506-216d-45e0-b920-e1507131bfec",
+                targetHandle: "bottleNode-25dd0506-216d-45e0-b920-e1507131bfec-target",
+                animated: true,
+                style: {
+                    strokeWidth: 2
+                },
+                id: "reactflow__edge-pumpNode-2f2bbe04-6201-47c6-aa52-5b4e9554b7eepumpNode-2f2bbe04-6201-47c6-aa52-5b4e9554b7ee-source-bottleNode-25dd0506-216d-45e0-b920-e1507131bfecbottleNode-25dd0506-216d-45e0-b920-e1507131bfec-target"
+            },
+            {
+                source: "pumpNode-5a4e24a7-1b02-4584-a35e-d154e89a8c3a",
+                sourceHandle: "pumpNode-5a4e24a7-1b02-4584-a35e-d154e89a8c3a-source",
+                target: "bottleNode-85e171c0-b915-4589-ac11-60397b4d9a39",
+                targetHandle: "bottleNode-85e171c0-b915-4589-ac11-60397b4d9a39-target",
+                animated: true,
+                style: {
+                    strokeWidth: 2
+                },
+                id: "reactflow__edge-pumpNode-5a4e24a7-1b02-4584-a35e-d154e89a8c3apumpNode-5a4e24a7-1b02-4584-a35e-d154e89a8c3a-source-bottleNode-85e171c0-b915-4589-ac11-60397b4d9a39bottleNode-85e171c0-b915-4589-ac11-60397b4d9a39-target"
+            },
+            {
+                source: "columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716",
+                sourceHandle: "columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716-source",
+                target: "valveNode-ba44fe77-1196-4a17-a7ed-050d02d99d6b",
+                targetHandle: "valveNode-ba44fe77-1196-4a17-a7ed-050d02d99d6b-target",
+                animated: true,
+                style: {
+                    strokeWidth: 2
+                },
+                id: "reactflow__edge-columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716-source-valveNode-ba44fe77-1196-4a17-a7ed-050d02d99d6bvalveNode-ba44fe77-1196-4a17-a7ed-050d02d99d6b-target"
+            },
+            {
+                source: "pumpNode-2f2bbe04-6201-47c6-aa52-5b4e9554b7ee",
+                sourceHandle: "pumpNode-2f2bbe04-6201-47c6-aa52-5b4e9554b7ee-source",
+                target: "bottleNode-ac7c1fbd-b9a6-4a1b-8ed0-c0f5224336ea",
+                targetHandle: "bottleNode-ac7c1fbd-b9a6-4a1b-8ed0-c0f5224336ea-target",
+                animated: true,
+                style: {
+                    strokeWidth: 2
+                },
+                id: "reactflow__edge-pumpNode-2f2bbe04-6201-47c6-aa52-5b4e9554b7eepumpNode-2f2bbe04-6201-47c6-aa52-5b4e9554b7ee-source-bottleNode-ac7c1fbd-b9a6-4a1b-8ed0-c0f5224336eabottleNode-ac7c1fbd-b9a6-4a1b-8ed0-c0f5224336ea-target"
+            },
+            {
+                source: "pumpNode-e1299d22-5304-4792-a3ad-0713f3ad419c",
+                sourceHandle: "pumpNode-e1299d22-5304-4792-a3ad-0713f3ad419c-source",
+                target: "sensorNode-4e5652d2-c8b0-4578-a84b-d0b0cd5517e0",
+                targetHandle: "sensorNode-4e5652d2-c8b0-4578-a84b-d0b0cd5517e0-target",
+                animated: true,
+                style: {
+                    strokeWidth: 2
+                },
+                id: "reactflow__edge-pumpNode-e1299d22-5304-4792-a3ad-0713f3ad419cpumpNode-e1299d22-5304-4792-a3ad-0713f3ad419c-source-sensorNode-4e5652d2-c8b0-4578-a84b-d0b0cd5517e0sensorNode-4e5652d2-c8b0-4578-a84b-d0b0cd5517e0-target"
+            },
+            {
+                source: "sensorNode-4e5652d2-c8b0-4578-a84b-d0b0cd5517e0",
+                sourceHandle: "sensorNode-4e5652d2-c8b0-4578-a84b-d0b0cd5517e0-source",
+                target: "valveNode-364d9df4-7142-4aaa-9b2c-9023e94c9fcf",
+                targetHandle: "valveNode-364d9df4-7142-4aaa-9b2c-9023e94c9fcf-target",
+                animated: true,
+                style: {
+                    strokeWidth: 2
+                },
+                id: "reactflow__edge-sensorNode-4e5652d2-c8b0-4578-a84b-d0b0cd5517e0sensorNode-4e5652d2-c8b0-4578-a84b-d0b0cd5517e0-source-valveNode-364d9df4-7142-4aaa-9b2c-9023e94c9fcfvalveNode-364d9df4-7142-4aaa-9b2c-9023e94c9fcf-target"
+            }
+        ],
+        timestamp: "2025-05-01T17:29:10.824Z"
+    }
+
     const re = (original) => {
         const { nodes, edges } = original
 
@@ -509,16 +1118,10 @@ export default function FlowBuilder() {
         const seen = new Set()
         const initial = nodes.filter((n) => outgoing.get(n.id).length > 0 && incoming.get(n.id).size === 0).map((n) => n.id)
 
-        console.log(`initial : `, initial)
-
         // 2) BFS-style layering
         const layers = []
         let frontier = initial.slice()
         frontier.forEach((id) => seen.add(id))
-
-        console.log(`seen : `, seen)
-
-        console.log(`frontier : `, frontier)
 
         while (frontier.length) {
             // layers.push(nodes.find(({ id }) => id === frontier))
@@ -527,8 +1130,6 @@ export default function FlowBuilder() {
             const next = new Set()
             frontier.forEach((src) => {
                 for (const tgt of outgoing.get(src)) {
-                    console.log(`tgt : `, tgt)
-
                     if (!seen.has(tgt)) {
                         next.add(tgt)
                     }
@@ -541,20 +1142,53 @@ export default function FlowBuilder() {
 
         console.log(`layers : `, layers)
 
-        const arrayWIthConfig = layers.map((layer) => {
+        console.log(`nodes : `, nodes)
+
+        const arrayWithConfig = layers.map((layer) => {
             return layer.map((nodeId) => nodes.find(({ id }) => id === nodeId).data.config)
         })
 
-        console.log(`arrayWIthConfig : `, arrayWIthConfig)
+        const flatConfig = arrayWithConfig.flat()
+
+        const command = flatConfig.map((config) => {
+            switch (config.type) {
+                case "bottleNode":
+                    return getBottleValveCommand(config)
+
+                case "pumpNode":
+                    return getPumpValveCommand(config)
+
+                case "sensorNode":
+                    return getSensorCommand(config)
+
+                case "valveNode":
+                case "wasteValveNode":
+                    return getSingleValveCommand(config)
+
+                case "delayBlock":
+                    return getDelayCommand(config)
+
+                default:
+                    break
+            }
+        })
+
+        console.log(`command : `, command)
+
+        setShowCommands(command)
 
         return layers
     }
 
+    const [showCommands, setShowCommands] = useState([])
+
+    const { getBottleValveCommand, getPumpValveCommand, getSensorCommand, getSingleValveCommand, getDelayCommand } = useExtractCommandData()
+
     useEffect(() => {
-        if (currentProcedure) {
+        if (!!currentProcedure?.nodes) {
             console.log("Loading procedure from Redux:", currentProcedure.id, currentProcedure.name)
             // IMPORTANT: Inject functions back into loaded nodes
-            const nodesWithFunctions = currentProcedure.nodes.map((node) => ({
+            const nodesWithFunctions = currentProcedure?.nodes?.map((node) => ({
                 ...node,
                 data: {
                     ...node.data, // Keep loaded config, name etc.
@@ -562,6 +1196,7 @@ export default function FlowBuilder() {
                     deleteNode: deleteNodeById // Add function back
                 }
             }))
+            setName(currentProcedure.name)
             setNodes(nodesWithFunctions)
             setEdges(currentProcedure.edges || []) // Load edges
         } else {
@@ -576,25 +1211,26 @@ export default function FlowBuilder() {
 
     return (
         <>
-            <div className="p-2 bg-gray-100 border-b flex gap-2">
+            <div className="p-2 border-b flex gap-2">
                 <button onClick={handleLogFlow} className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700">
                     Log Flow
                 </button>
+                <Input placeholder="Enter Flow Name" onChange={(flowName) => setName(flowName)} value={name} />
                 <button onClick={handleNewFlow} className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700">
                     New Flow
                 </button>
                 <button onClick={handleSaveFlow} className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
                     Save Current Flow
                 </button>
-                {/* Add more controls here if needed */}
             </div>
+            {/* Add more controls here if needed */}
 
-            <div className="flex h-[80vh] overflow-auto scrollbar-style">
+            <div className="flex h-screen">
                 {/* Sidebar */}
                 <Sidebar onAddNode={addNode} />
 
                 {/* React Flow Canvas */}
-                <div className="flex-grow h-full bg-gradient-to-br from-gray-50 to-gray-200">
+                <div className="flex-grow h-screen bg-gradient-to-br from-gray-50 to-gray-200">
                     <ReactFlow
                         nodes={nodes}
                         edges={edges}
@@ -635,6 +1271,8 @@ export default function FlowBuilder() {
                     </ReactFlow>
                 </div>
             </div>
+
+            <CommandModel commands={showCommands} onClose={() => setShowCommands(null)} />
         </>
     )
 }

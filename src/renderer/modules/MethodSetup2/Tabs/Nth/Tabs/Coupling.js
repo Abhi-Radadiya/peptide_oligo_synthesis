@@ -1,12 +1,12 @@
-import React from "react";
-import { useFormContext } from "react-hook-form";
-import InputField from "../../../../../Components/Input/Input";
-import AmediteSection, { RadioSection, WasteColumnSelection } from "../../../Components/AmediteSection/AmediteSection";
+import React from "react"
+import { useFormContext } from "react-hook-form"
+import InputField from "../../../../../Components/Input/Input"
+import AmediteSection, { RadioSection, WasteColumnSelection } from "../../../Components/AmediteSection/AmediteSection"
 
 export default function Coupling(props) {
-    const { disabled } = props;
+    const { disabled } = props
 
-    const { control } = useFormContext();
+    const { control } = useFormContext()
 
     return (
         <>
@@ -16,7 +16,13 @@ export default function Coupling(props) {
 
                     <AmediteSection
                         disabled={disabled}
-                        names={{ solvent: "n_couplingSolvent", volume: "n_couplingVolume", xFactor: "n_couplingXFactor", flowRate: "n_couplingFlowRate" }}
+                        names={{
+                            solvent: "n_couplingSolvent",
+                            volume: "n_couplingVolume",
+                            xFactor: "n_couplingXFactor",
+                            flowRate: "n_couplingFlowRate",
+                            synthesisProcedureName: "n_couplingProcedure"
+                        }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                     />
 
@@ -80,7 +86,13 @@ export default function Coupling(props) {
 
                     <AmediteSection
                         disabled={disabled}
-                        names={{ solvent: "n_couplingWashSolvent", volume: "n_couplingWashVolume", xFactor: "n_couplingWashXFactor", flowRate: "n_couplingWashFlowRate" }}
+                        names={{
+                            solvent: "n_couplingWashSolvent",
+                            volume: "n_couplingWashVolume",
+                            xFactor: "n_couplingWashXFactor",
+                            flowRate: "n_couplingWashFlowRate",
+                            synthesisProcedureName: "n_couplingWashProcedure"
+                        }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                         title="Wash Setting"
                     />
@@ -91,5 +103,5 @@ export default function Coupling(props) {
                 <WasteColumnSelection disabled={disabled} name="n_couplingWaste" control={control} />
             </div>
         </>
-    );
+    )
 }

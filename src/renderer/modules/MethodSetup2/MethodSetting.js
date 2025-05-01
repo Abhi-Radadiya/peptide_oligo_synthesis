@@ -2,29 +2,30 @@
 // Showing Save toast every compo save
 // initial step priming not showing
 
-import React, { useEffect, useState } from "react";
-import FirstMethod from "./Tabs/First/FirstMethod";
-import NthMethod from "./Tabs/Nth/NthMethod";
-import LastMethod from "./Tabs/Last/LastMethod";
-import { FormProvider, useForm } from "react-hook-form";
-import LeftPanel from "../../Components/LeftPanel/LeftPanel";
-import { useWindowSize } from "@uidotdev/usehooks";
-import { useNavigate } from "react-router-dom";
-import MethodDetails from "./Tabs/Details/MethodDetails";
-import Footer from "./Components/Footer";
-import { useDispatch, useSelector } from "react-redux";
-import { addMethodSetup, updateMethodSetup } from "../../../redux/reducers/methodSetup/methodSetup";
-import { updateFormState } from "../../../redux/reducers/formState/formState";
-import { openToast } from "../../../redux/reducers/toastStateReducer/toastStateReducer";
-import { SUCCESS } from "../../Helpers/Icons";
+import React, { useEffect, useState } from "react"
+import FirstMethod from "./Tabs/First/FirstMethod"
+import NthMethod from "./Tabs/Nth/NthMethod"
+import LastMethod from "./Tabs/Last/LastMethod"
+import { FormProvider, useForm } from "react-hook-form"
+import LeftPanel from "../../Components/LeftPanel/LeftPanel"
+import { useWindowSize } from "@uidotdev/usehooks"
+import { useNavigate } from "react-router-dom"
+import MethodDetails from "./Tabs/Details/MethodDetails"
+import Footer from "./Components/Footer"
+import { useDispatch, useSelector } from "react-redux"
+import { addMethodSetup, updateMethodSetup } from "../../../redux/reducers/methodSetup/methodSetup"
+import { updateFormState } from "../../../redux/reducers/formState/formState"
+import { openToast } from "../../../redux/reducers/toastStateReducer/toastStateReducer"
+import { SUCCESS } from "../../Helpers/Icons"
 
 export default function MethodSetting(props) {
-    const { id } = props;
+    const { id } = props
 
-    const methods = useSelector((state) => state.methodSetup.method);
+    const methods = useSelector((state) => state.methodSetup.method)
 
     const initialState = {
         "1_waste": { label: 1, value: 1 },
+
         n_deWaste: { label: 1, value: 1 },
         n_couplingWaste: { label: 1, value: 1 },
         n_oxidizationWaste: { label: 1, value: 1 },
@@ -73,78 +74,98 @@ export default function MethodSetting(props) {
         last_deWashFlowRate: "",
         last_deUVEnable: "",
         last_deCheck: false,
-    };
+
+        "1_columnProcedure": null,
+        "1_primingProcedure": null,
+        n_deBlockProcedure: null,
+        n_deBlockWashProcedure: null,
+        n_couplingProcedure: null,
+        n_couplingWashProcedure: null,
+        n_oxidizationProcedure: null,
+        n_oxidizationWashProcedure: null,
+        n_cappingAProcedure: null,
+        n_cappingBProcedure: null,
+        n_cappingWashProcedure: null,
+        n_sulfurizationProcedure: null,
+        n_sulfurizationWashProcedure: null,
+        n_extraProcedure: null,
+        n_extraWashProcedure: null,
+        last_deBlockProcedure: null,
+        last_deBlockWashProcedure: null,
+        last_deaProcedure: null,
+        last_deaWashProcedure: null
+    }
 
     const getDefaultValue = () => {
         if (id) {
-            return methods.find((el) => el.id === id);
+            return methods.find((el) => el.id === id)
         }
-        return initialState;
-    };
+        return initialState
+    }
 
     const method = useForm({
-        defaultValues: { ...getDefaultValue() },
-    });
+        defaultValues: { ...getDefaultValue() }
+    })
 
     const steps = [
         { label: "Details", value: "detail", component: MethodDetails },
         { label: "Initial Step", value: "firstMethod", component: FirstMethod },
         { label: "Run Step", value: "nThMethod", component: NthMethod },
-        { label: "Final Step", value: "lastMethod", component: LastMethod },
-    ];
+        { label: "Final Step", value: "lastMethod", component: LastMethod }
+    ]
 
-    const [activeStep, setActiveStep] = useState(0);
+    const [activeStep, setActiveStep] = useState(0)
 
-    const ComponentToRender = steps.find((_, index) => index === activeStep).component;
+    const ComponentToRender = steps.find((_, index) => index === activeStep).component
 
-    const { height: windowHeight } = useWindowSize();
+    const { height: windowHeight } = useWindowSize()
 
     const {
         handleSubmit,
         setError,
-        formState: { isDirty, errors },
-    } = method;
+        formState: { isDirty, errors }
+    } = method
 
     useEffect(() => {
-        dispatch(updateFormState(isDirty));
-    }, [isDirty]);
+        dispatch(updateFormState(isDirty))
+    }, [isDirty])
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch()
 
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
     const saveMethod = (data) => {
-        dispatch(addMethodSetup(data));
-        navigate("/method-setup");
-    };
+        dispatch(addMethodSetup(data))
+        navigate("/method-setup")
+    }
 
     const editMethod = (data) => {
-        dispatch(updateMethodSetup(data));
-        navigate("/method-setup");
-    };
+        dispatch(updateMethodSetup(data))
+        navigate("/method-setup")
+    }
 
     const isErrorGenerated = (data) => {
-        let isError = false;
+        let isError = false
 
         if (!data.color) {
-            setError("color", { message: "Please select a color" });
-            isError = true;
+            setError("color", { message: "Please select a color" })
+            isError = true
         }
 
-        return isError;
-    };
+        return isError
+    }
 
     const handleSave = (data) => {
         if (isErrorGenerated(data)) {
-            return;
+            return
         }
 
-        activeStep === 3 ? (!!id ? editMethod(data) : saveMethod(data)) : setActiveStep(activeStep + 1);
+        activeStep === 3 ? (!!id ? editMethod(data) : saveMethod(data)) : setActiveStep(activeStep + 1)
 
-        dispatch(openToast({ text: "Method created successfully.", icon: SUCCESS }));
+        dispatch(openToast({ text: "Method created successfully.", icon: SUCCESS }))
 
-        dispatch(updateFormState(false));
-    };
+        dispatch(updateFormState(false))
+    }
 
     return (
         <>
@@ -162,7 +183,7 @@ export default function MethodSetting(props) {
                 </div>
             </div>
         </>
-    );
+    )
 }
 
 const flags = {
@@ -181,7 +202,7 @@ const flags = {
             "n_couplingWashXFactor",
             "n_couplingUVEnable",
             "n_couplingCheck",
-            "n_couplingWaste",
+            "n_couplingWaste"
         ],
         oxidization: [
             "n_oxidizationSolvent",
@@ -192,7 +213,7 @@ const flags = {
             "n_oxidizationWashXFactor",
             "n_oxidizationConductivity",
             "n_oxidizationCheck",
-            "n_oxidizationWaste",
+            "n_oxidizationWaste"
         ],
         sulfurization: [
             "n_sulfurizationSolvent",
@@ -203,7 +224,7 @@ const flags = {
             "n_sulfurizationWashXFactor",
             "n_sulfurizationConductivityEnable",
             "n_sulfurizationCheck",
-            "n_sulfurizationWaste",
+            "n_sulfurizationWaste"
         ],
         extra: ["n_extraSolvent", "n_extraVolume", "n_extraXFactor", "n_extraWashSolvent", "n_extraWashVolume", "n_extraWashXFactor", "n_extraWaste"],
         capping: [
@@ -216,7 +237,7 @@ const flags = {
             "n_cappingWashSolvent",
             "n_cappingWashVolume",
             "n_cappingWashXFactor",
-            "n_cappingWaste",
-        ],
-    },
-};
+            "n_cappingWaste"
+        ]
+    }
+}

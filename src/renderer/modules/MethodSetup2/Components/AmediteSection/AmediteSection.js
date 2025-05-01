@@ -1,36 +1,43 @@
-import React from "react";
-import { useFormContext } from "react-hook-form";
-import { SelectionController } from "../../../../Components/Dropdown/Dropdown";
-import InputField from "../../../../Components/Input/Input";
-import { wasteMenuItems } from "../../../../Helpers/Constant";
-import Checkbox from "../../../../Components/FormController/CheckBox";
-import { useSelector } from "react-redux";
+import React from "react"
+import { useFormContext } from "react-hook-form"
+import { SelectionController } from "../../../../Components/Dropdown/Dropdown"
+import InputField from "../../../../Components/Input/Input"
+import { wasteMenuItems } from "../../../../Helpers/Constant"
+import Checkbox from "../../../../Components/FormController/CheckBox"
+import { useSelector } from "react-redux"
+import { selectSavedProcedures } from "../../../../../redux/reducers/synthesis-procedure"
 
 export default function AmediteSection(props) {
     const {
-        names: { solvent, volume, xFactor, flowRate },
+        names: { solvent, volume, xFactor, flowRate, synthesisProcedureName },
         title,
         className,
         disabled,
-        chemical = "reagent",
-    } = props;
+        chemical = "reagent"
+    } = props
 
-    const { control, setValue } = useFormContext();
+    const { control, setValue } = useFormContext()
 
-    const chemicals = useSelector((state) => state[chemical][`${chemical}List`]);
+    const chemicals = useSelector((state) => state[chemical][`${chemical}List`])
 
     const chemicalFlowRates = chemicals.map((chemical) => {
         return {
             label: chemical.full_name,
-            value: chemical.id,
-        };
-    });
+            value: chemical.id
+        }
+    })
 
     const handleSelectSolvent = (option) => {
-        const flowRateEntry = chemicals?.find((el) => el?.id === option?.value);
+        const flowRateEntry = chemicals?.find((el) => el?.id === option?.value)
 
-        setValue(flowRate, flowRateEntry?.flowRate);
-    };
+        setValue(flowRate, flowRateEntry?.flowRate)
+    }
+
+    const synthesisProcedure = useSelector(selectSavedProcedures)
+
+    const synthesisProcedureList = synthesisProcedure?.map((el) => {
+        return { label: el.name, value: el.id }
+    })
 
     return (
         <>
@@ -69,7 +76,7 @@ export default function AmediteSection(props) {
                     </div>
                 </div>
 
-                <div className="flex flex-row justify-between items-center">
+                <div className="flex flex-row justify-between items-center mb-4">
                     <div className="flex flex-row items-center gap-2">
                         <span className="font-bold text-neutral-600">Volume</span>
                         <InputField
@@ -97,13 +104,25 @@ export default function AmediteSection(props) {
                         />
                     </div>
                 </div>
+
+                <div className="flex flex-row items-center gap-2">
+                    <span className="font-bold text-neutral-600">Procedure</span>
+                    <SelectionController
+                        rules={{ required: "Please select procedure" }}
+                        width={220}
+                        menuItem={synthesisProcedureList}
+                        control={control}
+                        name={synthesisProcedureName}
+                        placeholder="Select procedure"
+                    />
+                </div>
             </div>
         </>
-    );
+    )
 }
 
 export const WasteColumnSelection = (props) => {
-    const { name, control, disabled } = props;
+    const { name, control, disabled } = props
 
     return (
         <div className="flex flex-row w-full max-w-[260px] items-center gap-3">
@@ -118,16 +137,16 @@ export const WasteColumnSelection = (props) => {
                 rules={{ required: "* Select column" }}
             />
         </div>
-    );
-};
+    )
+}
 
 export const RadioSection = (props) => {
-    const { radioName, title, control, checkName, disabled } = props;
+    const { radioName, title, control, checkName, disabled } = props
 
     const buttons = [
         { label: "High", value: "high" },
-        { label: "Low", value: "low" },
-    ];
+        { label: "Low", value: "low" }
+    ]
 
     return (
         <div className="flex flex-row justify-between items-center w-full">
@@ -136,14 +155,7 @@ export const RadioSection = (props) => {
                 <RadioButton className="max-w-[250px]" disabled={true} buttons={buttons} control={control} name={radioName} /> */}
             </div>
 
-            <Checkbox
-                labelClassName="font-bold text-neutral-600"
-                className="flex-row-reverse gap-4"
-                label="Disable"
-                disabled={disabled}
-                name={checkName}
-                control={control}
-            />
+            <Checkbox labelClassName="font-bold text-neutral-600" className="flex-row-reverse gap-4" label="Disable" disabled={disabled} name={checkName} control={control} />
         </div>
-    );
-};
+    )
+}

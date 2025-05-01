@@ -2,22 +2,26 @@ import React, { useMemo } from "react"
 import { useSelector } from "react-redux"
 
 export const Sidebar = ({ onAddNode }) => {
-    const renderSection = (title, items, nodeType, dataExtractor) => (
-        <div className="mb-4">
-            <h3 className="font-semibold text-gray-700 mb-2 border-b pb-1">{title}</h3>
-            <div className="space-y-1">
-                {items.map((item, index) => (
-                    <button
-                        key={index}
-                        onClick={() => onAddNode(nodeType, dataExtractor(item))}
-                        className="block w-full text-left px-2 py-1 text-sm bg-white hover:bg-indigo-100 border border-gray-200 rounded shadow-sm transition-colors duration-150 ease-in-out"
-                    >
-                        {item.name}
-                    </button>
-                ))}
+    const renderSection = (title, items, nodeType, dataExtractor) => {
+        return (
+            <div className="mb-4">
+                <h3 className="font-semibold text-gray-700 mb-2 border-b pb-1">{title}</h3>
+                <div className="space-y-1">
+                    {items.map((item, index) => {
+                        return (
+                            <button
+                                key={index}
+                                onClick={() => onAddNode(nodeType, { ...dataExtractor(item), config: { id: dataExtractor(item).originalId, type: nodeType } })}
+                                className="block w-full text-left px-2 py-1 text-sm bg-white hover:bg-indigo-100 border border-gray-200 rounded shadow-sm transition-colors duration-150 ease-in-out"
+                            >
+                                {item.name}
+                            </button>
+                        )
+                    })}
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
 
     const hardwareSetup = useSelector((state) => state.hardwareSetup)
 
@@ -30,7 +34,7 @@ export const Sidebar = ({ onAddNode }) => {
     }, [hardwareSetup.sensor])
 
     const pumpOption = useMemo(() => {
-        return hardwareSetup?.pump?.map((el) => ({ name: el.pumpName, id: el.pump.id, index: el.pump.index })) ?? []
+        return hardwareSetup?.pump?.map((el) => ({ name: el.pumpName, id: el.pump.pumpId, index: el.pump.index })) ?? []
     }, [hardwareSetup.pump])
 
     const valveOptions = [
@@ -43,11 +47,11 @@ export const Sidebar = ({ onAddNode }) => {
     const columnOptions = useSelector((state) => state.columnEditor.positions)
 
     return (
-        <div className="w-64 h-full bg-gray-100 border-r border-gray-300 p-4 overflow-y-auto scrollbar-style shadow-lg">
+        <div className="w-64 h-full pt-4 pb-24 bg-gray-100 border-r border-gray-300 p-4 overflow-y-auto scrollbar-style shadow-lg">
             <h2 className="text-lg font-bold text-gray-800 mb-4">Components</h2>
 
             <button
-                onClick={() => onAddNode("bottleNode", {})}
+                onClick={() => onAddNode("bottleNode", { config: { type: "bottleNode" } })}
                 className="block w-full text-left px-2 py-1 text-sm bg-white hover:bg-purple-100 border border-gray-200 rounded shadow-sm transition-colors duration-150 ease-in-out"
                 title={`Add Bottle`}
             >
@@ -55,7 +59,7 @@ export const Sidebar = ({ onAddNode }) => {
             </button>
 
             <button
-                onClick={() => onAddNode("delayBlock", {})}
+                onClick={() => onAddNode("delayBlock", { config: { type: "delayBlock" } })}
                 className="block w-full text-left px-2 py-1 text-sm bg-white hover:bg-purple-100 border border-gray-200 rounded shadow-sm transition-colors duration-150 ease-in-out"
                 title="Delay Block"
             >

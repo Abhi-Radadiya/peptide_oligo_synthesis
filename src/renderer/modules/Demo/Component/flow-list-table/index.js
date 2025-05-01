@@ -19,8 +19,10 @@ export const FlowListTable = () => {
         dispatch(loadProcedure(flowId))
     }
 
+    console.log(`savedFlows : `, savedFlows)
+
     return (
-        <div className="p-4 border-t border-gray-300 bg-gray-50 h-[30vh] overflow-y-auto">
+        <div className="p-4 border-t border-gray-300 bg-gray-50">
             {" "}
             {/* Example Height */}
             <h2 className="text-lg font-semibold mb-3 text-gray-700">Saved Synthesis Procedures</h2>

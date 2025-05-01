@@ -1,11 +1,11 @@
-import React from "react";
-import { useFormContext } from "react-hook-form";
-import AmediteSection, { RadioSection, WasteColumnSelection } from "../../../Components/AmediteSection/AmediteSection";
+import React from "react"
+import { useFormContext } from "react-hook-form"
+import AmediteSection, { RadioSection, WasteColumnSelection } from "../../../Components/AmediteSection/AmediteSection"
 
 export default function Oxidization(props) {
-    const { disabled } = props;
+    const { disabled } = props
 
-    const { control } = useFormContext();
+    const { control } = useFormContext()
 
     return (
         <>
@@ -15,7 +15,13 @@ export default function Oxidization(props) {
 
                     <AmediteSection
                         disabled={disabled}
-                        names={{ solvent: "n_oxidizationSolvent", volume: "n_oxidizationVolume", xFactor: "n_oxidizationXFactor", flowRate: "n_oxidizationFlowRate" }}
+                        names={{
+                            solvent: "n_oxidizationSolvent",
+                            volume: "n_oxidizationVolume",
+                            xFactor: "n_oxidizationXFactor",
+                            flowRate: "n_oxidizationFlowRate",
+                            synthesisProcedureName: "n_oxidizationProcedure"
+                        }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                     />
 
@@ -27,6 +33,7 @@ export default function Oxidization(props) {
                             volume: "n_oxidizationWashVolume",
                             xFactor: "n_oxidizationWashXFactor",
                             flowRate: "n_oxidizationWashFlowRate",
+                            synthesisProcedureName: "n_oxidizationWashProcedure"
                         }}
                         className="mb-4 pb-4 border-b border-neutral-300"
                     />
@@ -37,5 +44,5 @@ export default function Oxidization(props) {
                 <WasteColumnSelection disabled={disabled} name="n_oxidizationWaste" control={control} />
             </div>
         </>
-    );
+    )
 }

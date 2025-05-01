@@ -16,7 +16,7 @@ const synthesisProcedureSlice = createSlice({
     reducers: {
         // Payload should be: { name: string, nodes: [], edges: [] }
         addSynthesisProcedure: (state, action) => {
-            if (!action.payload || !action.payload.name) {
+            if (!action.payload) {
                 console.error("Add Error: Payload must include a 'name'.")
                 return // Prevent adding invalid data
             }
