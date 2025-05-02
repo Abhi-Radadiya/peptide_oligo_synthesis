@@ -50,17 +50,22 @@ export function useExtractCommandData() {
     const getPumpValveCommand = (config) => {
         const pumpIndex = extractedPump.find((el) => el.id === config.id)?.index
 
-        return `${config.status === "on" ? "PUMP_ON" : "PUMP_OFF"} ${pumpIndex} ${config.flowRate}/${config.timeDuration}/${config.rpm};`
+        if (config.controlMode !== "liquidVolume") {
+            return `ZPT,${pumpIndex},${config.time},${config.rpm};`
+        }
+
+        return `ZPL,${pumpIndex},${config.liquidVolume},${config.rpm};`
     }
 
     const getSensorCommand = (config) => {
         const sensorIndex = extractedSensor.find((el) => el.id === config.id)?.index
+        const time = config.timeUnit === "seconds" ? config.time * 1000 : config.timeUnit === "minutes" ? config.time * 60 * 1000 : config.time
 
-        return `${config.status === "on" ? "SENSOR_ON" : "SENSOR_OFF"} ${sensorIndex} ${config.threshold}/${config.time};`
+        return `${config.status === "on" ? "ZSL" : "ZSN"},${sensorIndex},${config.threshold * 100},${time};`
     }
 
     const getSingleValveCommand = (config) => {
-        return `${config.status === "on" ? "VON" : "VOFF"} ${extractedValves.find((el) => el.id === config.id).index};`
+        return `${config.status === "on" ? "ZVO" : "ZVF"},${extractedValves.find((el) => el.id === config.id).index};`
     }
 
     const getDelayCommand = (config) => {

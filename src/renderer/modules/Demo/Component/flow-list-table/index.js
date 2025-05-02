@@ -19,8 +19,6 @@ export const FlowListTable = () => {
         dispatch(loadProcedure(flowId))
     }
 
-    console.log(`savedFlows : `, savedFlows)
-
     return (
         <div className="p-4 border-t border-gray-300 bg-gray-50">
             {" "}

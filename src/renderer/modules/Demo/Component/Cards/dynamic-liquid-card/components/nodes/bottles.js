@@ -67,7 +67,6 @@ export const BottleNode = memo(({ id, data, selected }) => {
 
     return (
         <div className={`bg-purple-50 rounded-lg shadow border-2 ${selected ? "border-purple-600" : "border-purple-300"} p-3 w-[350px] transition-colors duration-150 ease-in-out`}>
-            {id}
             <div className="font-semibold text-sm mb-2 text-purple-800">{data.name || "Bottle"}</div>
             <button
                 onClick={handleDelete}
@@ -98,7 +97,7 @@ export const BottleNode = memo(({ id, data, selected }) => {
                 value={data?.config?.selectedBlock ?? null}
             />
 
-            <ToggleSwitch
+            {/* <ToggleSwitch
                 id="selectRange"
                 className="justify-between w-full my-3"
                 checked={data?.config?.isRangeSelection ?? false}
@@ -106,7 +105,7 @@ export const BottleNode = memo(({ id, data, selected }) => {
                 handleChange={({ target }) => {
                     updateConfig("isRangeSelection", target.checked)
                 }}
-            />
+            /> */}
 
             {data?.config?.selectedBlock &&
                 (data?.config?.isRangeSelection ? (

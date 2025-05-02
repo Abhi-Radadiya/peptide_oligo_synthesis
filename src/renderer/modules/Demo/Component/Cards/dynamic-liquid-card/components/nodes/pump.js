@@ -2,14 +2,14 @@ import React, { useCallback } from "react"
 import { memo } from "react"
 import { Handle, Position } from "reactflow"
 import ToggleSwitch from "../../../../../../../Components/FormController/Switch" // Assuming this path is correct
+import { Input } from "../../../../../../../Components/Input/Input"
 
 export const PumpNode = memo(({ id, data, selected }) => {
     // --- Data Extraction and Defaults ---
     const config = data.config || {}
     // Provide defaults for the new config fields if they don't exist
     const controlMode = config.controlMode || "time" // Default to 'time'
-    const currentRpm = config.rpm
-    const currentTimeDuration = config.timeDuration
+    const currentTimeDuration = config.time
 
     // --- Configuration Update Function ---
     const updateConfig = useCallback(
@@ -46,19 +46,19 @@ export const PumpNode = memo(({ id, data, selected }) => {
 
     // Handler for the Time/RPM toggle switch
     const handleControlModeChange = () => {
-        const nextMode = controlMode === "time" ? "rpm" : "time"
+        const nextMode = controlMode === "time" ? "liquidVolume" : "time"
         updateConfig("controlMode", nextMode)
-        if (nextMode === "rpm") {
-            updateConfig("timeDuration", undefined)
+        if (nextMode === "liquidVolume") {
+            updateConfig("time", undefined)
         } else {
-            updateConfig("rpm", undefined)
+            updateConfig("liquidVolume", undefined)
         }
     }
 
     // Handler for the RPM/Time input field
-    const handleControlValueChange = (event) => {
-        const value = event.target.value === "" ? undefined : parseFloat(event.target.value)
-        const fieldName = controlMode === "rpm" ? "rpm" : "timeDuration"
+    const handleControlValueChange = (inputValue) => {
+        const value = inputValue === "" ? undefined : parseFloat(inputValue)
+        const fieldName = controlMode === "time" ? "time" : "liquidVolume"
 
         if (value === undefined || (!isNaN(value) && value >= 0)) {
             updateConfig(fieldName, value)
@@ -66,14 +66,10 @@ export const PumpNode = memo(({ id, data, selected }) => {
     }
 
     // Determine the value to display in the shared input
-    const controlValue = controlMode === "rpm" ? currentRpm : currentTimeDuration
+    const controlValue = controlMode === "time" ? currentTimeDuration : config.liquidVolume
 
-    // --- Render ---
     return (
-        <div className={`bg-pink-50 rounded-lg shadow border-2 ${selected ? "border-pink-600" : "border-pink-300"} p-3 w-60 transition-colors duration-150 ease-in-out relative`}>
-            {" "}
-            {id}
-            {/* Added relative positioning */}
+        <div className={`bg-pink-50 rounded-lg shadow border-2 ${selected ? "border-pink-600" : "border-pink-300"} p-3 w-80 transition-colors duration-150 ease-in-out relative`}>
             <div className="font-semibold text-sm mb-2 text-pink-800">{data.name || "Pump"}</div>
             <button
                 onClick={handleDelete}
@@ -92,26 +88,18 @@ export const PumpNode = memo(({ id, data, selected }) => {
             </button>
             <div className="space-y-2 text-xs">
                 {/* Status Toggle */}
-                <label className="flex items-center justify-between text-gray-700">
+                {/* <label className="flex items-center justify-between text-gray-700">
                     <span>Status:</span>
                     <div className="flex items-center">
                         <input type="checkbox" className="toggle-switch nodrag" checked={config.status === "on"} onChange={handleStatusChange} />
                         <span className="ml-1.5 text-xs font-medium">{config.status === "on" ? "ON" : "OFF"}</span>
                     </div>
-                </label>
+                </label> */}
 
                 {/* Flow Rate Input */}
                 <label className="flex items-center justify-between text-gray-700">
-                    <span>Flow Rate (ml/min):</span>
-                    <input
-                        type="number"
-                        min="0"
-                        step="0.1"
-                        className="nodrag border border-gray-300 rounded px-1 py-0.5 w-16 text-right text-xs"
-                        value={config.flowRate ?? ""}
-                        onChange={handleFlowRateChange}
-                        placeholder="e.g. 5"
-                    />
+                    <span>RPM:</span>
+                    <Input type="number" value={config.rpm ?? ""} onChange={(rpm) => updateConfig("rpm", rpm)} placeholder="Enter RPM" />
                 </label>
 
                 {/* Control Mode Toggle (Time/RPM) */}
@@ -121,45 +109,37 @@ export const PumpNode = memo(({ id, data, selected }) => {
                         <span className="text-xs">Time</span>
                         <ToggleSwitch
                             // The `checked` state now depends on the controlMode from config
-                            checked={controlMode === "rpm"}
+                            checked={controlMode !== "time"}
                             // The handler now updates the config
                             handleChange={handleControlModeChange}
                         />
-                        <span className="text-xs">RPM</span>
+                        <span className="text-xs">Liquid Volume</span>
                     </div>
                 </div>
 
                 {/* Conditional Input for Time or RPM */}
-                {controlMode === "rpm" ? (
+                {controlMode !== "time" ? (
                     // RPM Input
                     <label className="flex items-center justify-between text-gray-700">
-                        <span>RPM:</span>
-                        <input
+                        <span>Liquid Volume:</span>
+                        <Input
+                            rightFixItem={controlValue && "ml"}
                             type="number"
-                            min="0"
-                            step="1" // Usually RPM is integer, adjust if needed
-                            className="nodrag border border-gray-300 rounded px-1 py-0.5 w-16 text-right text-xs"
-                            // Value comes from config.rpm
                             value={controlValue ?? ""}
-                            // Handler updates config.rpm
                             onChange={handleControlValueChange}
-                            placeholder="e.g. 100"
+                            placeholder="Enter volume in milliliters"
                         />
                     </label>
                 ) : (
                     // Time Input
                     <label className="flex items-center justify-between text-gray-700">
-                        <span>Time (s):</span> {/* Added unit (seconds) */}
-                        <input
+                        <span>Time:</span> {/* Added unit (seconds) */}
+                        <Input
+                            rightFixItem={controlValue && "ms"}
                             type="number"
-                            min="0"
-                            step="0.1"
-                            className="nodrag border border-gray-300 rounded px-1 py-0.5 w-16 text-right text-xs"
-                            // Value comes from config.timeDuration
                             value={controlValue ?? ""}
-                            // Handler updates config.timeDuration
                             onChange={handleControlValueChange}
-                            placeholder="e.g. 60"
+                            placeholder="Enter time in milliseconds"
                         />
                     </label>
                 )}

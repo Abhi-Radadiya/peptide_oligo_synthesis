@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { LayoutGrid, Settings, Play, Video, List, BookText, ChevronRight, ChevronLeft, Terminal, Proportions } from "lucide-react"
+import { LayoutGrid, Settings, List, BookText, ChevronRight, ChevronLeft, Terminal, Proportions, AudioWaveform } from "lucide-react"
 
 export default function NavigationPanel({ isNavOpen, setIsNavOpen }) {
     const location = useLocation()
@@ -21,7 +21,7 @@ export default function NavigationPanel({ isNavOpen, setIsNavOpen }) {
         },
         {
             label: "Run Synthesis",
-            icon: Video,
+            icon: AudioWaveform,
             // TODO : Change name of tab
             to: "run-synthesis"
         },

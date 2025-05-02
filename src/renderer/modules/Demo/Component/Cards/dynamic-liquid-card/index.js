@@ -274,8 +274,6 @@ export default function FlowBuilder() {
             name
         }
 
-        console.log(`flowDataToSave : `, flowDataToSave.name)
-
         // Dispatch action to add/save the procedure
         // TODO: Add logic here later to *update* if currentProcedure exists,
         // for now, it always adds as new.
@@ -1140,13 +1138,11 @@ export default function FlowBuilder() {
             frontier.forEach((id) => seen.add(id))
         }
 
-        console.log(`layers : `, layers)
-
-        console.log(`nodes : `, nodes)
-
         const arrayWithConfig = layers.map((layer) => {
             return layer.map((nodeId) => nodes.find(({ id }) => id === nodeId).data.config)
         })
+
+        console.log(`arrayWithConfig : `, arrayWithConfig)
 
         const flatConfig = arrayWithConfig.flat()
 
@@ -1168,14 +1164,14 @@ export default function FlowBuilder() {
                 case "delayBlock":
                     return getDelayCommand(config)
 
+                // TODO : add case for columnNode
+
                 default:
                     break
             }
         })
 
-        console.log(`command : `, command)
-
-        setShowCommands(command)
+        setShowCommands(command.filter(Boolean))
 
         return layers
     }

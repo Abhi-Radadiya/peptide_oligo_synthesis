@@ -1,5 +1,5 @@
-import React from "react";
-import { Controller } from "react-hook-form";
+import React from "react"
+import { Controller } from "react-hook-form"
 
 const InputField = (props) => {
     const {
@@ -17,26 +17,26 @@ const InputField = (props) => {
         labelClassName = "text-gray-700 leading-[17px] font-normal",
         rightFixItem,
         inputRef
-    } = props;
+    } = props
 
     const handleKeyDown = (e) => {
         if (e.key === "e" || e.key === "E") {
-            e.preventDefault();
+            e.preventDefault()
         }
 
         if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-            e.preventDefault();
+            e.preventDefault()
         }
-    };
+    }
 
     const handleWheel = (e) => {
-        e.target.blur();
-    };
+        e.target.blur()
+    }
 
     const numberInputProps = {
         onKeyDown: handleKeyDown,
         onWheel: handleWheel
-    };
+    }
 
     return (
         <div className={`${wrapperClassName}`}>
@@ -69,8 +69,8 @@ const InputField = (props) => {
                 )}
             />
         </div>
-    );
-};
+    )
+}
 
 const Input = (props) => {
     const {
@@ -88,11 +88,11 @@ const Input = (props) => {
         placeholder,
         type,
         value
-    } = props;
+    } = props
 
     return (
         <>
-            <div className={`space-y-1 ${className}`}>
+            <div className={`relative space-y-1 ${className}`}>
                 {label && <label className={`${labelClassName}`}>{label}</label>}
 
                 <input
@@ -108,9 +108,10 @@ const Input = (props) => {
                     } ${inputClassName} ${width ?? "w-full"}`}
                     onChange={(e) => onChange(e.target.value)}
                 />
+                {rightFixItem && <span className="absolute font-normal right-4 top-1">{rightFixItem}</span>}
             </div>
         </>
-    );
-};
+    )
+}
 
-export { Input, InputField as default };
+export { Input, InputField as default }
