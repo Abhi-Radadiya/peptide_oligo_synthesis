@@ -22,27 +22,7 @@ export const FlowListTable = () => {
     }
 
     const handleRun = async (flow) => {
-        console.log(`flow.commands : `, flow.commands)
-        const cmd = [
-            "ZVO,27;",
-            "ZVO,5;",
-            "ZVO,12;",
-            "ZPT,600,200;",
-            "ZPL,300,150;",
-            "ZVO,30;",
-            "ZVF,55;",
-            "HOLD 200000;",
-            "ZVF,27;",
-            "ZVF,5;",
-            "ZVF,12;",
-            "ZSL,2,300,30000;",
-            "ZSL,3,200,2000;",
-            "ZVO,41;"
-        ]
-
-        cmd.forEach(async (command) => {
-            // flow.commands.forEach(async (command) => {
-            console.log(`command : `, command)
+        flow.commands.forEach(async (command) => {
             await sendCommand(command)
         })
     }
