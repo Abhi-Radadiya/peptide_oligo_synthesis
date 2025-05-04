@@ -57,6 +57,7 @@ export const WasteValveNode = memo(({ id, data, selected }) => {
 
             {/* Only Input Handle */}
             <Handle type="target" position={Position.Left} id={`${id}-target`} className="!bg-gray-400" style={{ height: 12, width: 12 }} />
+            <Handle type="source" position={Position.Right} id={`${id}-source`} className="!bg-red-400" style={{ height: 12, width: 12 }} />
         </div>
     )
 })

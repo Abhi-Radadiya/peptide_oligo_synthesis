@@ -33,7 +33,7 @@ fn get_or_open_port<'a>() -> Result<std::sync::MutexGuard<'a, SerialState>, Stri
 
     if state.port.is_none() {
         let port_name = state.port_name.clone().ok_or("Port name not set")?;
-        let baud = 9600;
+        let baud = 115200;
 
         match serialport::new(&port_name, baud)
             .timeout(Duration::from_millis(200))

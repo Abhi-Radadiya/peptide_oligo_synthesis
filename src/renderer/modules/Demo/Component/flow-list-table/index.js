@@ -22,15 +22,33 @@ export const FlowListTable = () => {
     }
 
     const handleRun = async (flow) => {
-        flow.commands.forEach(async (command) => {
-            await sendCommand(command)
-        })
+        let delay = 0
+
+        for (let i = 0; i < flow.commands.length; i++) {
+            const command = flow.commands[i]
+            console.log(`command : `, command)
+
+            if (command.startsWith("HOLD")) {
+                const [, timeStr] = command.split(" ")
+
+                const time = parseInt(timeStr, 10)
+                delay = isNaN(time) ? 0 : time
+            } else {
+                if (delay > 0) {
+                    await new Promise((resolve) => setTimeout(resolve, delay))
+                    delay = 0
+                }
+                await sendCommand(command)
+            }
+        }
     }
 
     return (
         <div className="p-4 border-t border-gray-300 bg-gray-50">
-            <select onChange={(e) => openPort(e.target.value)} value={selectedPort ?? ""}>
-                <option value="">Select Port</option>
+            <select onChange={(e) => openPort(e.target.value)} value={selectedPort ?? ""} className="border border-neutral-300 px-2 py-1 rounded-lg">
+                <option value="" disabled>
+                    Select Port
+                </option>
                 {ports.map((p) => (
                     <option key={p} value={p}>
                         {p}

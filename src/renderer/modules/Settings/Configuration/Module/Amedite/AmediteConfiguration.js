@@ -1,33 +1,33 @@
 // TODO handle error if same name appears
 
-import React, { useEffect, useState } from "react";
-import _ from "lodash";
-import { addAmedite, updateAmedite, deleteAmedites } from "../../../../../../redux/reducers/settings/amedite";
-import { useDispatch, useSelector } from "react-redux";
-import { Button } from "../../../../../Components/Buttons/Buttons";
-import ConfirmationPopup from "../../../../../Components/Popup/ConfirmationPopup";
-import { useWindowSize } from "@uidotdev/usehooks";
-import AddConfigurationPopup from "../../Model/AddConfigurationPopup";
-import { openToast } from "../../../../../../redux/reducers/toastStateReducer/toastStateReducer";
-import { SUCCESS } from "../../../../../Helpers/Icons";
+import React, { useEffect, useState } from "react"
+import _ from "lodash"
+import { addAmedite, updateAmedite, deleteAmedites } from "../../../../../../redux/reducers/settings/amedite"
+import { useDispatch, useSelector } from "react-redux"
+import { Button } from "../../../../../Components/Buttons/Buttons"
+import ConfirmationPopup from "../../../../../Components/Popup/ConfirmationPopup"
+import { useWindowSize } from "@uidotdev/usehooks"
+import AddConfigurationPopup from "../../Model/AddConfigurationPopup"
+import { openToast } from "../../../../../../redux/reducers/toastStateReducer/toastStateReducer"
+import { SUCCESS } from "../../../../../Helpers/Icons"
 
 const AmediteConfiguration = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editAmediteDetails, setEditAmediteDetails] = useState({});
-    const [selectedRows, setSelectedRows] = useState([]);
-    const [showConfirmation, setShowConfirmation] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [editAmediteDetails, setEditAmediteDetails] = useState({})
+    const [selectedRows, setSelectedRows] = useState([])
+    const [showConfirmation, setShowConfirmation] = useState(false)
 
-    const { height: windowHeight } = useWindowSize();
+    const { height: windowHeight } = useWindowSize()
 
-    const dispatch = useDispatch();
-    const data = useSelector((state) => state.amedite.amediteList);
+    const dispatch = useDispatch()
+    const data = useSelector((state) => state.amedite.amediteList)
 
     const updateDetails = async (data) => {
-        dispatch(updateAmedite(data));
-        setIsModalOpen(false);
-        setEditAmediteDetails({});
-        dispatch(openToast({ text: "Amedite updated successfully.", icon: SUCCESS }));
-    };
+        dispatch(updateAmedite(data))
+        setIsModalOpen(false)
+        setEditAmediteDetails({})
+        dispatch(openToast({ text: "Amedite updated successfully.", icon: SUCCESS }))
+    }
 
     const amediteList = [
         {
@@ -37,7 +37,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "040c4515-cb16-4a04-b497-aa51b27a8c46",
+            id: "040c4515-cb16-4a04-b497-aa51b27a8c46"
         },
         {
             full_name: "TL",
@@ -46,7 +46,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "2c994ab5-941b-46b5-b9c4-fe5d9c9b672e",
+            id: "2c994ab5-941b-46b5-b9c4-fe5d9c9b672e"
         },
         {
             full_name: "CL",
@@ -55,7 +55,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "bff37c40-a3ac-4c5b-b796-5461ccee0eb9",
+            id: "bff37c40-a3ac-4c5b-b796-5461ccee0eb9"
         },
         {
             full_name: "GL",
@@ -64,7 +64,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "94150dac-88ee-4d82-8835-d21dd8806bd1",
+            id: "94150dac-88ee-4d82-8835-d21dd8806bd1"
         },
         {
             full_name: "AL",
@@ -73,7 +73,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "db8b2873-c437-46e1-823e-5e87eb0bed29",
+            id: "db8b2873-c437-46e1-823e-5e87eb0bed29"
         },
         {
             full_name: "eU",
@@ -82,7 +82,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "d68bd09a-e12b-461d-a33d-111a1e4d1588",
+            id: "d68bd09a-e12b-461d-a33d-111a1e4d1588"
         },
         {
             full_name: "eC",
@@ -91,7 +91,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "743550d0-1dfb-4c78-ada7-41af56479848",
+            id: "743550d0-1dfb-4c78-ada7-41af56479848"
         },
         {
             full_name: "eG",
@@ -100,7 +100,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "c3d6938e-9eaf-4ba3-9f8c-7a3c6bcf99c9",
+            id: "c3d6938e-9eaf-4ba3-9f8c-7a3c6bcf99c9"
         },
         {
             full_name: "eA",
@@ -109,7 +109,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "d8d20415-2652-40d0-b27f-450fd326b79f",
+            id: "d8d20415-2652-40d0-b27f-450fd326b79f"
         },
         {
             full_name: "dT",
@@ -118,7 +118,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "2722707e-db03-45f9-bb13-9c630b2dcf65",
+            id: "2722707e-db03-45f9-bb13-9c630b2dcf65"
         },
         {
             full_name: "dC",
@@ -127,7 +127,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "f5142c54-707b-41e1-898d-a8c5c90454f0",
+            id: "f5142c54-707b-41e1-898d-a8c5c90454f0"
         },
         {
             full_name: "dG",
@@ -136,7 +136,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "b3283ce6-3c8e-4457-ba3a-bd184605c4a6",
+            id: "b3283ce6-3c8e-4457-ba3a-bd184605c4a6"
         },
         {
             full_name: "dA",
@@ -145,7 +145,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "d9d6a8a6-4f8d-41ac-b69b-1921530fcf50",
+            id: "d9d6a8a6-4f8d-41ac-b69b-1921530fcf50"
         },
         {
             full_name: "rU",
@@ -154,7 +154,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "bad958e2-80c4-467a-8890-b0d76937b0e6",
+            id: "bad958e2-80c4-467a-8890-b0d76937b0e6"
         },
         {
             full_name: "rG",
@@ -163,7 +163,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "ac2c127f-f104-4e1a-a0ed-e54aabbb42c0",
+            id: "ac2c127f-f104-4e1a-a0ed-e54aabbb42c0"
         },
         {
             full_name: "rC",
@@ -172,7 +172,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "6e26fa4a-d976-4c70-839e-1091660e194c",
+            id: "6e26fa4a-d976-4c70-839e-1091660e194c"
         },
         {
             full_name: "rA",
@@ -181,7 +181,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "995e0f84-0dd7-4a6e-932c-2b8afde27971",
+            id: "995e0f84-0dd7-4a6e-932c-2b8afde27971"
         },
         {
             full_name: "mU",
@@ -190,7 +190,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "30d5556a-a12d-47b3-88c2-2fb2fd3087fe",
+            id: "30d5556a-a12d-47b3-88c2-2fb2fd3087fe"
         },
         {
             full_name: "mG",
@@ -199,7 +199,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "f3a780a2-9afb-4552-8250-5195db83265b",
+            id: "f3a780a2-9afb-4552-8250-5195db83265b"
         },
         {
             full_name: "mC",
@@ -208,7 +208,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "9203b683-06c3-4ed2-a9c2-bca8ae2cfb27",
+            id: "9203b683-06c3-4ed2-a9c2-bca8ae2cfb27"
         },
         {
             full_name: "mA",
@@ -217,7 +217,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "361a0de8-8f27-4dc2-88db-6f0f20c3e015",
+            id: "361a0de8-8f27-4dc2-88db-6f0f20c3e015"
         },
         {
             full_name: "T",
@@ -226,7 +226,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "4c9ab95f-b512-42cd-bc43-0bec87d08e29",
+            id: "4c9ab95f-b512-42cd-bc43-0bec87d08e29"
         },
         {
             full_name: "G",
@@ -235,7 +235,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "41b0c8b6-e56b-41f2-ae80-651fb7fa48e5",
+            id: "41b0c8b6-e56b-41f2-ae80-651fb7fa48e5"
         },
         {
             full_name: "C",
@@ -244,7 +244,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "8f1d8018-adec-4aad-9d2d-344e76bb6ad8",
+            id: "8f1d8018-adec-4aad-9d2d-344e76bb6ad8"
         },
         {
             full_name: "A",
@@ -253,7 +253,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "04ef1c13-1ad9-45f5-b346-fc8656284bb8",
+            id: "04ef1c13-1ad9-45f5-b346-fc8656284bb8"
         },
         {
             full_name: "fU",
@@ -262,7 +262,7 @@ const AmediteConfiguration = () => {
             msds: "1",
             concentration: "1",
             flowRate: "1",
-            id: "5e7a6c5f-198d-4d13-9e88-ee529da27a64",
+            id: "5e7a6c5f-198d-4d13-9e88-ee529da27a64"
         },
         {
             full_name: "fA",
@@ -272,7 +272,7 @@ const AmediteConfiguration = () => {
             concentration: "0.12",
             id: "d83ef78c-85d1-48d1-9f0a-b2633734faed",
             mw: "331.2",
-            flowRate: "1",
+            flowRate: "1"
         },
         {
             full_name: "fC",
@@ -282,7 +282,7 @@ const AmediteConfiguration = () => {
             concentration: "2",
             id: "d60815e6-793b-4154-a46c-3cf8c68e9271",
             mw: "307.17",
-            flowRate: "3",
+            flowRate: "3"
         },
         {
             full_name: "fG",
@@ -292,41 +292,42 @@ const AmediteConfiguration = () => {
             concentration: "3",
             id: "9f44ee15-f48f-4731-8bcb-6eb7565833ed",
             mw: "347.2",
-            flowRate: "3",
-        },
-    ];
+            flowRate: "3"
+        }
+    ]
 
     useEffect(() => {
         // amediteList.forEach((el) => dispatch(addAmedite(el)));
-    }, []);
+    }, [])
 
     const addNewDetails = async (data) => {
-        amediteList.forEach((el) => dispatch(addAmedite(el)));
+        // amediteList.forEach((el) => dispatch(addAmedite(el)));
+        dispatch(addAmedite(data))
 
-        setIsModalOpen(false);
-        setEditAmediteDetails({});
-        dispatch(openToast({ text: "Amedite created successfully.", icon: SUCCESS }));
-    };
+        setIsModalOpen(false)
+        setEditAmediteDetails({})
+        dispatch(openToast({ text: "Amedite created successfully.", icon: SUCCESS }))
+    }
 
     const handleForm = async (data) => {
-        _.isEmpty(editAmediteDetails) ? addNewDetails(data) : updateDetails(data);
-    };
+        _.isEmpty(editAmediteDetails) ? addNewDetails(data) : updateDetails(data)
+    }
 
     const handleEdit = (item) => {
-        setEditAmediteDetails(item);
-        setIsModalOpen(true);
-    };
+        setEditAmediteDetails(item)
+        setIsModalOpen(true)
+    }
 
     const handleRowSelect = (id) => {
-        setSelectedRows((prevSelected) => (prevSelected.includes(id) ? prevSelected.filter((rowId) => rowId !== id) : [...prevSelected, id]));
-    };
+        setSelectedRows((prevSelected) => (prevSelected.includes(id) ? prevSelected.filter((rowId) => rowId !== id) : [...prevSelected, id]))
+    }
 
     const handleBulkDelete = () => {
-        dispatch(deleteAmedites(selectedRows));
-        setSelectedRows([]);
-        setShowConfirmation(false);
-        dispatch(openToast({ text: "Amedite deleted successfully.", icon: SUCCESS }));
-    };
+        dispatch(deleteAmedites(selectedRows))
+        setSelectedRows([])
+        setShowConfirmation(false)
+        dispatch(openToast({ text: "Amedite deleted successfully.", icon: SUCCESS }))
+    }
 
     return (
         <div className="overflow-x-auto p-4 border border-neutral-300 rounded-xl bg-neutral-50">
@@ -369,12 +370,7 @@ const AmediteConfiguration = () => {
 
                                     <td className="py-3 px-6">
                                         <div className="flex flex-row items-center gap-2">
-                                            <input
-                                                type="checkbox"
-                                                className="h-4 w-4"
-                                                checked={selectedRows.includes(item.id)}
-                                                onChange={() => handleRowSelect(item.id)}
-                                            />
+                                            <input type="checkbox" className="h-4 w-4" checked={selectedRows.includes(item.id)} onChange={() => handleRowSelect(item.id)} />
                                             {item.full_name}
                                         </div>
                                     </td>
@@ -408,8 +404,8 @@ const AmediteConfiguration = () => {
                     onSubmit={handleForm}
                     data={data}
                     togglePopup={() => {
-                        setIsModalOpen(false);
-                        setEditAmediteDetails({});
+                        setIsModalOpen(false)
+                        setEditAmediteDetails({})
                     }}
                 />
             )}
@@ -424,7 +420,7 @@ const AmediteConfiguration = () => {
                 />
             )}
         </div>
-    );
-};
+    )
+}
 
-export default AmediteConfiguration;
+export default AmediteConfiguration
