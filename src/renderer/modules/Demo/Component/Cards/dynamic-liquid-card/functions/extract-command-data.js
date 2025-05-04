@@ -37,24 +37,27 @@ export function useExtractCommandData() {
         const openFromValveIndex = extractedValves.findIndex((el) => el.id === config.selectedToFromBottle.from)
 
         if (!config?.selectedToFromBottle?.to) {
-            return `${config.status === "on" ? "VON" : "VOFF"} ${extractedValves[openFromValveIndex].index};`
+            return `${config.status === "on" ? "ZVO" : "ZVF"},${extractedValves[openFromValveIndex].index};`
         }
 
         const openToValveIndex = extractedValves.findIndex((el) => el.id === config.selectedToFromBottle.to)
 
         const arrayOfIndex = extractedValves.slice(openFromValveIndex, openToValveIndex + 1).map((el) => el.index)
 
-        return `${config.status === "on" ? "VON" : "VOFF"} ${arrayOfIndex.join(",")};`
+        return `${config.status === "on" ? "ZVO" : "ZVF"},${arrayOfIndex.join(",")};`
     }
 
     const getPumpValveCommand = (config) => {
         const pumpIndex = extractedPump.find((el) => el.id === config.id)?.index
 
         if (config.controlMode !== "liquidVolume") {
-            return `ZPT,${pumpIndex},${config.time},${config.rpm};`
+            return `ZPT,${config.time},${config.rpm};`
+            /** below is code where user pump index is passed */
+            // return `ZPT,${pumpIndex},${config.time},${config.rpm};`
         }
 
-        return `ZPL,${pumpIndex},${config.liquidVolume},${config.rpm};`
+        return `ZPL,${config.liquidVolume},${config.rpm};`
+        // return `ZPL,${pumpIndex},${config.liquidVolume},${config.rpm};`
     }
 
     const getSensorCommand = (config) => {

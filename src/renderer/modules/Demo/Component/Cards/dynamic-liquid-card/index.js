@@ -182,7 +182,7 @@ export default function FlowBuilder() {
     }
 
     // --- Function to log the current flow state ---
-    const handleLogFlow = useCallback(() => {
+    const handleSaveCommands = useCallback(() => {
         console.log("Logging Current Flow State...")
 
         // **Crucial Step:** Clean the node data for logging.
@@ -206,33 +206,7 @@ export default function FlowBuilder() {
             timestamp: new Date().toISOString() // Optional: Add a timestamp
         }
 
-        // // Log the structured data as a pretty-printed JSON string to the console
-        // console.log("-------------------- FLOW STATE --------------------")
-        // console.log(JSON.stringify(flowData, null, 2)) // null, 2 for pretty printing
-        // console.log("----------------------------------------------------")
-
-        // Example usage
-
-        re(flowData)
-        // generateFinalFlowGroups(flowData) // Call the function with the flow data
-        const reeresd = [
-            ["bottleNode-cde9dfcd-94cf-4544-a857-ce89e180b349", "bottleNode-5825ffda-093e-43b4-adcc-8798a1c79706", "bottleNode-4016c783-074b-49d5-9af0-b86822feca6e"],
-            ["pumpNode-71196205-6957-41d0-b1f4-0772c74f8aba", "pumpNode-e1299d22-5304-4792-a3ad-0713f3ad419c"],
-            ["sensorNode-a6389e2f-0390-4728-82ec-a979bd7e8201"],
-            [
-                "valveNode-599e85ce-fe3c-4890-aab4-5c6fcf39afe8",
-                "columnNode-6a7b2039-3d6f-4e83-86ca-82c8f517b716",
-                "valveNode-364d9df4-7142-4aaa-9b2c-9023e94c9fcf",
-                "valveNode-ba44fe77-1196-4a17-a7ed-050d02d99d6b"
-            ],
-            [
-                "wasteValveNode-494e45b4-f888-4be9-9441-77ba7038ed40",
-                "pumpNode-5a4e24a7-1b02-4584-a35e-d154e89a8c3a",
-                "pumpNode-2f2bbe04-6201-47c6-aa52-5b4e9554b7ee",
-                "sensorNode-226e15c9-5d71-47fc-ab58-098ac5c2817b"
-            ],
-            ["bottleNode-85e171c0-b915-4589-ac11-60397b4d9a39", "bottleNode-25dd0506-216d-45e0-b920-e1507131bfec", "bottleNode-ac7c1fbd-b9a6-4a1b-8ed0-c0f5224336ea"]
-        ]
+        generateCommands(flowData)
     }, [nodes, edges]) // Function depends on the current nodes and edges
 
     const deleteEdgeById = useCallback((edgeId) => {
@@ -271,7 +245,8 @@ export default function FlowBuilder() {
             nodes: cleanedNodes,
             edges: edges,
             savedAt: new Date().toISOString(), // Add save timestamp
-            name
+            name,
+            commands: generateCommands({ nodes: cleanedNodes, edges: edges })
         }
 
         // Dispatch action to add/save the procedure
@@ -1097,7 +1072,7 @@ export default function FlowBuilder() {
         timestamp: "2025-05-01T17:29:10.824Z"
     }
 
-    const re = (original) => {
+    const generateCommands = (original) => {
         const { nodes, edges } = original
 
         // build quick source⇄targets and incoming sets
@@ -1173,7 +1148,7 @@ export default function FlowBuilder() {
 
         setShowCommands(command.filter(Boolean))
 
-        return layers
+        return command.filter(Boolean)
     }
 
     const [showCommands, setShowCommands] = useState([])
@@ -1208,8 +1183,8 @@ export default function FlowBuilder() {
     return (
         <>
             <div className="p-2 border-b flex gap-2">
-                <button onClick={handleLogFlow} className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700">
-                    Log Flow
+                <button onClick={handleSaveCommands} className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700">
+                    Save Commands
                 </button>
                 <Input placeholder="Enter Flow Name" onChange={(flowName) => setName(flowName)} value={name} />
                 <button onClick={handleNewFlow} className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700">

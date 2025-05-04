@@ -2,11 +2,13 @@
 import React from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { deleteSynthesisProcedure, loadProcedure, selectSavedProcedures } from "../../../../../redux/reducers/synthesis-procedure"
+import { useSerialContext } from "../../../../../utils/context/serial-context"
 
 export const FlowListTable = () => {
     // Get data and dispatch function from Redux
     const savedFlows = useSelector(selectSavedProcedures)
     const dispatch = useDispatch()
+    const { sendCommand, selectedPort, ports, openPort } = useSerialContext()
 
     const handleDelete = (flowId) => {
         if (window.confirm(`Are you sure you want to delete flow ${flowId}?`)) {
@@ -19,9 +21,43 @@ export const FlowListTable = () => {
         dispatch(loadProcedure(flowId))
     }
 
+    const handleRun = async (flow) => {
+        console.log(`flow.commands : `, flow.commands)
+        const cmd = [
+            "ZVO,27;",
+            "ZVO,5;",
+            "ZVO,12;",
+            "ZPT,600,200;",
+            "ZPL,300,150;",
+            "ZVO,30;",
+            "ZVF,55;",
+            "HOLD 200000;",
+            "ZVF,27;",
+            "ZVF,5;",
+            "ZVF,12;",
+            "ZSL,2,300,30000;",
+            "ZSL,3,200,2000;",
+            "ZVO,41;"
+        ]
+
+        cmd.forEach(async (command) => {
+            // flow.commands.forEach(async (command) => {
+            console.log(`command : `, command)
+            await sendCommand(command)
+        })
+    }
+
     return (
         <div className="p-4 border-t border-gray-300 bg-gray-50">
-            {" "}
+            <select onChange={(e) => openPort(e.target.value)} value={selectedPort ?? ""}>
+                <option value="">Select Port</option>
+                {ports.map((p) => (
+                    <option key={p} value={p}>
+                        {p}
+                    </option>
+                ))}
+            </select>
+
             {/* Example Height */}
             <h2 className="text-lg font-semibold mb-3 text-gray-700">Saved Synthesis Procedures</h2>
             {savedFlows?.length === 0 ? (
@@ -59,7 +95,9 @@ export const FlowListTable = () => {
                                     <button onClick={() => handleDelete(flow.id)} className="px-2 py-1 text-xs font-medium text-white bg-red-600 rounded hover:bg-red-700">
                                         Delete
                                     </button>
-                                    <button className="px-2 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-red-700">RUN</button>
+                                    <button className="px-2 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-red-700" onClick={() => handleRun(flow)}>
+                                        RUN
+                                    </button>
                                 </td>
                             </tr>
                         ))}

@@ -6,6 +6,7 @@ import { Button } from "../../../Components/Buttons/Buttons"
 import { editCommand } from "../../../../redux/reducers/commands/commands"
 import { useDispatch } from "react-redux"
 import { UseActiveFileDetails } from "../context/active-file-details-context"
+import { useSerialContext } from "../../../../utils/context/serial-context"
 
 const von = z.string().regex(/^VON-((\d+,)*\d+);$/, "Invalid VON command")
 const vof = z.string().regex(/^VOF-((\d+,)*\d+);$/, "Invalid VOF command")
@@ -28,7 +29,6 @@ const commandFileSchema = z.object({
 
 export default function CommandEditor() {
     const { fileDetails, setFileDetails } = UseActiveFileDetails()
-
 
     const {
         handleSubmit,
@@ -54,8 +54,6 @@ export default function CommandEditor() {
             })
         }
     }, [fileDetails, reset])
-
-    console.log(`commandsValue : `, commandsValue)
 
     const lineNumbersRef = useRef(null)
     const textareaRef = useRef(null)
@@ -118,8 +116,19 @@ export default function CommandEditor() {
     const editorStyles = "font-mono text-sm leading-relaxed p-2"
     const editorLineHeightStyle = { lineHeight: "1.625rem" }
 
+    const { ports, selectedPort, setSelectedPort, sendCommand, closePort } = useSerialContext()
+
+    const handleSend = async () => {
+        commandsValue?.split("\n").forEach(async (line) => {
+            const res = await sendCommand(line)
+            console.log("Device responded:", res)
+        })
+    }
+
     return (
         <>
+            <button onClick={closePort}>closePort</button>
+
             <input
                 value={fileDetails.name}
                 className={`text-xl font-bold px-4 py-2 border bg-transparent border-white mx-4 mt-4 hover:bg-neutral-100 focus:bg-neutral-100 hover:border-neutral-400 focus:border-neutral-400 rounded-lg hover:cursor-text w-fit ${
@@ -130,6 +139,17 @@ export default function CommandEditor() {
                     setFileDetails({ ...fileDetails, name: e.target.value })
                 }}
             />
+
+            <select onChange={(e) => setSelectedPort(e.target.value)} value={selectedPort ?? ""}>
+                <option value="">Select Port</option>
+                {ports.map((p) => (
+                    <option key={p} value={p}>
+                        {p}
+                    </option>
+                ))}
+            </select>
+
+            <button onClick={handleSend}>Send</button>
 
             <form onSubmit={handleSubmit(onSubmit)} className="p-4 space-y-4 w-full">
                 <div
