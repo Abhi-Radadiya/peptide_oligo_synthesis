@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { SelectionController } from "../../../../Components/Dropdown/Dropdown"
 import InputField from "../../../../Components/Input/Input"
@@ -6,6 +6,8 @@ import { wasteMenuItems } from "../../../../Helpers/Constant"
 import Checkbox from "../../../../Components/FormController/CheckBox"
 import { useSelector } from "react-redux"
 import { selectSavedProcedures } from "../../../../../redux/reducers/synthesis-procedure"
+import { Pencil } from "lucide-react"
+import MethodSectionFlowEditingModel from "../../../../Components/flow-charts/models/method-section-flow-editing-model"
 
 export default function AmediteSection(props) {
     const {
@@ -16,7 +18,7 @@ export default function AmediteSection(props) {
         chemical = "reagent"
     } = props
 
-    const { control, setValue } = useFormContext()
+    const { control, setValue, watch } = useFormContext()
 
     const chemicals = useSelector((state) => state[chemical][`${chemical}List`])
 
@@ -38,6 +40,12 @@ export default function AmediteSection(props) {
     const synthesisProcedureList = synthesisProcedure?.map((el) => {
         return { label: el.name, value: el.id }
     })
+
+    const [showProcedureUpdateSection, setShowProcedureUpdateSection] = useState(false)
+
+    const handleSaveSynthesisFlow = (procedure) => {
+        setValue(synthesisProcedureName, { ...watch(synthesisProcedureName), procedure })
+    }
 
     return (
         <>
@@ -115,8 +123,22 @@ export default function AmediteSection(props) {
                         name={synthesisProcedureName}
                         placeholder="Select procedure"
                     />
+
+                    {!!watch(synthesisProcedureName) && (
+                        <div className="border border-gray-700 rounded-lg p-1.5 cursor-pointer hover:bg-gray-200 bg-gray-100" onClick={() => setShowProcedureUpdateSection(true)}>
+                            <Pencil size={18} />
+                        </div>
+                    )}
                 </div>
             </div>
+
+            {showProcedureUpdateSection && (
+                <MethodSectionFlowEditingModel
+                    onSave={(procedure) => handleSaveSynthesisFlow(procedure)}
+                    onClose={() => setShowProcedureUpdateSection(false)}
+                    editingFlow={{ id: watch(synthesisProcedureName).value, synthesisProcedureName }}
+                />
+            )}
         </>
     )
 }

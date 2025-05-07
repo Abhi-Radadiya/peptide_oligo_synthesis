@@ -6,9 +6,11 @@ import { useSelector } from "react-redux"
 import InputField from "../../../../Components/Input/Input"
 import { isObject } from "lodash"
 import { selectSavedProcedures } from "../../../../../redux/reducers/synthesis-procedure"
+import MethodSectionFlowEditingModel from "../../../../Components/flow-charts/models/method-section-flow-editing-model"
+import { Pencil } from "lucide-react"
 
 export default function FirstMethod() {
-    const { control, setValue } = useFormContext()
+    const { control, setValue, watch } = useFormContext()
 
     const primingMenuItem = [...Array(24)].map((_, index) => ({ label: index < 9 ? `0${index + 1}` : index + 1, value: index + 1 }))
 
@@ -33,6 +35,18 @@ export default function FirstMethod() {
     const synthesisProcedureList = synthesisProcedure?.map((el) => {
         return { label: el.name, value: el.id }
     })
+
+    const [editingFlow, setEditingFlow] = useState({ id: "", synthesisProcedureName: "" })
+
+    const handleEditPrimingProcedure = (synthesisProcedureName) => {
+        const flowId = watch(synthesisProcedureName).value
+
+        setEditingFlow({ id: flowId, synthesisProcedureName })
+    }
+
+    const handleSaveSynthesisFlow = (procedure) => {
+        setValue(editingFlow.synthesisProcedureName, { ...watch(editingFlow.synthesisProcedureName), procedure })
+    }
 
     return (
         <>
@@ -100,7 +114,7 @@ export default function FirstMethod() {
                         </div>
                     </div>
 
-                    <div className="flex flex-row items-center gap-2 pb-4 border-b border-neutral-300">
+                    <div className="flex flex-row items-center gap-2 pb-4 border-b mb-4 border-neutral-300">
                         <span className="font-bold text-neutral-600">Procedure</span>
                         <SelectionController
                             rules={{ required: "Please select procedure" }}
@@ -110,6 +124,14 @@ export default function FirstMethod() {
                             name="1_primingProcedure"
                             placeholder="Select procedure"
                         />
+                        {!!watch("1_primingProcedure") && (
+                            <div
+                                className="border border-gray-700 rounded-lg p-1.5 cursor-pointer hover:bg-gray-200 bg-gray-100"
+                                onClick={() => handleEditPrimingProcedure("1_primingProcedure")}
+                            >
+                                <Pencil size={18} />
+                            </div>
+                        )}
                     </div>
 
                     <div className="">
@@ -156,6 +178,14 @@ export default function FirstMethod() {
 
                 <WasteColumnSelection name="1_primingWaste" control={control} />
             </div>
+
+            {!!editingFlow.id && (
+                <MethodSectionFlowEditingModel
+                    onSave={(procedure) => handleSaveSynthesisFlow(procedure)}
+                    onClose={() => setEditingFlow({ id: "", synthesisProcedureName: "" })}
+                    editingFlow={editingFlow}
+                />
+            )}
         </>
     )
 }
