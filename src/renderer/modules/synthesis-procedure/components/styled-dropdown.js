@@ -6,15 +6,18 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(" ")
 }
 
-export default function StyledDropdown({ label, options, value, onChange, placeholder = "Select an option", error }) {
+export default function StyledDropdown({ label, options, value, onChange, placeholder = "Select an option", error, disabled, className }) {
     const selectedOption = options.find((opt) => opt.id === value)
 
     return (
         <Listbox value={value} onChange={onChange}>
             {({ open }) => (
-                <div className="relative">
+                <div className={`relative ${className}`}>
                     <Listbox.Label className="block text-sm font-medium leading-6 text-gray-700 mb-1">{label}</Listbox.Label>
-                    <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-2 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                    <Listbox.Button
+                        disabled={disabled}
+                        className="relative w-full cursor-default rounded-md bg-white py-2 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    >
                         <span className="block truncate">{selectedOption ? selectedOption.name : placeholder}</span>
                         <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
                             <ChevronsUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -25,9 +28,13 @@ export default function StyledDropdown({ label, options, value, onChange, placeh
                         <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                             {options.map((option) => (
                                 <Listbox.Option
+                                    disabled={option.disabled}
                                     key={option.id}
-                                    className={({ active }) =>
-                                        classNames(active ? "bg-indigo-600 text-white" : "text-gray-900", "relative cursor-default select-none py-2 pl-3 pr-9")
+                                    className={({ active, disabled }) =>
+                                        classNames(
+                                            disabled ? "text-gray-400 bg-gray-100" : active ? "bg-indigo-600 text-white" : "text-gray-900",
+                                            "relative cursor-default select-none py-2 pl-3 pr-9"
+                                        )
                                     }
                                     value={option.id} // Pass the ID
                                 >
