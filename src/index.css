@@ -94,3 +94,7 @@ input[type="number"] {
     font-weight: 400 !important;
     transition: all 0.3s !important;
 }
+
+.react-flow__attribution a[aria-label="React Flow attribution"] {
+    display: none !important;
+}
