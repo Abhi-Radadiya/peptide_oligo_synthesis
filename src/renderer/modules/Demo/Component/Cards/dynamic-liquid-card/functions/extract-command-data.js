@@ -66,7 +66,7 @@ export function useExtractCommandData() {
         const pumpIndex = extractedPump?.find((el) => el.id === config.id)?.index
 
         if (config.status !== "on") {
-            return `Z,${pumpIndex},PF`
+            return `Z,${pumpIndex},PF;`
         }
 
         if (config.controlMode === "time") {
@@ -74,7 +74,7 @@ export function useExtractCommandData() {
         } else if (config.controlMode === "liquidVolume") {
             return `Z,${pumpIndex},PL,${config.liquidVolume},${config.rpm};`
         } else {
-            return `Z,${pumpIndex},PO`
+            return `Z,${pumpIndex},PO;`
         }
     }
 
