@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import BottleMapping from "./BottleMapping/bottle-mapping.js";
-import Prime from "./Prime/Prime";
-import LiquidDetection from "./LiquidDetection/LiquidDetection";
-import UVSetting from "./UVSetting/UVSetting";
-import Pressure from "./Pressure/Pressure";
-import ColumnEditor from "./ColumnEditor/ColumnEditor";
-import Configuration from "./Configuration/Configuration";
-import ApplicationData from "./ApplicationData/ApplicationData.js";
-import HardwareSetup from "./hardware-setup/hardware-setup";
-import { Tabs } from "../../Components/Tabs/Tab";
+import React, { useState } from "react"
+import BottleMapping from "./BottleMapping/bottle-mapping.js"
+import Prime from "./Prime/Prime"
+import LiquidDetection from "./LiquidDetection/LiquidDetection"
+import UVSetting from "./UVSetting/UVSetting"
+import Pressure from "./Pressure/Pressure"
+import ColumnEditor from "./ColumnEditor/ColumnEditor"
+import Configuration from "./Configuration/Configuration"
+import ApplicationData from "./ApplicationData/ApplicationData.js"
+import HardwareSetup from "./hardware-setup/hardware-setup"
+import { Tabs } from "../../Components/Tabs/Tab"
 
 export default function Settings() {
     const tabs = [
@@ -21,11 +21,11 @@ export default function Settings() {
         { label: "Column Editor", value: "columnEditor", component: ColumnEditor },
         { label: "Configuration", value: "configuration", component: Configuration },
         { label: "Application Data", value: "applicationData", component: ApplicationData }
-    ];
+    ]
 
-    const [activeTab, setActiveTab] = useState(tabs[0].value);
+    const [activeTab, setActiveTab] = useState(tabs[0].value)
 
-    const ComponentToRender = tabs.find((el) => el.value === activeTab).component;
+    const ComponentToRender = tabs.find((el) => el.value === activeTab).component
 
     return (
         <>
@@ -35,5 +35,5 @@ export default function Settings() {
                 <ComponentToRender />
             </div>
         </>
-    );
+    )
 }

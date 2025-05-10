@@ -1,17 +1,17 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import SingleWasteBlock from "./single-waste-block";
+import React from "react"
+import { useSelector } from "react-redux"
+import SingleWasteBlock from "./single-waste-block"
 
-export const MAX_WASTE_BOTTLES = 5;
+export const MAX_WASTE_BOTTLES = 5
 
 export default function WasteContainer() {
-    const containerBottles = useSelector((state) => state.hardwareSetup.wasteContainer);
+    const containerBottles = useSelector((state) => state.hardwareSetup.wasteContainer)
 
     return (
         <>
             <div className="flex flex-col bg-gradient-to-r from-cyan-50 to-cyan-100 rounded-lg border-neutral-200 border shadow-md p-6 transition-all duration-300 hover:shadow-lg">
                 <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold text-gray-700">Waste Container</h2>
+                    <h2 className="text-xl font-semibold text-gray-700">Waste Block</h2>
 
                     <span className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm">
                         {containerBottles?.bottles?.length}/{MAX_WASTE_BOTTLES}
@@ -38,5 +38,5 @@ export default function WasteContainer() {
                 <div className="text-right mt-1 text-xs text-gray-500">{MAX_WASTE_BOTTLES - containerBottles.bottles.length} spaces remaining</div>
             </div>
         </>
-    );
+    )
 }

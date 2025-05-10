@@ -108,7 +108,7 @@ const Input = (props) => {
                     } ${inputClassName} ${width ?? "w-full"}`}
                     onChange={(e) => onChange(e.target.value)}
                 />
-                {rightFixItem && <span className="absolute font-normal right-4 top-1">{rightFixItem}</span>}
+                {rightFixItem && <span className={`absolute font-normal right-4 ${!!label ? "top-6" : "top-1"}`}>{rightFixItem}</span>}
             </div>
         </>
     )

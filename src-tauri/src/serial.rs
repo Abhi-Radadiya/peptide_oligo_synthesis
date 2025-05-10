@@ -33,6 +33,7 @@ fn get_or_open_port<'a>() -> Result<std::sync::MutexGuard<'a, SerialState>, Stri
 
     if state.port.is_none() {
         let port_name = state.port_name.clone().ok_or("Port name not set")?;
+        // let baud = 9600;
         let baud = 115200;
 
         match serialport::new(&port_name, baud)
@@ -95,4 +96,39 @@ pub fn close_port() {
         println!("Closing serial port...");
     }
     state.port = None;
+}
+
+pub fn read_within(ms: u64) -> Result<Option<String>, String> {
+    let mut state = get_or_open_port()?;
+
+    if let Some(port) = state.port.as_mut() {
+        let start = std::time::Instant::now();
+        let mut response = Vec::new();
+        let mut buf = [0u8; 128];
+
+        while start.elapsed() < Duration::from_millis(ms) {
+            match port.read(&mut buf) {
+                Ok(n) if n > 0 => {
+                    response.extend_from_slice(&buf[..n]);
+                    let msg = String::from_utf8_lossy(&response).to_lowercase();
+
+                    return Ok(Some(msg));
+
+                    println!("Response: {}", msg);
+
+                    response.clear();
+                }
+
+                Err(ref e) if e.kind() == std::io::ErrorKind::TimedOut => {
+                    continue;
+                }
+                Err(_) => break,
+                _ => {}
+            }
+        }
+
+        Ok(None) // Timeout with no useful response
+    } else {
+        Err("Serial port is not open.".into())
+    }
 }

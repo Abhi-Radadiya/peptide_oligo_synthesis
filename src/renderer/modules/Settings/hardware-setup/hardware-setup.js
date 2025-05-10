@@ -8,7 +8,7 @@ import { HardDrive } from "lucide-react"
 export default function HardwareSetup() {
     const tabs = [
         { label: "Board Configuration", value: "boardConfiguration" },
-        { label: "Valve Configuration", value: "solvent" }
+        { label: "Hardware Assignment", value: "hardwareAssignment" }
     ]
 
     const [activeTab, setActiveTab] = useState(tabs[0].value)

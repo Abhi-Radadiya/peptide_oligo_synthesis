@@ -3,7 +3,7 @@ import { BrowserRouter as Router } from "react-router-dom"
 import NavigationPanel from "./renderer/Components/Navigation/NavigationPanel"
 import NotifyToaster from "./renderer/modules/NotifyToaster/NotifyToaster"
 import TabNavigation, { RouteHandler, TabProvider } from "./renderer/Components/Navigation/TabNavigation"
-import { SerialProvider } from "./utils/context/serial-context"
+import { SerialEngineProvider } from "./utils/context/serial-engine-context"
 
 export default function App() {
     const [isNavOpen, setIsNavOpen] = useState(false)
@@ -13,7 +13,7 @@ export default function App() {
             <NotifyToaster />
 
             <Router>
-                <SerialProvider>
+                <SerialEngineProvider>
                     <TabProvider>
                         {isNavOpen && <div className="fixed inset-0 bg-black bg-opacity-50 z-20" onClick={() => setIsNavOpen(false)} />}
 
@@ -24,7 +24,7 @@ export default function App() {
                             <TabNavigation isNavOpen={isNavOpen} />
                         </div>
                     </TabProvider>
-                </SerialProvider>
+                </SerialEngineProvider>
             </Router>
         </>
     )

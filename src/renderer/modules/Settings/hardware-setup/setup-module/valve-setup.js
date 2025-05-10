@@ -206,7 +206,7 @@ export default function ValveSetup() {
                 </div>
 
                 <div className="border rounded-lg border-purple-200 bg-white px-8 py-6 shadow-md">
-                    <h1 className="text-xl font-medium pb-4">Amedite Container</h1>
+                    <h1 className="text-xl font-medium pb-4">Amedite Blocks</h1>
 
                     <div className="grid grid-cols-2 gap-6">
                         <SingleAmediteContainer containerType="amedite" containerName="container1" />
@@ -216,7 +216,7 @@ export default function ValveSetup() {
                 </div>
 
                 <div className="border rounded-lg border-purple-200 bg-white px-8 py-6 shadow-md">
-                    <h1 className="text-xl font-medium pb-4">Reagent Container</h1>
+                    <h1 className="text-xl font-medium pb-4">Reagent Blocks</h1>
 
                     <div className="grid grid-cols-2 gap-6">
                         <SingleAmediteContainer containerName="container1" containerType="reagent" />

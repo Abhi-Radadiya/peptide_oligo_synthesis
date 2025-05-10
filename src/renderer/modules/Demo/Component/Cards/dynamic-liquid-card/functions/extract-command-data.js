@@ -110,16 +110,82 @@ export function useExtractCommandData() {
         return `HOLD ${Math.round(time)};`
     }
 
-    return { getBottleValveCommand, getPumpValveCommand, getSensorCommand, getSingleValveCommand, getDelayCommand }
-}
+    const generateCommands = (flowData) => {
+        const { nodes, edges } = flowData
 
-//  *         - Z,1,VO,1;
-//  *         - Z,1,VF,1;
-//  *         - Z,1,VS,1,5;
-//  *         - Z,1,VC,1,5;
-//  *         - Z,1,PT,1000,500;  // pump tim
-//  *         - Z,1,PL,200,500; // pump liquid vol
-//  *         - Z,1,PO,500; // pump manual
-//  *         - Z,1,PF; // close pump
-//  *         - Z,1,SL,1,150,2000;
-//  *         - Z,1,SN,1,150,2000
+        // build quick source⇄targets and incoming sets
+        const outgoing = new Map()
+        const incoming = new Map()
+        nodes.forEach((n) => {
+            outgoing.set(n.id, [])
+            incoming.set(n.id, new Set())
+        })
+        edges.forEach(({ source, target }) => {
+            outgoing.get(source).push(target)
+            incoming.get(target).add(source)
+        })
+
+        // 1) find initial nodes: those with outgoing edges but no incoming edges
+        const seen = new Set()
+        const initial = nodes.filter((n) => outgoing.get(n.id).length > 0 && incoming.get(n.id).size === 0).map((n) => n.id)
+
+        // 2) BFS-style layering
+        const layers = []
+        let frontier = initial.slice()
+        frontier.forEach((id) => seen.add(id))
+
+        while (frontier.length) {
+            // layers.push(nodes.find(({ id }) => id === frontier))
+            layers.push(frontier)
+            // collect all targets of this layer, remove duplicates, skip already seen
+            const next = new Set()
+            frontier.forEach((src) => {
+                for (const tgt of outgoing.get(src)) {
+                    if (!seen.has(tgt)) {
+                        next.add(tgt)
+                    }
+                }
+            })
+            // mark and move on
+            frontier = Array.from(next)
+            frontier.forEach((id) => seen.add(id))
+        }
+
+        const arrayWithConfig = layers.map((layer) => {
+            return layer.map((nodeId) => nodes.find(({ id }) => id === nodeId).data.config)
+        })
+
+        console.log(`arrayWithConfig : `, arrayWithConfig)
+
+        const flatConfig = arrayWithConfig.flat()
+
+        const command = flatConfig.map((config) => {
+            switch (config.type) {
+                case "bottleNode":
+                    return getBottleValveCommand(config)
+
+                case "pumpNode":
+                    return getPumpValveCommand(config)
+
+                case "sensorNode":
+                    return getSensorCommand(config)
+
+                case "valveNode":
+                case "wasteValveNode":
+                    return getSingleValveCommand(config)
+
+                case "delayBlock":
+                    return getDelayCommand(config)
+
+                // TODO : add case for columnNode
+
+                default:
+                    break
+            }
+        })
+
+        return command.filter(Boolean)
+    }
+
+    return { getBottleValveCommand, getPumpValveCommand, getSensorCommand, getSingleValveCommand, getDelayCommand, generateCommands }
+}

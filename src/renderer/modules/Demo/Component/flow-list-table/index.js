@@ -1,14 +1,55 @@
-// src/components/FlowListTable.jsx (adjust path as needed)
-import React from "react"
+import { useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { deleteSynthesisProcedure, loadProcedure, selectSavedProcedures } from "../../../../../redux/reducers/synthesis-procedure"
-import { useSerialContext } from "../../../../../utils/context/serial-context"
+import { useSerialEngine } from "../../../../../utils/context/serial-engine-context"
 
 export const FlowListTable = () => {
-    // Get data and dispatch function from Redux
     const savedFlows = useSelector(selectSavedProcedures)
     const dispatch = useDispatch()
-    const { sendCommand, selectedPort, ports, openPort } = useSerialContext()
+    const [ports, setPorts] = useState([])
+    const [selectedPort, setSelectedPort] = useState(null)
+
+    const [responseFromSerial, setResponseFromSerial] = useState([])
+
+    const engine = useSerialEngine()
+
+    const getAndSetPorts = async () => {
+        try {
+            const ports = await engine.refreshPorts()
+
+            setPorts(ports)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        getAndSetPorts()
+    }, [])
+
+    const handleSelectPort = async (port) => {
+        try {
+            await engine.openPort(port)
+            setSelectedPort(port)
+        } catch (err) {
+            console.error("Failed to open port:", err)
+        }
+    }
+
+    const appendLog = (entry) => {
+        setResponseFromSerial((prev) => [...prev, entry])
+    }
+
+    const handleRun = async (flow) => {
+        console.log(`flow.commands : `, flow.commands)
+        engine.setLogger(appendLog)
+
+        try {
+            await engine.run(flow.commands, { loop: false })
+        } catch (err) {
+            appendLog({ type: "error", content: err.toString() })
+        }
+    }
 
     const handleDelete = (flowId) => {
         if (window.confirm(`Are you sure you want to delete flow ${flowId}?`)) {
@@ -17,84 +58,72 @@ export const FlowListTable = () => {
     }
 
     const handleLoad = (flowId) => {
-        console.log(`Requesting to load flow: ${flowId}`)
         dispatch(loadProcedure(flowId))
-    }
-
-    const handleRun = async (flow) => {
-        let delay = 0
-
-        for (let i = 0; i < flow.commands.length; i++) {
-            const command = flow.commands[i]
-            console.log(`command : `, command)
-
-            if (command.startsWith("HOLD")) {
-                const [, timeStr] = command.split(" ")
-
-                const time = parseInt(timeStr, 10)
-                delay = isNaN(time) ? 0 : time
-            } else {
-                if (delay > 0) {
-                    await new Promise((resolve) => setTimeout(resolve, delay))
-                    delay = 0
-                }
-                await sendCommand(command)
-            }
-        }
     }
 
     return (
         <div className="p-4 border-t border-gray-300 bg-gray-50">
-            <select onChange={(e) => openPort(e.target.value)} value={selectedPort ?? ""} className="border border-neutral-300 px-2 py-1 rounded-lg">
-                <option value="" disabled>
-                    Select Port
-                </option>
-                {ports.map((p) => (
-                    <option key={p} value={p}>
-                        {p}
+            <div className="flex items-center space-x-4 mb-4">
+                <select
+                    onChange={(e) => handleSelectPort(e.target.value)}
+                    value={selectedPort ?? ""}
+                    className="border border-neutral-300 px-3 py-2 rounded-md bg-white shadow-sm focus:ring-2 focus:ring-blue-400"
+                >
+                    <option value="" disabled>
+                        Select Port
                     </option>
-                ))}
-            </select>
+                    {ports.map((p) => (
+                        <option key={p} value={p}>
+                            {p}
+                        </option>
+                    ))}
+                </select>
+            </div>
 
-            {/* Example Height */}
+            <div className="mt-4 bg-gray-100 p-3 rounded h-60 overflow-y-auto">
+                <ul className="text-sm">
+                    {responseFromSerial.map((log, index) => (
+                        <li key={index} className={`mb-1 ${log.type === "error" ? "text-red-500" : "text-black"}`}>
+                            <strong>{log.type.toUpperCase()}:</strong> {log.content}
+                        </li>
+                    ))}
+                </ul>
+        </div>
+
             <h2 className="text-lg font-semibold mb-3 text-gray-700">Saved Synthesis Procedures</h2>
             {savedFlows?.length === 0 ? (
                 <p className="text-sm text-gray-500">No saved procedures yet.</p>
             ) : (
-                <table className="w-full text-sm text-left text-gray-600 table-auto">
+                <table className="w-full text-sm text-left text-gray-600 table-auto shadow">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-100 sticky top-0">
                         <tr>
-                            <th scope="col" className="px-4 py-2">
-                                Name
-                            </th>
-                            <th scope="col" className="px-4 py-2">
-                                Nodes
-                            </th>
-                            <th scope="col" className="px-4 py-2">
-                                Edges
-                            </th>
-                            <th scope="col" className="px-4 py-2">
-                                Actions
-                            </th>
+                            <th className="px-4 py-2">Name</th>
+                            <th className="px-4 py-2">Nodes</th>
+                            <th className="px-4 py-2">Edges</th>
+                            <th className="px-4 py-2">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {savedFlows?.map((flow) => (
-                            <tr key={flow.id} className="bg-white border-b hover:bg-gray-50">
-                                <td className="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">{flow.name || `Procedure ${flow.id.substring(0, 6)}`}</td>
+                            <tr key={flow.id} className="bg-white border-b hover:bg-gray-50 transition-colors">
+                                <td className="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">{flow.name || `Procedure ${flow.id.slice(0, 6)}`}</td>
                                 <td className="px-4 py-2">{flow.nodes?.length || 0}</td>
                                 <td className="px-4 py-2">{flow.edges?.length || 0}</td>
                                 <td className="px-4 py-2 space-x-2 whitespace-nowrap">
-                                    <button onClick={() => handleLoad(flow.id)} className="px-2 py-1 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700">
+                                    <button
+                                        onClick={() => handleLoad(flow.id)}
+                                        className="px-3 py-1 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition"
+                                    >
                                         Load
                                     </button>
-                                    {/* Add Edit button later if needed, might dispatch loadProcedure first */}
-                                    {/* <button className="px-2 py-1 text-xs font-medium text-white bg-yellow-500 rounded hover:bg-yellow-600">Edit</button> */}
-                                    <button onClick={() => handleDelete(flow.id)} className="px-2 py-1 text-xs font-medium text-white bg-red-600 rounded hover:bg-red-700">
+                                    <button
+                                        onClick={() => handleDelete(flow.id)}
+                                        className="px-3 py-1 text-xs font-medium text-white bg-red-600 rounded hover:bg-red-700 transition"
+                                    >
                                         Delete
                                     </button>
-                                    <button className="px-2 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-red-700" onClick={() => handleRun(flow)}>
-                                        RUN
+                                    <button onClick={() => handleRun(flow)} className="px-3 py-1 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-700 transition">
+                                        ▶ Run
                                     </button>
                                 </td>
                             </tr>

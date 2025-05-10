@@ -14,14 +14,15 @@ export default function SingleAmediteContainer(props) {
 
     const getTitle = useMemo(() => {
         switch (containerName) {
+            // Rename in redux to change it from container to block
             case "container1":
-                return "Container 1"
+                return "Block 1"
 
             case "container2":
-                return "Container 2"
+                return "Block 2"
 
             case "container3":
-                return "Container 3"
+                return "Block 3"
 
             default:
                 break
@@ -34,7 +35,7 @@ export default function SingleAmediteContainer(props) {
                 className={`bg-gradient-to-br flex flex-col from-purple-50 to-purple-100 rounded-lg border-neutral-200 border shadow-md p-6 transition-all duration-300 hover:shadow-lg`}
             >
                 <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold text-gray-700">{getTitle} </h2>
+                    <h2 className="text-xl font-semibold text-gray-700">{getTitle}</h2>
 
                     <span className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm">
                         {containerBottles?.bottles?.length}/{isReagent ? MAX_BOTTLE_PER_REAGENT_CONTAINER : MAX_BOTTLES_PER_AMEDITE_CONTAINER}

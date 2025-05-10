@@ -65,7 +65,7 @@ export const SensorNode = memo(({ id, data, selected }) => {
         }
 
         updateConfig("timeUnit", timeUnit)
-        updateConfig("time", currentTime)
+        updateConfig("time", Math.round(currentTime, 2))
     }
 
     return (
@@ -119,8 +119,6 @@ export const SensorNode = memo(({ id, data, selected }) => {
                     </span>
                 </div>
 
-                <Input label="Time" wrapperClassName="w-full" value={data?.config?.time ?? ""} onChange={(time) => updateConfig("time", time)} placeholder="Enter Time" />
-
                 <StyledDropdown
                     label="Time Unit"
                     options={[
@@ -131,6 +129,17 @@ export const SensorNode = memo(({ id, data, selected }) => {
                     placeholder="Select Time Unit"
                     onChange={(timeUnit) => handleSelectTimeUnit(timeUnit)}
                     value={data?.config?.timeUnit ?? null}
+                />
+
+                <Input
+                    label="Time"
+                    wrapperClassName="w-full"
+                    value={data?.config?.time ?? ""}
+                    onChange={(time) => updateConfig("time", time)}
+                    placeholder={`Enter Time in ${
+                        !!data?.config?.timeUnit ? (data?.config?.timeUnit === "minutes" ? "Minutes" : data?.config?.timeUnit === "seconds" ? "Seconds" : "Milli Seconds") : ""
+                    }`}
+                    rightFixItem={!!data?.config?.time && (data?.config?.timeUnit === "minutes" ? "min" : data?.config?.timeUnit === "seconds" ? "sec" : "ms")}
                 />
             </div>
 
