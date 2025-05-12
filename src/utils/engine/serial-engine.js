@@ -141,7 +141,9 @@ export class SerialEngine {
             try {
                 const result = await invoke("read_serial_response_within", { ms: delay })
 
-                this._log({ type: "response", content: `Delay read: ${result}` })
+                console.log(`result : `, `${result}`, `${result === true}`)
+
+                this._log({ type: "response", content: `Delay read: ###${result}xxx` })
 
                 if (result == "true") return
                 if (result == "false" || result === null) {

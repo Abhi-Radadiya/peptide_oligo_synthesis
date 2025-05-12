@@ -76,14 +76,6 @@ export const DelayBlock = memo(({ id, data, selected }) => {
                 </svg>
             </button>
 
-            <Input
-                label="Delay Time"
-                wrapperClassName="w-full"
-                value={data?.config?.delayTime ?? ""}
-                onChange={(delayTime) => updateConfig("delayTime", delayTime)}
-                placeholder="Enter Delay Time"
-            />
-
             <StyledDropdown
                 label="Time Unit"
                 options={[
@@ -94,6 +86,14 @@ export const DelayBlock = memo(({ id, data, selected }) => {
                 placeholder="Select Time Unit"
                 onChange={(timeUnit) => handleSelectTimeUnit(timeUnit)}
                 value={data?.config?.timeUnit ?? null}
+            />
+
+            <Input
+                label="Delay Time"
+                wrapperClassName="w-full"
+                value={data?.config?.delayTime ?? ""}
+                onChange={(delayTime) => updateConfig("delayTime", delayTime)}
+                placeholder="Enter Delay Time"
             />
 
             {/* Input and Output Handles */}

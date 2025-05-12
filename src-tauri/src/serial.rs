@@ -112,9 +112,9 @@ pub fn read_within(ms: u64) -> Result<Option<String>, String> {
                     response.extend_from_slice(&buf[..n]);
                     let msg = String::from_utf8_lossy(&response).to_lowercase();
 
+                    println!("Response: #{}X", msg);
+                    
                     return Ok(Some(msg));
-
-                    println!("Response: {}", msg);
 
                     response.clear();
                 }

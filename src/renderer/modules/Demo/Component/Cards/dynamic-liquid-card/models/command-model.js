@@ -9,7 +9,7 @@ export default function CommandModel({ onClose, commands }) {
     return (
         <>
             <ModelWrapper header="Commands" width="w-[400px]" onClose={onClose}>
-                <div>
+                <div className="h-[80vh] overflow-auto scrollbar-style">
                     <ul>
                         {commands.map((command, index) => {
                             return <li key={index}>{command}</li>

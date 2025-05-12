@@ -80,7 +80,10 @@ export const FlowListTable = () => {
                 </select>
             </div>
 
-            <div className="mt-4 bg-gray-100 p-3 rounded h-60 overflow-y-auto">
+            <div className="mt-4 bg-gray-100 p-3 rounded h-60 overflow-y-auto relative">
+                <button className="absolute top-2 right-2 hover:border-b border-neutral-800 pb-1" onClick={() => setResponseFromSerial([])}>
+                    Clear
+                </button>
                 <ul className="text-sm">
                     {responseFromSerial.map((log, index) => (
                         <li key={index} className={`mb-1 ${log.type === "error" ? "text-red-500" : "text-black"}`}>
@@ -88,7 +91,7 @@ export const FlowListTable = () => {
                         </li>
                     ))}
                 </ul>
-        </div>
+            </div>
 
             <h2 className="text-lg font-semibold mb-3 text-gray-700">Saved Synthesis Procedures</h2>
             {savedFlows?.length === 0 ? (

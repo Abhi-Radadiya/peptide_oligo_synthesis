@@ -23,6 +23,8 @@ import { addSynthesisProcedure, clearCurrentFlow, selectCurrentProcedureData, up
 import { Input } from "../../../../../Components/Input/Input"
 import { useExtractCommandData } from "./functions/extract-command-data"
 import CommandModel from "./models/command-model"
+// import { Panel, useReactFlow, getNodesBounds, getViewportForBounds } from "@xyflow/react"
+// import { toPng } from "html-to-image"
 
 export default function FlowBuilder() {
     const [nodes, setNodes, onNodesChange] = useNodesState([])
@@ -177,10 +179,42 @@ export default function FlowBuilder() {
         }
     }, [currentProcedure, setNodes, setEdges, updateNodeConfig, deleteNodeById])
 
+    function downloadImage(dataUrl) {
+        const a = document.createElement("a")
+
+        a.setAttribute("download", "reactflow.png")
+        a.setAttribute("href", dataUrl)
+        a.click()
+    }
+
+    const imageWidth = 1024
+    const imageHeight = 768
+
+    // const { getNodes } = useReactFlow()
+
+    // const onClick = () => {
+    //     const nodesBounds = getNodesBounds(getNodes())
+    //     const viewport = getViewportForBounds(nodesBounds, imageWidth, imageHeight, 0.5, 2)
+
+    //     toPng(document.querySelector(".react-flow__viewport"), {
+    //         backgroundColor: "#1a365d",
+    //         width: imageWidth,
+    //         height: imageHeight,
+    //         style: {
+    //             width: imageWidth,
+    //             height: imageHeight,
+    //             transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})`
+    //         }
+    //     }).then(downloadImage)
+    // }
+
     return (
         <>
             <div className="p-2 border-b flex gap-2">
                 <Input placeholder="Enter Flow Name" onChange={(flowName) => setName(flowName)} value={name} />
+                {/* <button className="download-btn xy-theme__button" onClick={onClick}>
+                    Download Image
+                </button> */}
                 <button onClick={handleNewFlow} className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700">
                     New Flow
                 </button>

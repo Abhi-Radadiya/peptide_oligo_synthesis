@@ -11,7 +11,7 @@
     "app": {
         "windows": [
             {
-                "title": "Peptidde Synthesizer",
+                "title": "Peptide Synthesizer",
                 "width": 800,
                 "height": 600,
                 "resizable": true,
