@@ -11,6 +11,8 @@ export const FlowListTable = () => {
 
     const [responseFromSerial, setResponseFromSerial] = useState([])
 
+    console.log(`responseFromSerial : `, responseFromSerial)
+
     const engine = useSerialEngine()
 
     const getAndSetPorts = async () => {
@@ -80,14 +82,17 @@ export const FlowListTable = () => {
                 </select>
             </div>
 
-            <div className="mt-4 bg-gray-100 p-3 rounded h-60 overflow-y-auto relative">
+            <div className="mt-4 bg-gray-100 p-3 rounded h-60 overflow-y-auto relative pt-10">
                 <button className="absolute top-2 right-2 hover:border-b border-neutral-800 pb-1" onClick={() => setResponseFromSerial([])}>
                     Clear
                 </button>
                 <ul className="text-sm">
                     {responseFromSerial.map((log, index) => (
-                        <li key={index} className={`mb-1 ${log.type === "error" ? "text-red-500" : "text-black"}`}>
-                            <strong>{log.type.toUpperCase()}:</strong> {log.content}
+                        <li key={index} className={`mb-1 ${log.type === "error" ? "text-red-500" : "text-black"} gap-4 w-full justify-between flex`}>
+                            <span>
+                                <strong>{log?.type?.toUpperCase()}:</strong> {log?.content}
+                            </span>
+                            <strong>Delay Time : {log?.time - responseFromSerial?.[index - 1]?.time} milliseconds </strong>
                         </li>
                     ))}
                 </ul>

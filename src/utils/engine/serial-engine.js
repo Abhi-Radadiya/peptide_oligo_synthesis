@@ -60,9 +60,11 @@ export class SerialEngine {
     async sendCommand(cmd) {
         if (!this.selectedPort) throw new Error("No port selected")
 
-        this._log({ type: "sent", content: cmd })
-        const response = await invoke("send_serial_command", { command: cmd })
-        this._log({ type: "response", content: response })
+        this._log({ type: "sent", content: cmd, time: Date.now() })
+
+        const response = invoke("send_serial_command", { command: cmd })
+
+        this._log({ type: "response", content: "No Response", time: Date.now() })
 
         return response
     }
@@ -87,7 +89,7 @@ export class SerialEngine {
         this.loop = loop
 
         do {
-            await this._execute()
+            this._execute()
         } while (this.loop && !this.stopped)
     }
 
@@ -100,13 +102,11 @@ export class SerialEngine {
 
             const command = this._commands[this._currentIndex++]
 
-            console.log(`command : `, command)
-
             const handlerKey = this._getCommandType(command)
 
             const handler = this._handlers[handlerKey] || this._handlers.DEFAULT
 
-            await handler(command)
+            handler(command)
         }
 
         this.running = false
@@ -126,32 +126,29 @@ export class SerialEngine {
     }
 
     async _handleDefault(command) {
-        console.log(`Sending: ${command}`)
-        await this.sendCommand(command)
+        this.sendCommand(command)
     }
 
     // Custom SN/SL handler (delay after sending)
     async _handleWithDelay(command) {
-        const response = await this.sendCommand(command)
+        this.sendCommand(command)
 
         const parts = command.replace(";", "").split(",")
         const delay = parseInt(parts[parts.length - 1], 10)
 
         if (!isNaN(delay)) {
             try {
-                const result = await invoke("read_serial_response_within", { ms: delay })
+                const result = invoke("read_serial_response_within", { ms: delay })
 
-                console.log(`result : `, `${result}`, `${result === true}`)
-
-                this._log({ type: "response", content: `Delay read: ###${result}xxx` })
+                this._log({ type: "response", content: `Delay read: ###${"result"}xxx`, time: Date.now() })
 
                 if (result == "true") return
                 if (result == "false" || result === null) {
                     this.stop()
-                    this._log({ type: "abort", content: "Aborted due to false or no response during delay" })
+                    this._log({ type: "abort", content: "Aborted due to false or no response during delay", time: Date.now() })
                 }
             } catch (err) {
-                this._log({ type: "error", content: err.toString() })
+                this._log({ type: "error", content: err.toString(), time: Date.now() })
                 this.stop()
             }
         }

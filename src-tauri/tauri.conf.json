@@ -5,8 +5,7 @@
     "identifier": "com.peptideSynthesizer.dev",
     "build": {
         "frontendDist": "../build",
-        "devUrl": "http://localhost:3000",
-        "beforeBuildCommand": "npm run build"
+        "devUrl": "http://localhost:3000"
     },
     "app": {
         "windows": [
