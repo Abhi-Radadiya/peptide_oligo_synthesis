@@ -21,6 +21,11 @@ export class SerialEngine {
         this._handlers["SL"] = this._handleWithDelay.bind(this)
 
         this._logger = null
+        this.universalDelayTime = 0
+    }
+
+    setUniversalDelayTime(ms) {
+        this.universalDelayTime = ms
     }
 
     setLogger(fn) {
@@ -60,11 +65,9 @@ export class SerialEngine {
     async sendCommand(cmd) {
         if (!this.selectedPort) throw new Error("No port selected")
 
-        this._log({ type: "sent", content: cmd, time: Date.now() })
+        this._log({ type: "sent", content: cmd, time: performance.now() })
 
         const response = invoke("send_serial_command", { command: cmd })
-
-        this._log({ type: "response", content: "No Response", time: Date.now() })
 
         return response
     }
@@ -89,7 +92,7 @@ export class SerialEngine {
         this.loop = loop
 
         do {
-            this._execute()
+            await this._execute()
         } while (this.loop && !this.stopped)
     }
 
@@ -106,7 +109,9 @@ export class SerialEngine {
 
             const handler = this._handlers[handlerKey] || this._handlers.DEFAULT
 
-            handler(command)
+            await new Promise((res) => setTimeout(res, this.universalDelayTime))
+
+            await handler(command)
         }
 
         this.running = false
@@ -121,8 +126,14 @@ export class SerialEngine {
 
     async _handleHold(command) {
         const [, timeStr] = command.split(" ")
+
         const time = parseInt(timeStr, 10) || 0
+
+        this._log({ type: "Hold start", content: "Holded", time: performance.now() })
+
         await new Promise((res) => setTimeout(res, time))
+
+        this._log({ type: "Hold End", content: "Hold over", time: performance.now() })
     }
 
     async _handleDefault(command) {
@@ -138,17 +149,17 @@ export class SerialEngine {
 
         if (!isNaN(delay)) {
             try {
-                const result = invoke("read_serial_response_within", { ms: delay })
-
-                this._log({ type: "response", content: `Delay read: ###${"result"}xxx`, time: Date.now() })
+                this._log({ type: "Serail sensor started", content: "*****", time: performance.now() })
+                const result = await invoke("read_serial_response_within", { ms: delay })
+                this._log({ type: "Close sensor", content: "*****", time: performance.now() })
 
                 if (result == "true") return
                 if (result == "false" || result === null) {
+                    this._log({ type: "abort", content: "Aborted due to false or no response during delay", time: performance.now() })
                     this.stop()
-                    this._log({ type: "abort", content: "Aborted due to false or no response during delay", time: Date.now() })
                 }
             } catch (err) {
-                this._log({ type: "error", content: err.toString(), time: Date.now() })
+                this._log({ type: "error", content: err.toString(), time: performance.now() })
                 this.stop()
             }
         }

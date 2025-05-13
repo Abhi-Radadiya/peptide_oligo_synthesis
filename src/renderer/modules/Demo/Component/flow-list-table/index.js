@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { deleteSynthesisProcedure, loadProcedure, selectSavedProcedures } from "../../../../../redux/reducers/synthesis-procedure"
 import { useSerialEngine } from "../../../../../utils/context/serial-engine-context"
+import { Input } from "../../../../Components/Input/Input"
 
 export const FlowListTable = () => {
     const savedFlows = useSelector(selectSavedProcedures)
@@ -10,8 +11,7 @@ export const FlowListTable = () => {
     const [selectedPort, setSelectedPort] = useState(null)
 
     const [responseFromSerial, setResponseFromSerial] = useState([])
-
-    console.log(`responseFromSerial : `, responseFromSerial)
+    const [interval, setInterval] = useState(0)
 
     const engine = useSerialEngine()
 
@@ -29,6 +29,10 @@ export const FlowListTable = () => {
         getAndSetPorts()
     }, [])
 
+    useEffect(() => {
+        engine.setUniversalDelayTime(interval)
+    }, [interval])
+
     const handleSelectPort = async (port) => {
         try {
             await engine.openPort(port)
@@ -43,7 +47,6 @@ export const FlowListTable = () => {
     }
 
     const handleRun = async (flow) => {
-        console.log(`flow.commands : `, flow.commands)
         engine.setLogger(appendLog)
 
         try {
@@ -65,24 +68,28 @@ export const FlowListTable = () => {
 
     return (
         <div className="p-4 border-t border-gray-300 bg-gray-50">
-            <div className="flex items-center space-x-4 mb-4">
-                <select
-                    onChange={(e) => handleSelectPort(e.target.value)}
-                    value={selectedPort ?? ""}
-                    className="border border-neutral-300 px-3 py-2 rounded-md bg-white shadow-sm focus:ring-2 focus:ring-blue-400"
-                >
-                    <option value="" disabled>
-                        Select Port
-                    </option>
-                    {ports.map((p) => (
-                        <option key={p} value={p}>
-                            {p}
+            <div className="flex flex-row items-center gap-6">
+                <div className="flex items-center space-x-4 mb-4">
+                    <select
+                        onChange={(e) => handleSelectPort(e.target.value)}
+                        value={selectedPort ?? ""}
+                        className="border border-neutral-300 px-3 py-2 rounded-md bg-white shadow-sm focus:ring-2 focus:ring-blue-400"
+                    >
+                        <option value="" disabled>
+                            Select Port
                         </option>
-                    ))}
-                </select>
+                        {ports.map((p) => (
+                            <option key={p} value={p}>
+                                {p}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <Input value={interval} onChange={setInterval} />
             </div>
 
-            <div className="mt-4 bg-gray-100 p-3 rounded h-60 overflow-y-auto relative pt-10">
+            <div className="mt-4 bg-gray-100 p-3 rounded h-full max-h-[50vh] overflow-y-auto relative pt-10">
                 <button className="absolute top-2 right-2 hover:border-b border-neutral-800 pb-1" onClick={() => setResponseFromSerial([])}>
                     Clear
                 </button>
@@ -92,7 +99,8 @@ export const FlowListTable = () => {
                             <span>
                                 <strong>{log?.type?.toUpperCase()}:</strong> {log?.content}
                             </span>
-                            <strong>Delay Time : {log?.time - responseFromSerial?.[index - 1]?.time} milliseconds </strong>
+                            {/* <strong>Delay Time : {log?.time - responseFromSerial?.[index - 1]?.time} milliseconds</strong> */}
+                            <strong> {log?.time - responseFromSerial?.[index - 1]?.time} </strong>
                         </li>
                     ))}
                 </ul>
