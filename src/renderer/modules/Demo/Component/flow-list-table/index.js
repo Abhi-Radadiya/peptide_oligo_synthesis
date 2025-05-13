@@ -89,7 +89,7 @@ export const FlowListTable = () => {
                 <Input value={interval} onChange={setInterval} />
             </div>
 
-            <div className="mt-4 bg-gray-100 p-3 rounded h-full max-h-[50vh] overflow-y-auto relative pt-10">
+            <div className="mt-4 bg-gray-100 p-3 rounded h-[40vh] overflow-auto relative pt-10">
                 <button className="absolute top-2 right-2 hover:border-b border-neutral-800 pb-1" onClick={() => setResponseFromSerial([])}>
                     Clear
                 </button>
@@ -99,8 +99,7 @@ export const FlowListTable = () => {
                             <span>
                                 <strong>{log?.type?.toUpperCase()}:</strong> {log?.content}
                             </span>
-                            {/* <strong>Delay Time : {log?.time - responseFromSerial?.[index - 1]?.time} milliseconds</strong> */}
-                            <strong> {log?.time - responseFromSerial?.[index - 1]?.time} </strong>
+                            <strong>Delay Time : {log?.time - responseFromSerial?.[index - 1]?.time} milliseconds</strong>
                         </li>
                     ))}
                 </ul>
