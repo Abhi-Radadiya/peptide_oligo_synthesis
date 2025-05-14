@@ -94,14 +94,18 @@ export const FlowListTable = () => {
                     Clear
                 </button>
                 <ul className="text-sm">
-                    {responseFromSerial.map((log, index) => (
-                        <li key={index} className={`mb-1 ${log.type === "error" ? "text-red-500" : "text-black"} gap-4 w-full justify-between flex`}>
-                            <span>
-                                <strong>{log?.type?.toUpperCase()}:</strong> {log?.content}
-                            </span>
-                            <strong>Delay Time : {log?.time - responseFromSerial?.[index - 1]?.time} milliseconds</strong>
-                        </li>
-                    ))}
+                    {responseFromSerial.map((log, index) => {
+                        console.log(log?.time - responseFromSerial?.[index - 1]?.time)
+
+                        return (
+                            <li key={index} className={`mb-1 ${log.type === "error" ? "text-red-500" : "text-black"} gap-4 w-full justify-between flex`}>
+                                <span>
+                                    <strong>{log?.type?.toUpperCase()}:</strong> {log?.content}
+                                </span>
+                                <strong>Delay Time : {log?.time - responseFromSerial?.[index - 1]?.time} </strong>
+                            </li>
+                        )
+                    })}
                 </ul>
             </div>
 

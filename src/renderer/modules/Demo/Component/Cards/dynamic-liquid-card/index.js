@@ -159,7 +159,6 @@ export default function FlowBuilder() {
 
     useEffect(() => {
         if (!!currentProcedure?.nodes) {
-            console.log("Loading procedure from Redux:", currentProcedure.id, currentProcedure.name)
             // IMPORTANT: Inject functions back into loaded nodes
             const nodesWithFunctions = currentProcedure?.nodes?.map((node) => ({
                 ...node,
@@ -230,6 +229,7 @@ export default function FlowBuilder() {
                 {/* React Flow Canvas */}
                 <div className="flex-grow h-screen bg-gradient-to-br from-gray-50 to-gray-200">
                     <ReactFlow
+                        className="border rounded-lg border-neutral-500"
                         nodes={nodes}
                         edges={edges}
                         onNodesChange={onNodesChange}

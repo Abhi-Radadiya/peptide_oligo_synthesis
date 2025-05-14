@@ -52,14 +52,13 @@ export const Sidebar = ({ onAddNode }) => {
     return (
         <>
             <div className="relative">
-                <PanelBottom onClick={() => setShowLeftPanel(!showLeftPanel)} className="z-10 cursor-pointer absolute top-0 ml-2 mt-2" />
+                <PanelBottom onClick={() => setShowLeftPanel(!showLeftPanel)} className="z-10 cursor-pointer absolute top-4 left-5 ml-2 mt-2 rotate-90" />
+
                 <div
-                    className={`h-full pt-4 pb-24 bg-gray-100 border-r border-gray-300 overflow-y-auto scrollbar-style shadow-lg transition-all duration-300 ${
+                    className={`h-full pt-16 pb-24 bg-gray-100 border-r border-gray-300 overflow-y-auto scrollbar-style shadow-lg transition-all duration-300 ${
                         showLeftPanel ? "p-4 w-64 " : "w-0"
                     }`}
                 >
-                    <h2 className="text-lg font-bold text-gray-800 mb-4">Components</h2>
-
                     <button
                         onClick={() => onAddNode("bottleNode", { config: { type: "bottleNode" } })}
                         className="block w-full text-left px-2 py-1 text-sm bg-white hover:bg-purple-100 border border-gray-200 rounded shadow-sm transition-colors duration-150 ease-in-out"
