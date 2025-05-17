@@ -111,20 +111,26 @@ export class SerialEngine {
                                 return
                             }
 
-                            this._log({
-                                type: "Execution started",
-                                content: `Command: ${cmd}`,
-                                time: performance.now(),
-                                thread: key.at(-1)
-                            })
-
                             // If it's a HOLD, we await it; otherwise we _executeCommand
                             if (/^HOLD\s*\d+;?$/.test(cmd)) {
                                 const ms = parseInt(cmd.match(/\d+/)[0], 10)
 
+                                this._log({
+                                    type: "Execution started",
+                                    content: `Command: ${cmd}`,
+                                    time: performance.now(),
+                                    thread: Number(key.at(-1))
+                                })
+
                                 await this._handleHold(ms)
                             } else {
                                 console.log(`cmd : `, cmd)
+                                // this._log({
+                                //     type: "Execution started",
+                                //     content: `Command: ${cmd}`,
+                                //     time: performance.now(),
+                                //     thread: Number(key.at(-1))
+                                // })
 
                                 await this._executeCommand(cmd, Number(key.at(-1)))
                             }
@@ -159,7 +165,7 @@ export class SerialEngine {
             case "SL":
                 return await this._handleWithDelay(cmd, thread)
             default:
-                return await this._handleDefault(cmd)
+                return await this._handleDefault(cmd, thread)
         }
     }
 
@@ -191,7 +197,13 @@ export class SerialEngine {
         return "DEFAULT"
     }
 
-    async _handleDefault(command) {
+    async _handleDefault(command, thread) {
+        this._log({
+            type: "Execution started",
+            content: `Command: ${command}`,
+            time: performance.now(),
+            thread
+        })
         this.sendCommand(command)
     }
 
@@ -206,7 +218,14 @@ export class SerialEngine {
         if (!isNaN(delay)) {
             try {
                 // const result = await invoke("read_serial_response_within", { ms: delay })
+                this._log({
+                    type: "Execution started",
+                    content: `Command: ${command}`,
+                    time: performance.now(),
+                    thread
+                })
 
+                this.sendCommand(command)
                 await new Promise((res) => setTimeout(res, delay))
             } catch (err) {
                 this._log({ type: "error", content: err.toString(), time: performance.now() })
