@@ -84,6 +84,8 @@ export const PumpNode = memo(({ id, data, selected }) => {
 
     return (
         <div className={`bg-pink-50 rounded-lg shadow border-2 ${selected ? "border-pink-600" : "border-pink-300"} p-3 w-80 transition-colors duration-150 ease-in-out relative`}>
+            {config.id}
+
             <div className="font-semibold text-sm mb-2 text-pink-800">{data.name || "Pump"}</div>
             <button
                 onClick={handleDelete}

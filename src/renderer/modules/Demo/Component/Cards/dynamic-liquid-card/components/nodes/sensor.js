@@ -70,6 +70,7 @@ export const SensorNode = memo(({ id, data, selected }) => {
 
     return (
         <div className={`bg-teal-50 rounded-lg shadow border-2 ${selected ? "border-teal-600" : "border-teal-300"} p-3 w-56 transition-colors duration-150 ease-in-out`}>
+            {data?.config?.id}
             <button
                 onClick={handleDelete}
                 className="absolute top-0 right-0 -mt-1 -mr-1 p-0.5 bg-red-500 text-white rounded-full text-xs leading-none hover:bg-red-700 transition-colors focus:outline-none"

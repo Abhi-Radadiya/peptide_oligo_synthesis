@@ -76,10 +76,15 @@ export const Sidebar = ({ onAddNode }) => {
                     </button>
 
                     {renderSection("Valves", valveOptions, "valveNode", (item) => ({ name: item.name, originalId: item.id }))}
+
                     {renderSection("Pumps", pumpOption, "pumpNode", (item) => ({ name: item.name, originalId: item.id }))}
+
                     {renderSection("Liquid Sensors", sensorOptions, "sensorNode", (item) => ({ name: item.name, originalId: item.id }))}
+
                     {renderSection("Column Valves", columnOptions, "columnNode", (item) => ({ name: item.name, originalId: item.id }))}
+
                     {renderSection("Waste Valves", wasteOption, "wasteValveNode", (item) => ({ name: item.name, originalId: item.id }))}
+
                 </div>
             </div>
         </>

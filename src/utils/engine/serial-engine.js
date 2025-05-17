@@ -65,7 +65,7 @@ export class SerialEngine {
     async sendCommand(cmd) {
         if (!this.selectedPort) throw new Error("No port selected")
 
-        this._log({ type: "sent", content: cmd, time: performance.now() })
+        // this._log({ type: "sent", content: cmd, time: performance.now() })
 
         const response = invoke("send_serial_command", { command: cmd })
 
@@ -80,20 +80,87 @@ export class SerialEngine {
         return this.selectedPort
     }
 
-    // FLOW EXECUTION METHODS
-    async run(commands, { loop = false } = {}) {
-        if (!Array.isArray(commands)) throw new Error("Commands must be an array")
+    async _handleHold(timeToHold) {
+        await new Promise((res) => setTimeout(res, timeToHold))
+    }
 
-        this._commands = commands
-        this._currentIndex = 0
+    async run(commandObj, { loop = false } = {}) {
+        if (!commandObj || typeof commandObj !== "object" || Array.isArray(commandObj) || !Object.keys(commandObj).length) {
+            throw new Error("Commands must be a non-empty object of arrays")
+        }
+
         this.running = true
-        this.paused = false
         this.stopped = false
+        this.paused = false
         this.loop = loop
 
+        const threadKeys = Object.keys(commandObj)
+        const maxLen = Math.max(...threadKeys.map((k) => commandObj[k].length))
+
         do {
-            await this._execute()
+            const threadPromises = threadKeys.map(async (key) => {
+                let chain = Promise.resolve() // Start an independent promise chain for each thread
+
+                for (let i = 0; i < maxLen; i++) {
+                    const cmd = commandObj[key][i] ?? null
+
+                    // Immediately chain the next command to the thread's current promise
+                    chain = chain
+                        .then(async () => {
+                            if (!cmd) {
+                                return
+                            }
+
+                            this._log({
+                                type: "Execution started",
+                                content: `Command: ${cmd}`,
+                                time: performance.now(),
+                                thread: key.at(-1)
+                            })
+
+                            // If it's a HOLD, we await it; otherwise we _executeCommand
+                            if (/^HOLD\s*\d+;?$/.test(cmd)) {
+                                const ms = parseInt(cmd.match(/\d+/)[0], 10)
+
+                                await this._handleHold(ms)
+                            } else {
+                                console.log(`cmd : `, cmd)
+
+                                await this._executeCommand(cmd, Number(key.at(-1)))
+                            }
+                        })
+                        .catch((error) => {
+                            console.error(`Thread ${key} error at index ${i}:`, error)
+                            this.stopped = true
+                            throw error
+                        })
+                }
+                return chain // Return the final promise for this thread
+            })
+
+            // Wait for all threads to complete their entire sequence of commands
+            // in this pass before potentially looping again.
+            await Promise.all(threadPromises)
+
+            console.log("--- All threads completed one full pass ---")
         } while (this.loop && !this.stopped)
+
+        this.running = false
+        console.log("Command processor finished.")
+    }
+
+    async _executeCommand(cmd, thread) {
+        const type = this._getCommandType(cmd)
+
+        switch (type) {
+            case "HOLD":
+                return await this._handleHold(cmd)
+            case "SN":
+            case "SL":
+                return await this._handleWithDelay(cmd, thread)
+            default:
+                return await this._handleDefault(cmd)
+        }
     }
 
     async _execute() {
@@ -124,40 +191,23 @@ export class SerialEngine {
         return "DEFAULT"
     }
 
-    async _handleHold(command) {
-        const [, timeStr] = command.split(" ")
-
-        const time = parseInt(timeStr, 10) || 0
-
-        this._log({ type: "Hold start", content: "Holded", time: performance.now() })
-
-        await new Promise((res) => setTimeout(res, time))
-
-        this._log({ type: "Hold End", content: "Hold over", time: performance.now() })
-    }
-
     async _handleDefault(command) {
         this.sendCommand(command)
     }
 
     // Custom SN/SL handler (delay after sending)
-    async _handleWithDelay(command) {
+    async _handleWithDelay(command, thread) {
         this.sendCommand(command)
 
         const parts = command.replace(";", "").split(",")
+
         const delay = parseInt(parts[parts.length - 1], 10)
 
         if (!isNaN(delay)) {
             try {
-                this._log({ type: "Serail sensor started", content: "*****", time: performance.now() })
-                const result = await invoke("read_serial_response_within", { ms: delay })
-                this._log({ type: "Close sensor", content: "*****", time: performance.now() })
+                // const result = await invoke("read_serial_response_within", { ms: delay })
 
-                if (result == "true") return
-                if (result == "false" || result === null) {
-                    this._log({ type: "abort", content: "Aborted due to false or no response during delay", time: performance.now() })
-                    this.stop()
-                }
+                await new Promise((res) => setTimeout(res, delay))
             } catch (err) {
                 this._log({ type: "error", content: err.toString(), time: performance.now() })
                 this.stop()
