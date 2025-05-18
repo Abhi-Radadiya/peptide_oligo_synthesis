@@ -256,7 +256,7 @@
 
 // src-tauri/src/main.rs
 
-// #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use serde::{Deserialize, Serialize};
 use serialport::{SerialPort, SerialPortBuilder};
@@ -273,9 +273,8 @@ pub struct CommandsInput {
     // Each thread contains a vector of optional strings (for commands or null)
     #[serde(flatten)]
     pub threads: HashMap<String, Vec<Option<String>>>,
-    pub port_name: String,               // Add port_name to the input
-    pub baud_rate: u32,                  // Add baud_rate to the input
-    pub universal_delay_ms: Option<u64>, // <- Add this
+    pub port_name: String, // Add port_name to the input
+    pub baud_rate: u32,    // Add baud_rate to the input
 }
 
 // Tauri command to handle incoming commands from React
@@ -310,122 +309,99 @@ async fn execute_serial_commands(window: Window, input: CommandsInput) -> Result
 
     // Iterate over each thread (e.g., "thread1", "thread2")
     for (thread_name, command_list) in input.threads {
-        let command_list = command_list.clone();
-        let thread_shared_port = Arc::clone(&shared_port);
-        let window_clone = window.clone(); // clone the window for use inside the async block
+        let command_list = command_list.clone(); // Clone to move into the async block
+        let thread_shared_port = Arc::clone(&shared_port); // Clone the Arc for each new task
 
+        // Spawn a new asynchronous task for each thread
         let handle = tokio::spawn(async move {
-            let emit_log = |msg: &str| {
-                println!("{}", msg); // still print to terminal
-                let _ = window_clone.emit("serial-log", msg.to_string()); // ignore error if no listener
-            };
-
-            emit_log(&format!("Starting thread: {}", thread_name));
+            println!("Starting thread: {}", thread_name);
 
             for (index, command_option) in command_list.into_iter().enumerate() {
                 if let Some(command) = command_option {
-                    let start_time = Instant::now();
-
-                    emit_log(&format!(
+                    let start_time = Instant::now(); // Start timer for this command
+                    println!(
                         "[{}] Thread '{}' executing command: {}",
                         index, thread_name, command
-                    ));
+                    );
 
                     let mut should_hold = false;
                     let mut hold_time_ms: u64 = 0;
 
                     if command.starts_with("HOLD ") {
                         let parts: Vec<&str> = command.split_whitespace().collect();
-                        if parts.len() == 2 && parts[1].ends_with(';') {
+                        if parts.len() == 2 && parts[1].ends_with(";") {
                             let hold_time_str = parts[1].trim_end_matches(';');
                             if let Ok(time) = hold_time_str.parse::<u64>() {
                                 should_hold = true;
                                 hold_time_ms = time;
                             } else {
-                                emit_log(&format!(
-                                    "[{}] Thread '{}': Invalid HOLD time: {}",
+                                eprintln!(
+                                    "[{}] Thread '{}': Invalid HOLD time format in command: {}",
                                     index, thread_name, command
-                                ));
+                                );
                             }
                         } else {
-                            emit_log(&format!(
-                                "[{}] Thread '{}': Invalid HOLD format: {}",
-                                index, thread_name, command
-                            ));
+                            eprintln!("[{}] Thread '{}': Invalid HOLD command format (missing semicolon or extra parts): {}", index, thread_name, command);
                         }
                     } else if command.contains(",SL,") || command.contains(",SN,") {
+                        // For Z,1,SL,4,200,10000; or Z,2,SN,6,200,5000;
                         let parts: Vec<&str> = command.trim_end_matches(';').split(',').collect();
                         if let Some(last_part) = parts.last() {
                             if let Ok(time) = last_part.parse::<u64>() {
                                 should_hold = true;
                                 hold_time_ms = time;
                             } else {
-                                emit_log(&format!(
-                                    "[{}] Thread '{}': Could not parse hold time: {}",
-                                    index, thread_name, command
-                                ));
+                                eprintln!("[{}] Thread '{}': Could not parse last part as time for SL/SN command: {}", index, thread_name, command);
                             }
                         } else {
-                            emit_log(&format!(
-                                "[{}] Thread '{}': Malformed SL/SN command: {}",
-                                index, thread_name, command
-                            ));
+                            eprintln!("[{}] Thread '{}': Malformed SL/SN command (no parts after splitting by comma): {}", index, thread_name, command);
                         }
                     }
 
                     {
-                        let mut serial_port = thread_shared_port.lock().unwrap();
-                        let command_bytes = format!("{}\r\n", command).into_bytes();
+                        let mut serial_port = thread_shared_port.lock().unwrap(); // Acquire lock
 
+                        let command_bytes = format!("{}\r\n", command).into_bytes(); // Example: appending CR+LF
                         match serial_port.write_all(&command_bytes) {
                             Ok(_) => {}
                             Err(e) => {
-                                emit_log(&format!(
-                                    "[{}] Thread '{}': Failed to write to port: {}",
+                                eprintln!(
+                                    "[{}] Thread '{}': Failed to write to serial port: {}",
                                     index, thread_name, e
-                                ));
+                                );
                                 return Err(format!(
-                                    "Write error for thread {}: {}",
-                                    thread_name, e
+                                    "Failed to write command '{}' for thread {}: {}",
+                                    command, thread_name, e
                                 ));
                             }
                         }
-                    }
+                    } // Lock is released here
 
                     if should_hold {
-                        emit_log(&format!(
+                        println!(
                             "[{}] Thread '{}' holding for {} ms...",
                             index, thread_name, hold_time_ms
-                        ));
+                        );
+                        // This sleep is non-blocking for other tokio tasks
                         sleep(Duration::from_millis(hold_time_ms)).await;
-                        emit_log(&format!("[{}] Thread '{}' resumed.", index, thread_name));
+                        println!("[{}] Thread '{}' resumed.", index, thread_name);
                     }
 
+                    // Record completion time for the command
                     let duration = start_time.elapsed();
-
-                    emit_log(&format!(
+                    println!(
                         "[{}] Thread '{}' command '{}' completed in {:?}",
                         index, thread_name, command, duration
-                    ));
-
-                    if let Some(delay) = input.universal_delay_ms {
-                        emit_log(&format!(
-                            "[{}] Thread '{}' applying universal delay of {} ms...",
-                            index, thread_name, delay
-                        ));
-                        sleep(Duration::from_millis(delay)).await;
-                    }
+                    );
                 } else {
-                    emit_log(&format!(
+                    println!(
                         "[{}] Thread '{}' skipping null command.",
                         index, thread_name
-                    ));
+                    );
                 }
             }
-
             Ok(format!("Thread '{}' finished execution.", thread_name))
         });
-
         join_handles.push(handle);
     }
 

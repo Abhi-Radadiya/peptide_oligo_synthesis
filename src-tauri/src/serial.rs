@@ -1,12 +1,11 @@
-use std::sync::{Mutex, Arc};
-use std::time::Duration;
-use std::io::{Write, Read};
 use once_cell::sync::Lazy;
-use serialport::{SerialPort, ClearBuffer};
+use serialport::{ClearBuffer, SerialPort};
+use std::io::{Read, Write};
+use std::sync::{Arc, Mutex};
+use std::time::Duration;
 
-static SERIAL_STATE: Lazy<Arc<Mutex<SerialState>>> = Lazy::new(|| {
-    Arc::new(Mutex::new(SerialState::default()))
-});
+static SERIAL_STATE: Lazy<Arc<Mutex<SerialState>>> =
+    Lazy::new(|| Arc::new(Mutex::new(SerialState::default())));
 
 struct SerialState {
     port_name: Option<String>,
@@ -54,7 +53,6 @@ fn get_or_open_port<'a>() -> Result<std::sync::MutexGuard<'a, SerialState>, Stri
     Ok(state)
 }
 
-
 pub fn send_command(message: &str) -> Result<String, String> {
     let mut state = get_or_open_port()?; // Now returns locked state
 
@@ -65,26 +63,10 @@ pub fn send_command(message: &str) -> Result<String, String> {
 
         // Try reading with a small non-blocking loop
         let mut buf = [0u8; 128];
-        let mut response = Vec::new();
+
         let start = std::time::Instant::now();
 
-        while start.elapsed() < Duration::from_millis(200) {
-            match port.read(&mut buf) {
-                Ok(n) if n > 0 => {
-                    response.extend_from_slice(&buf[..n]);
-                    break;
-                }
-                Err(ref e) if e.kind() == std::io::ErrorKind::TimedOut => continue,
-                Err(_) => break,
-                _ => {}
-            }
-        }
-
-        if !response.is_empty() {
-            Ok(String::from_utf8_lossy(&response).to_string())
-        } else {
-            Ok("Message sent. No response.".into())
-        }
+        Ok("Message sent. No response.".into())
     } else {
         Err("Serial port is not open.".into())
     }
@@ -113,7 +95,7 @@ pub fn read_within(ms: u64) -> Result<Option<String>, String> {
                     let msg = String::from_utf8_lossy(&response).to_lowercase();
 
                     println!("Response: #{}X", msg);
-                    
+
                     return Ok(Some(msg));
 
                     response.clear();

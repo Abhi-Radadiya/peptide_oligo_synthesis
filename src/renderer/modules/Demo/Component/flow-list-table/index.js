@@ -70,7 +70,7 @@ export const FlowListTable = () => {
         const commands = generateCommands(flow.commands)
 
         try {
-            await engine.run(commands, { loop: false })
+            await engine.run({ loop: false, commands })
         } catch (err) {
             appendLog({ type: "error", content: err.toString() })
         }
@@ -86,24 +86,24 @@ export const FlowListTable = () => {
         dispatch(loadProcedure(flowId))
     }
 
-    const logsByThread = responseFromSerial.reduce((acc, log) => {
-        if (!acc[log.thread]) {
-            acc[log.thread] = []
-        }
-        acc[log.thread].push(log)
-        return acc
-    }, {})
+    // const logsByThread = responseFromSerial.reduce((acc, log) => {
+    //     if (!acc[log.thread]) {
+    //         acc[log.thread] = []
+    //     }
+    //     acc[log.thread].push(log)
+    //     return acc
+    // }, {})
 
-    // Calculate relative time for each log within its thread
-    Object.keys(logsByThread).forEach((thread) => {
-        logsByThread[thread].forEach((log, index) => {
-            if (index > 0) {
-                log.relativeTime = log.time - logsByThread[thread][index - 1].time
-            } else {
-                log.relativeTime = 0
-            }
-        })
-    })
+    // // Calculate relative time for each log within its thread
+    // Object.keys(logsByThread).forEach((thread) => {
+    //     logsByThread[thread].forEach((log, index) => {
+    //         if (index > 0) {
+    //             log.relativeTime = log.time - logsByThread[thread][index - 1].time
+    //         } else {
+    //             log.relativeTime = 0
+    //         }
+    //     })
+    // })
 
     return (
         <div className="p-4 border-t border-gray-300 bg-gray-50">
@@ -143,17 +143,17 @@ export const FlowListTable = () => {
                                 } gap-4 w-full justify-between flex odd:bg-gray-200 hover:bg-green-300 px-2 py-1 rounded-lg`}
                             >
                                 <span>
-                                    <strong>{log?.type?.toUpperCase()}:</strong>
-                                    {log?.content}
+                                    <strong>{log?.type?.toUpperCase()}</strong>
+                                    {log}
                                 </span>
-                                <strong>Delay Time : {log?.time - responseFromSerial?.[index - 1]?.time} </strong>
+                                {/* <strong>Delay Time : {log?.time - responseFromSerial?.[index - 1]?.time} </strong> */}
                             </li>
                         )
                     })}
                 </ul>
             </div>
 
-            {Object.keys(logsByThread).map((thread) => (
+            {/* {Object.keys(logsByThread).map((thread) => (
                 <div key={thread} className="mb-4">
                     <h2 className="text-lg font-bold mb-2">Thread {thread}</h2>
                     <table className="min-w-full bg-white border border-gray-200">
@@ -179,7 +179,7 @@ export const FlowListTable = () => {
                         </tbody>
                     </table>
                 </div>
-            ))}
+            ))} */}
 
             <h2 className="text-lg font-semibold mb-3 text-gray-700">Saved Synthesis Procedures</h2>
             {savedFlows?.length === 0 ? (

@@ -1,4 +1,5 @@
 import { invoke } from "@tauri-apps/api/core"
+import { listen } from "@tauri-apps/api/event"
 
 export class SerialEngine {
     constructor() {
@@ -22,6 +23,12 @@ export class SerialEngine {
 
         this._logger = null
         this.universalDelayTime = 0
+
+        this._runHandle = null
+
+        listen("serial-log", (event) => {
+            this._log(event.payload)
+        })
     }
 
     setUniversalDelayTime(ms) {
@@ -65,8 +72,6 @@ export class SerialEngine {
     async sendCommand(cmd) {
         if (!this.selectedPort) throw new Error("No port selected")
 
-        // this._log({ type: "sent", content: cmd, time: performance.now() })
-
         const response = invoke("send_serial_command", { command: cmd })
 
         return response
@@ -84,76 +89,78 @@ export class SerialEngine {
         await new Promise((res) => setTimeout(res, timeToHold))
     }
 
-    async run(commandObj, { loop = false } = {}) {
-        if (!commandObj || typeof commandObj !== "object" || Array.isArray(commandObj) || !Object.keys(commandObj).length) {
-            throw new Error("Commands must be a non-empty object of arrays")
-        }
+    // async run(commandObj, { loop = false } = {}) {
+    //     console.log(`commandObj : `, commandObj)
 
-        this.running = true
-        this.stopped = false
-        this.paused = false
-        this.loop = loop
+    //     if (!commandObj || typeof commandObj !== "object" || Array.isArray(commandObj) || !Object.keys(commandObj).length) {
+    //         throw new Error("Commands must be a non-empty object of arrays")
+    //     }
 
-        const threadKeys = Object.keys(commandObj)
-        const maxLen = Math.max(...threadKeys.map((k) => commandObj[k].length))
+    //     this.running = true
+    //     this.stopped = false
+    //     this.paused = false
+    //     this.loop = loop
 
-        do {
-            const threadPromises = threadKeys.map(async (key) => {
-                let chain = Promise.resolve() // Start an independent promise chain for each thread
+    //     const threadKeys = Object.keys(commandObj)
+    //     const maxLen = Math.max(...threadKeys.map((k) => commandObj[k].length))
 
-                for (let i = 0; i < maxLen; i++) {
-                    const cmd = commandObj[key][i] ?? null
+    //     do {
+    //         const threadPromises = threadKeys.map(async (key) => {
+    //             let chain = Promise.resolve() // Start an independent promise chain for each thread
 
-                    // Immediately chain the next command to the thread's current promise
-                    chain = chain
-                        .then(async () => {
-                            if (!cmd) {
-                                return
-                            }
+    //             for (let i = 0; i < maxLen; i++) {
+    //                 const cmd = commandObj[key][i] ?? null
 
-                            // If it's a HOLD, we await it; otherwise we _executeCommand
-                            if (/^HOLD\s*\d+;?$/.test(cmd)) {
-                                const ms = parseInt(cmd.match(/\d+/)[0], 10)
+    //                 // Immediately chain the next command to the thread's current promise
+    //                 chain = chain
+    //                     .then(async () => {
+    //                         if (!cmd) {
+    //                             return
+    //                         }
 
-                                this._log({
-                                    type: "Execution started",
-                                    content: `Command: ${cmd}`,
-                                    time: performance.now(),
-                                    thread: Number(key.at(-1))
-                                })
+    //                         // If it's a HOLD, we await it; otherwise we _executeCommand
+    //                         if (/^HOLD\s*\d+;?$/.test(cmd)) {
+    //                             const ms = parseInt(cmd.match(/\d+/)[0], 10)
 
-                                await this._handleHold(ms)
-                            } else {
-                                console.log(`cmd : `, cmd)
-                                // this._log({
-                                //     type: "Execution started",
-                                //     content: `Command: ${cmd}`,
-                                //     time: performance.now(),
-                                //     thread: Number(key.at(-1))
-                                // })
+    //                             this._log({
+    //                                 type: "Execution started",
+    //                                 content: `Command: ${cmd}`,
+    //                                 time: performance.now(),
+    //                                 thread: Number(key.at(-1))
+    //                             })
 
-                                await this._executeCommand(cmd, Number(key.at(-1)))
-                            }
-                        })
-                        .catch((error) => {
-                            console.error(`Thread ${key} error at index ${i}:`, error)
-                            this.stopped = true
-                            throw error
-                        })
-                }
-                return chain // Return the final promise for this thread
-            })
+    //                             await this._handleHold(ms)
+    //                         } else {
+    //                             console.log(`cmd : `, cmd)
+    //                             // this._log({
+    //                             //     type: "Execution started",
+    //                             //     content: `Command: ${cmd}`,
+    //                             //     time: performance.now(),
+    //                             //     thread: Number(key.at(-1))
+    //                             // })
 
-            // Wait for all threads to complete their entire sequence of commands
-            // in this pass before potentially looping again.
-            await Promise.all(threadPromises)
+    //                             await this._executeCommand(cmd, Number(key.at(-1)))
+    //                         }
+    //                     })
+    //                     .catch((error) => {
+    //                         console.error(`Thread ${key} error at index ${i}:`, error)
+    //                         this.stopped = true
+    //                         throw error
+    //                     })
+    //             }
+    //             return chain // Return the final promise for this thread
+    //         })
 
-            console.log("--- All threads completed one full pass ---")
-        } while (this.loop && !this.stopped)
+    //         // Wait for all threads to complete their entire sequence of commands
+    //         // in this pass before potentially looping again.
+    //         await Promise.all(threadPromises)
 
-        this.running = false
-        console.log("Command processor finished.")
-    }
+    //         console.log("--- All threads completed one full pass ---")
+    //     } while (this.loop && !this.stopped)
+
+    //     this.running = false
+    //     console.log("Command processor finished.")
+    // }
 
     async _executeCommand(cmd, thread) {
         const type = this._getCommandType(cmd)
@@ -234,29 +241,104 @@ export class SerialEngine {
         }
     }
 
-    pause() {
-        if (!this.running || this.paused) return
-        this.paused = true
-    }
+    // pause() {
+    //     if (!this.running || this.paused) return
+    //     this.paused = true
+    // }
 
-    resume() {
-        if (!this.paused) return
-        this.paused = false
-        if (this._resolvePause) {
-            this._resolvePause()
-            this._resolvePause = null
+    // resume() {
+    //     if (!this.paused) return
+    //     this.paused = false
+    //     if (this._resolvePause) {
+    //         this._resolvePause()
+    //         this._resolvePause = null
+    //     }
+    // }
+
+    // stop() {
+    //     this.running = false
+    //     this.paused = false
+    //     this.stopped = true
+    //     this._commands = []
+    //     this._currentIndex = 0
+    //     if (this._resolvePause) {
+    //         this._resolvePause()
+    //         this._resolvePause = null
+    //     }
+    // }
+
+    /** Start running all threads in Rust */
+    // async run({ commands, loop = false }) {
+    //     if (this._runHandle !== null) {
+    //         throw new Error("Already running – stop first")
+    //     }
+
+    //     const serialPortName = "COM3" // The port where your Arduino is connected
+    //     const baudRate = 115200 // The baud rate of your Arduino
+
+    //     const commandsData = {
+    //         ...commands,
+    //         port_name: serialPortName, // Pass the port name
+    //         baud_rate: baudRate // Pass the baud rate
+    //     }
+
+    //     console.log(`commands, loop : `, commands, loop)
+
+    //     // One IPC, zero per-command round-trips
+    //     this._runHandle = await invoke("execute_serial_commands", { input: commandsData })
+    // }
+
+    async run({ commands, loop = false }) {
+        if (this._runHandle !== null) {
+            throw new Error("Already running – stop first")
+        }
+
+        const serialPortName = "COM3" // The port where your Arduino is connected
+        const baudRate = 115200 // The baud rate of your Arduino
+
+        const commandsData = {
+            ...commands,
+            port_name: serialPortName, // Pass the port name
+            baud_rate: baudRate, // Pass the baud rate
+            universal_delay_ms: Number(this.universalDelayTime) // Pass the universal delay
+        }
+
+        this._log(`Starting command execution. Commands: ${JSON.stringify(commandsData)}`)
+
+        try {
+            // One IPC, zero per-command round-trips
+            this._runHandle = await invoke("execute_serial_commands", { input: commandsData })
+
+            listen("serial-log", (event) => {
+                console.log(event.payload)
+            })
+
+            this._log("Command execution initiated successfully.")
+        } catch (error) {
+            this._log(`Error initiating command execution: ${error}`)
+            this._runHandle = null // Reset _runHandle on error
         }
     }
 
-    stop() {
-        this.running = false
-        this.paused = false
-        this.stopped = true
-        this._commands = []
-        this._currentIndex = 0
-        if (this._resolvePause) {
-            this._resolvePause()
-            this._resolvePause = null
+    /** Pause the running threads */
+    async pause() {
+        if (this._runHandle !== null) {
+            await invoke("pause_serial", { handle: this._runHandle })
+        }
+    }
+
+    /** Resume after a pause */
+    async resume() {
+        if (this._runHandle !== null) {
+            await invoke("resume_serial", { handle: this._runHandle })
+        }
+    }
+
+    /** Stop everything and release resources */
+    async stop() {
+        if (this._runHandle !== null) {
+            await invoke("stop_serial", { handle: this._runHandle })
+            this._runHandle = null
         }
     }
 }
