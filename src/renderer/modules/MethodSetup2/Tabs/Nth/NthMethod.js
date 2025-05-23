@@ -13,6 +13,10 @@ export default function NthMethod() {
 
     return (
         <>
+            <div className="py-6 border-t border-neutral-500 mt-8">
+                <span className="ml-4 text-2xl font-medium">Nth Step</span>
+            </div>
+
             <CheckAdditionComponent />
 
             <DeBlock />

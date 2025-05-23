@@ -1,61 +1,61 @@
-import React, { useState } from "react";
-import _ from "lodash";
-import { useDispatch, useSelector } from "react-redux";
-import { addReagent, updateReagent, deleteReagents } from "../../../../../../redux/reducers/settings/reagent";
-import { Button } from "../../../../../Components/Buttons/Buttons";
-import ConfirmationPopup from "../../../../../Components/Popup/ConfirmationPopup";
-import { useWindowSize } from "@uidotdev/usehooks";
-import AddConfigurationPopup from "../../Model/AddConfigurationPopup";
-import { openToast } from "../../../../../../redux/reducers/toastStateReducer/toastStateReducer";
-import { SUCCESS } from "../../../../../Helpers/Icons";
+import React, { useState } from "react"
+import _ from "lodash"
+import { useDispatch, useSelector } from "react-redux"
+import { addReagent, updateReagent, deleteReagents } from "../../../../../../redux/reducers/settings/reagent"
+import { Button } from "../../../../../Components/Buttons/Buttons"
+import ConfirmationPopup from "../../../../../Components/Popup/ConfirmationPopup"
+import { useWindowSize } from "@uidotdev/usehooks"
+import AddConfigurationPopup from "../../Model/AddConfigurationPopup"
+import { openToast } from "../../../../../../redux/reducers/toastStateReducer/toastStateReducer"
+import { SUCCESS } from "../../../../../Helpers/Icons"
 
 const ReagentConfiguration = () => {
-    const data = useSelector((state) => state.reagent.reagentList);
+    const data = useSelector((state) => state.reagent.reagentList)
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editReagentDetails, setEditReagentDetails] = useState({});
-    const [selectedRows, setSelectedRows] = useState([]);
-    const [showConfirmation, setShowConfirmation] = useState(false);
-    const { height: windowHeight } = useWindowSize();
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [editReagentDetails, setEditReagentDetails] = useState({})
+    const [selectedRows, setSelectedRows] = useState([])
+    const [showConfirmation, setShowConfirmation] = useState(false)
+    const { height: windowHeight } = useWindowSize()
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch()
 
     const updateDetails = async (data) => {
-        dispatch(updateReagent(data));
-        setIsModalOpen(false);
-        setEditReagentDetails({});
-        dispatch(openToast({ text: "Solvent updated successfully.", icon: SUCCESS }));
-    };
+        dispatch(updateReagent(data))
+        setIsModalOpen(false)
+        setEditReagentDetails({})
+        dispatch(openToast({ text: "Solvent updated successfully.", icon: SUCCESS }))
+    }
 
     const addNewDetails = async (data) => {
-        dispatch(addReagent(data));
-        setIsModalOpen(false);
-        setEditReagentDetails({});
-        dispatch(openToast({ text: "Solvent created successfully.", icon: SUCCESS }));
-    };
+        dispatch(addReagent(data))
+        setIsModalOpen(false)
+        setEditReagentDetails({})
+        dispatch(openToast({ text: "Solvent created successfully.", icon: SUCCESS }))
+    }
 
     const handleForm = async (data) => {
-        _.isEmpty(editReagentDetails) ? addNewDetails(data) : updateDetails(data);
-    };
+        _.isEmpty(editReagentDetails) ? addNewDetails(data) : updateDetails(data)
+    }
 
     const handleEdit = (item) => {
-        setEditReagentDetails(item);
-        setIsModalOpen(true);
-    };
+        setEditReagentDetails(item)
+        setIsModalOpen(true)
+    }
 
     const handleRowSelect = (id) => {
-        setSelectedRows((prevSelected) => (prevSelected.includes(id) ? prevSelected.filter((rowId) => rowId !== id) : [...prevSelected, id]));
-    };
+        setSelectedRows((prevSelected) => (prevSelected.includes(id) ? prevSelected.filter((rowId) => rowId !== id) : [...prevSelected, id]))
+    }
 
     const handleBulkDelete = () => {
-        dispatch(deleteReagents(selectedRows));
-        setSelectedRows([]);
-        setShowConfirmation(false);
-        dispatch(openToast({ text: "Solvent deleted successfully.", icon: SUCCESS }));
-    };
+        dispatch(deleteReagents(selectedRows))
+        setSelectedRows([])
+        setShowConfirmation(false)
+        dispatch(openToast({ text: "Solvent deleted successfully.", icon: SUCCESS }))
+    }
 
     return (
-        <div className="overflow-x-auto p-4 border border-neutral-300 rounded-xl bg-neutral-50">
+        <div className="overflow-hidden p-4 border border-neutral-300 rounded-xl bg-neutral-50" style={{ height: windowHeight - 208 }}>
             <div className="justify-between flex mb-4 items-center border-b border-neutral-300 pb-4">
                 <div className="flex flex-row items-center">
                     <Button
@@ -72,7 +72,7 @@ const ReagentConfiguration = () => {
                 <Button label="Add Solvent" onClick={() => setIsModalOpen(true)} />
             </div>
 
-            <div className="overflow-auto scrollbar-style" style={{ height: windowHeight - 270 }}>
+            <div className="overflow-auto scrollbar-style" style={{ height: windowHeight - 310 }}>
                 <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
                     <thead className="bg-gray-200">
                         <tr>
@@ -95,12 +95,7 @@ const ReagentConfiguration = () => {
 
                                     <td className="py-3 px-6">
                                         <div className="flex flex-row items-center gap-2">
-                                            <input
-                                                type="checkbox"
-                                                className="h-4 w-4"
-                                                checked={selectedRows.includes(item.id)}
-                                                onChange={() => handleRowSelect(item.id)}
-                                            />
+                                            <input type="checkbox" className="h-4 w-4" checked={selectedRows.includes(item.id)} onChange={() => handleRowSelect(item.id)} />
                                             {item.full_name}
                                         </div>
                                     </td>
@@ -133,8 +128,8 @@ const ReagentConfiguration = () => {
                     onSubmit={handleForm}
                     data={data}
                     togglePopup={() => {
-                        setIsModalOpen(false);
-                        setEditReagentDetails({});
+                        setIsModalOpen(false)
+                        setEditReagentDetails({})
                     }}
                     type="Solvent"
                 />
@@ -150,7 +145,7 @@ const ReagentConfiguration = () => {
                 />
             )}
         </div>
-    );
-};
+    )
+}
 
-export default ReagentConfiguration;
+export default ReagentConfiguration

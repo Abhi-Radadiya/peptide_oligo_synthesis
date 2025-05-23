@@ -9,7 +9,7 @@ export default function Capping(props) {
 
     return (
         <>
-            <div className="flex flex-row w-full items-start justify-between border border-neutral-300 rounded-2xl shadow-md py-4 px-6 mb-16">
+            <div className="flex flex-row w-full items-start justify-between border border-neutral-300 rounded-2xl shadow-md py-4 px-6">
                 <div className="max-w-[615px] w-full">
                     <h3 className="font-bold text-xl mb-4">Capping Settings</h3>
 

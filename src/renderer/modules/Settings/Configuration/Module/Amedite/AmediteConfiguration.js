@@ -330,7 +330,7 @@ const AmediteConfiguration = () => {
     }
 
     return (
-        <div className="overflow-x-auto p-4 border border-neutral-300 rounded-xl bg-neutral-50">
+        <div className="overflow-hidden p-4 border border-neutral-300 rounded-xl bg-neutral-50" style={{ height: windowHeight - 208 }}>
             <div className="justify-between flex mb-4 items-center border-b border-neutral-300 pb-4">
                 <div className="flex flex-row items-center">
                     <Button
@@ -347,7 +347,7 @@ const AmediteConfiguration = () => {
                 <Button label="Add Amedite" onClick={() => setIsModalOpen(true)} />
             </div>
 
-            <div className="overflow-auto scrollbar-style" style={{ height: windowHeight - 270 }}>
+            <div className="overflow-auto scrollbar-style" style={{ height: windowHeight - 310 }}>
                 <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
                     <thead className="bg-gray-200">
                         <tr>

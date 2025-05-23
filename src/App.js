@@ -6,7 +6,6 @@ import TabNavigation, { RouteHandler, TabProvider } from "./renderer/Components/
 import { SerialEngineProvider } from "./utils/context/serial-engine-context"
 
 export default function App() {
-    const [isNavOpen, setIsNavOpen] = useState(false)
 
     return (
         <>
@@ -15,13 +14,9 @@ export default function App() {
             <Router>
                 <SerialEngineProvider>
                     <TabProvider>
-                        {isNavOpen && <div className="fixed inset-0 bg-black bg-opacity-50 z-20" onClick={() => setIsNavOpen(false)} />}
-
-                        <NavigationPanel isNavOpen={isNavOpen} setIsNavOpen={setIsNavOpen} />
-
                         <div className={`transition-all duration-300 overflow-hidden h-screen bg-gradient-to-br from-slate-50 to-amber-50`}>
                             <RouteHandler />
-                            <TabNavigation isNavOpen={isNavOpen} />
+                            <TabNavigation />
                         </div>
                     </TabProvider>
                 </SerialEngineProvider>

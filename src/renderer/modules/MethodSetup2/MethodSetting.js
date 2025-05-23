@@ -17,6 +17,7 @@ import { addMethodSetup, updateMethodSetup } from "../../../redux/reducers/metho
 import { updateFormState } from "../../../redux/reducers/formState/formState"
 import { openToast } from "../../../redux/reducers/toastStateReducer/toastStateReducer"
 import { SUCCESS } from "../../Helpers/Icons"
+import AllComponents from "./Components/all-components"
 
 export default function MethodSetting(props) {
     const { id } = props
@@ -107,16 +108,12 @@ export default function MethodSetting(props) {
         defaultValues: { ...getDefaultValue() }
     })
 
-    const steps = [
-        { label: "Details", value: "detail", component: MethodDetails },
-        { label: "Initial Step", value: "firstMethod", component: FirstMethod },
-        { label: "Run Step", value: "nThMethod", component: NthMethod },
-        { label: "Final Step", value: "lastMethod", component: LastMethod }
-    ]
-
-    const [activeStep, setActiveStep] = useState(0)
-
-    const ComponentToRender = steps.find((_, index) => index === activeStep).component
+    // const steps = [
+    //     { label: "Details", value: "detail", component: MethodDetails },
+    //     { label: "Initial Step", value: "firstMethod", component: FirstMethod },
+    //     { label: "Run Step", value: "nThMethod", component: NthMethod },
+    //     { label: "Final Step", value: "lastMethod", component: LastMethod }
+    // ]
 
     const { height: windowHeight } = useWindowSize()
 
@@ -160,7 +157,7 @@ export default function MethodSetting(props) {
             return
         }
 
-        activeStep === 3 ? (!!id ? editMethod(data) : saveMethod(data)) : setActiveStep(activeStep + 1)
+        !!id ? editMethod(data) : saveMethod(data)
 
         dispatch(openToast({ text: "Method created successfully.", icon: SUCCESS }))
 
@@ -171,14 +168,12 @@ export default function MethodSetting(props) {
         <>
             <div className="relative px-4 pt-4">
                 <div className="flex flex-row relative">
-                    <LeftPanel errors={errors} tabs={steps} activeStep={activeStep} setActiveStep={setActiveStep} />
+                    {/* <LeftPanel errors={errors} tabs={steps} activeStep={activeStep}  /> */}
 
                     <FormProvider {...method}>
-                        <div className="border-l relative border-neutral-500 pl-6 w-full pb-12 overflow-auto scrollbar-style pr-2" style={{ height: windowHeight - 36 }}>
-                            <ComponentToRender setActiveStep={setActiveStep} />
+                        <div className="pl-4 w-full pb-6 overflow-auto scrollbar-style pr-2" style={{ height: windowHeight - 60 }}>
+                            <AllComponents handleSave={handleSubmit(handleSave)} />
                         </div>
-
-                        <Footer onClick={handleSubmit(handleSave)} label={activeStep === 3 ? "Save" : "Next"} />
                     </FormProvider>
                 </div>
             </div>

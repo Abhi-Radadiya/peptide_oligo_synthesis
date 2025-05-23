@@ -18,6 +18,7 @@ import Demo from "../../modules/Demo/Demo"
 import SequenceCommand from "../../modules/SequenceCommand/SequenceCommand"
 import CommandEditor from "../../modules/CommandEditor"
 import SynthesisProcedure from "../../modules/synthesis-procedure"
+import NavigationPanel from "./NavigationPanel"
 // import SynthesisProcedure from "../../modules/synthesis-procedure/procedure-list"
 
 const TabContext = createContext()
@@ -150,8 +151,8 @@ export const TabProvider = ({ children }) => {
     return <TabContext.Provider value={{ tabs, activeTabId, addTab, closeTab, setActiveTabId }}>{children}</TabContext.Provider>
 }
 
-export const TabNavigation = (props) => {
-    const { isNavOpen } = props
+export const TabNavigation = () => {
+    const [isNavOpen, setIsNavOpen] = useState(true)
 
     const { tabs, activeTabId, closeTab, setActiveTabId } = useContext(TabContext)
 
@@ -165,11 +166,7 @@ export const TabNavigation = (props) => {
     return (
         <div className="flex flex-col h-full">
             <div className="bg-white border-b border-gray-200 pt-1">
-                <div
-                    className={`flex overflow-x-auto no-scrollbar transition-all duration-300 ${
-                        isNavOpen ? "w-[calc(100vw-16rem-150px)]" : "w-[calc(100vw-150px)]"
-                    } naigation-tab-scrollbar-style`}
-                >
+                <div className="flex overflow-x-auto no-scrollbar transition-all duration-300 w-full naigation-tab-scrollbar-style">
                     {tabs.map((tab) => (
                         <div
                             key={tab.id}
@@ -196,14 +193,20 @@ export const TabNavigation = (props) => {
                 </div>
             </div>
 
-            <div className="flex-1 overflow-hidden">
-                {tabs.map((tab) => {
-                    return (
-                        <div key={tab.id} className={`h-full ${activeTabId === tab.id ? "block" : "hidden"}`}>
-                            {tab.component}
-                        </div>
-                    )
-                })}
+            <div className="flex flow-row">
+                <div>
+                    <NavigationPanel isNavOpen={isNavOpen} setIsNavOpen={setIsNavOpen} />
+                </div>
+
+                <div className="flex-1">
+                    {tabs.map((tab) => {
+                        return (
+                            <div key={tab.id} className={`h-full ${activeTabId === tab.id ? "block" : "hidden"}`}>
+                                {tab.component}
+                            </div>
+                        )
+                    })}
+                </div>
             </div>
         </div>
     )

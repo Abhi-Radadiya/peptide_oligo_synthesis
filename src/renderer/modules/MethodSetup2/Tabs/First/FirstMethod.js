@@ -50,6 +50,10 @@ export default function FirstMethod() {
 
     return (
         <>
+            <div className="py-6 border-t border-neutral-500 mt-8">
+                <span className="ml-4 text-2xl font-medium">Initial Step</span>
+            </div>
+
             <div className="flex flex-row w-full items-start justify-between border border-neutral-300 rounded-2xl shadow-md py-4 px-6 mb-6">
                 <div className="max-w-[650px] w-full">
                     <h3 className="font-bold text-xl mb-6">Column Wash Settings</h3>

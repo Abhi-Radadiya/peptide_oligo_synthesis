@@ -1,201 +1,191 @@
-import React, { useState, useCallback, useMemo } from "react";
-import { useFormContext } from "react-hook-form";
-import Select from "react-select";
-import { useWindowSize } from "@uidotdev/usehooks";
-import { useSelector } from "react-redux";
-import { getTextColorForBackground } from "../../../../Helpers/Constant";
-import { InfoIcon } from "lucide-react";
-import MethodDetailModel from "../../Model/MethodDetailModel";
+import React, { useState, useCallback, useMemo } from "react"
+import { useFormContext } from "react-hook-form"
+import Select from "react-select"
+import { useWindowSize } from "@uidotdev/usehooks"
+import { useSelector } from "react-redux"
+import { getTextColorForBackground } from "../../../../Helpers/Constant"
+import { InfoIcon } from "lucide-react"
+import MethodDetailModel from "../../Model/MethodDetailModel"
 
 const MethodAssign = () => {
-    const { height: windowHeight } = useWindowSize();
-    const { watch, setValue } = useFormContext();
+    const { watch, setValue } = useFormContext()
 
-    const methods = useSelector((state) => state.methodSetup.method);
+    const methods = useSelector((state) => state.methodSetup.method)
 
     const methodMenuItem = useMemo(() => {
         return methods.map((el) => {
-            return { label: el.method_name, value: el.id, option: { color: el.color } };
-        });
-    }, [methods]);
+            return { label: el.method_name, value: el.id, option: { color: el.color } }
+        })
+    }, [methods])
 
-    const [selectedBlocks, setSelectedBlocks] = useState(new Set());
+    const [selectedBlocks, setSelectedBlocks] = useState(new Set())
 
-    const [lastSelectedIndex, setLastSelectedIndex] = useState(null);
+    const [lastSelectedIndex, setLastSelectedIndex] = useState(null)
 
-    const [displayOption, setDisplayOption] = useState(1);
+    const [displayOption, setDisplayOption] = useState(1)
 
-    const sequence = watch("sequence");
+    const sequence = watch("sequence")
 
     const handleBlockClick = useCallback(
         (index, event) => {
             setSelectedBlocks((prev) => {
-                const newSelection = new Set(prev);
+                const newSelection = new Set(prev)
 
                 if (event.shiftKey && lastSelectedIndex !== null) {
-                    const start = Math.min(lastSelectedIndex, index);
-                    const end = Math.max(lastSelectedIndex, index);
+                    const start = Math.min(lastSelectedIndex, index)
+                    const end = Math.max(lastSelectedIndex, index)
 
                     for (let i = start; i <= end; i++) {
-                        newSelection.add(i);
+                        newSelection.add(i)
                     }
                 } else {
                     if (newSelection.has(index)) {
-                        if (displayOption === 1) newSelection.delete(index);
+                        if (displayOption === 1) newSelection.delete(index)
                         else {
-                            newSelection.delete(index);
-                            newSelection.delete(index + 1);
-                            newSelection.delete(index + 2);
+                            newSelection.delete(index)
+                            newSelection.delete(index + 1)
+                            newSelection.delete(index + 2)
                         }
                     } else {
-                        if (displayOption === 1) newSelection.add(index);
+                        if (displayOption === 1) newSelection.add(index)
                         else {
-                            newSelection.add(index);
-                            newSelection.add(index + 1);
-                            newSelection.add(index + 2);
+                            newSelection.add(index)
+                            newSelection.add(index + 1)
+                            newSelection.add(index + 2)
                         }
                     }
                 }
 
                 const updatedSequence = sequence.map((block, i) => ({
                     ...block,
-                    isSelected: newSelection.has(i),
-                }));
+                    isSelected: newSelection.has(i)
+                }))
 
-                setValue("sequence", updatedSequence);
+                setValue("sequence", updatedSequence)
 
-                return newSelection;
-            });
+                return newSelection
+            })
 
-            setLastSelectedIndex(index);
+            setLastSelectedIndex(index)
         },
         [lastSelectedIndex, sequence, setValue, displayOption]
-    );
+    )
 
     const clearSelection = () => {
-        setSelectedBlocks(new Set());
-        setLastSelectedIndex(null);
+        setSelectedBlocks(new Set())
+        setLastSelectedIndex(null)
 
         const updatedSequence = sequence.map((block) => ({
             ...block,
-            isSelected: false,
-        }));
-        setValue("sequence", updatedSequence);
-    };
+            isSelected: false
+        }))
+        setValue("sequence", updatedSequence)
+    }
 
     const handleSelectAll = useCallback(() => {
         setSelectedBlocks(() => {
-            const newSelection = new Set();
+            const newSelection = new Set()
 
             sequence.forEach((_, index) => {
-                newSelection.add(index);
-            });
+                newSelection.add(index)
+            })
 
             const updatedSequence = sequence.map((block, index) => ({
                 ...block,
-                isSelected: true,
-            }));
+                isSelected: true
+            }))
 
-            setValue("sequence", updatedSequence);
+            setValue("sequence", updatedSequence)
 
-            return newSelection;
-        });
+            return newSelection
+        })
 
-        setLastSelectedIndex(sequence.length - 1);
-    }, [sequence, setValue]);
+        setLastSelectedIndex(sequence.length - 1)
+    }, [sequence, setValue])
 
     const handleMethodSelect = (displayOption) => {
-        if (!displayOption) return;
+        if (!displayOption) return
 
         const methodAssignedSequence = sequence.map((el) => {
             if (el.isSelected) {
-                return { ...el, isSelected: false, method: { value: displayOption.value } };
-            } else return { ...el, isSelected: false };
-        });
+                return { ...el, isSelected: false, method: { value: displayOption.value } }
+            } else return { ...el, isSelected: false }
+        })
 
-        setValue("sequence", methodAssignedSequence);
+        setValue("sequence", methodAssignedSequence)
 
-        setSelectedBlocks(new Set());
+        setSelectedBlocks(new Set())
 
-        setLastSelectedIndex(null);
-    };
+        setLastSelectedIndex(null)
+    }
 
     const getBlockStyle = (index) => {
-        const baseStyle = "px-2 py-1 m-1 border relative rounded transition-colors duration-200 w-fit";
-        const selected = selectedBlocks.has(index);
+        const baseStyle = "px-2 py-1 m-1 border relative rounded transition-colors duration-200 w-fit"
+        const selected = selectedBlocks.has(index)
 
         if (selected) {
-            return `${baseStyle} border-blue-400`;
+            return `${baseStyle} border-blue-400`
         }
 
-        return `${baseStyle} border-gray-300 hover:bg-gray-200`;
-    };
+        return `${baseStyle} border-gray-300 hover:bg-gray-200`
+    }
 
     const getBlockGroups = () => {
         if (displayOption === 3) {
             return sequence?.reduce((acc, _, index) => {
                 if (index % 3 === 0) {
-                    const group = sequence.slice(index, index + 3);
+                    const group = sequence.slice(index, index + 3)
                     if (group.length > 0) {
-                        acc.push(group);
+                        acc.push(group)
                     }
                 }
-                return acc;
-            }, []);
+                return acc
+            }, [])
         }
-        return sequence?.map((block) => [block]);
-    };
+        return sequence?.map((block) => [block])
+    }
 
     const getMethodDetailsById = (id) => {
-        return methodMenuItem.find((el) => el.value === id);
-    };
+        return methodMenuItem.find((el) => el.value === id)
+    }
 
     const toggleDisplayOption = () => {
-        clearSelection();
+        clearSelection()
 
-        const currentDisplayOption = displayOption === 3 ? 1 : 3;
+        const currentDisplayOption = displayOption === 3 ? 1 : 3
 
-        setDisplayOption(currentDisplayOption);
+        setDisplayOption(currentDisplayOption)
 
-        const blocks = sequence.map((block) => block.block);
+        const blocks = sequence.map((block) => block.block)
 
-        let sequenceString = "";
+        let sequenceString = ""
 
         if (currentDisplayOption === 1) {
-            sequenceString = blocks.join(" ");
+            sequenceString = blocks.join(" ")
         } else {
-            sequenceString = blocks.map((block, index) => (index > 0 && (index + 1) % 3 === 0 ? `${block} ` : block)).join("");
+            sequenceString = blocks.map((block, index) => (index > 0 && (index + 1) % 3 === 0 ? `${block} ` : block)).join("")
         }
 
-        setValue("textAreaSequenceString", sequenceString);
-    };
+        setValue("textAreaSequenceString", sequenceString)
+    }
 
-    const [displayMethodDetailBlock, setDisplayMethodDetailBlock] = useState(false);
+    const [displayMethodDetailBlock, setDisplayMethodDetailBlock] = useState(false)
 
     return (
         <>
-            <div className="relative w-1/2 overflow-y-auto ml-4 scrollbar-style overflow-x-hidden -mr-2 pr-2" style={{ height: windowHeight - 100 }}>
+            <div className="relative w-1/2 overflow-y-auto ml-4 scrollbar-style overflow-x-hidden -mr-2 pr-2">
                 <div className="sticky top-0 z-10 border-b border-neutral-300 pr-2 py-2 bg-[#fbfaf4]">
                     <div className="max-w-7xl mx-auto flex flex-row justify-between items-center">
                         <div className="pt-1 flex flex-row items-center gap-2">
-                            <button
-                                onClick={handleSelectAll}
-                                className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded hover:bg-gray-100"
-                            >
+                            <button onClick={handleSelectAll} className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded hover:bg-gray-100">
                                 Select All
                             </button>
 
-                            <button
-                                onClick={clearSelection}
-                                className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded hover:bg-gray-100"
-                            >
+                            <button onClick={clearSelection} className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded hover:bg-gray-100">
                                 Clear Selection
                             </button>
 
-                            <button
-                                onClick={toggleDisplayOption}
-                                className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded hover:bg-gray-100"
-                            >
+                            <button onClick={toggleDisplayOption} className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded hover:bg-gray-100">
                                 {displayOption} Block
                             </button>
                         </div>
@@ -215,9 +205,9 @@ const MethodAssign = () => {
                                         width: "250px",
                                         borderColor: "#d1d5db",
                                         "&:hover": {
-                                            borderColor: "#6b7280",
-                                        },
-                                    }),
+                                            borderColor: "#6b7280"
+                                        }
+                                    })
                                 }}
                             />
                         </div>
@@ -226,9 +216,9 @@ const MethodAssign = () => {
 
                 <div className="mt-4">
                     {getBlockGroups()?.map((group, groupIndex) => {
-                        const baseIndex = groupIndex * (displayOption || 1);
+                        const baseIndex = groupIndex * (displayOption || 1)
 
-                        const selected = selectedBlocks.has(baseIndex);
+                        const selected = selectedBlocks.has(baseIndex)
 
                         return (
                             <div key={groupIndex} className={`${displayOption === 3 ? "mb-2 p-1 rounded inline-block" : "inline-block"}`}>
@@ -242,24 +232,24 @@ const MethodAssign = () => {
                                     >
                                         <div className="flex flex-row gap-2 items-center">
                                             {group.map((block, blockIndex) => {
-                                                const methodDetails = getMethodDetailsById(block?.method?.value);
+                                                const methodDetails = getMethodDetailsById(block?.method?.value)
 
                                                 return (
                                                     <p key={blockIndex + "_block"}>
                                                         {block.block}
                                                         {block?.method?.value && <span className="ml-2 text-xs text-gray-500">({methodDetails.label})</span>}
                                                     </p>
-                                                );
+                                                )
                                             })}
                                         </div>
                                     </div>
                                 ) : (
                                     group.map((block, innerIndex) => {
-                                        const index = baseIndex + innerIndex;
-                                        const methodDetails = getMethodDetailsById(block?.method?.value);
-                                        const selected = selectedBlocks.has(index);
-                                        const backgroundColor = selected ? "#bedbff" : methodDetails?.option?.color ?? "#f3f4f6";
-                                        const textColor = getTextColorForBackground(backgroundColor);
+                                        const index = baseIndex + innerIndex
+                                        const methodDetails = getMethodDetailsById(block?.method?.value)
+                                        const selected = selectedBlocks.has(index)
+                                        const backgroundColor = selected ? "#bedbff" : methodDetails?.option?.color ?? "#f3f4f6"
+                                        const textColor = getTextColorForBackground(backgroundColor)
 
                                         return (
                                             <div
@@ -273,11 +263,11 @@ const MethodAssign = () => {
                                                 <span className={`text-[${textColor}]`}>{block.block}</span>
                                                 {block?.method?.value && <span className={`ml-2 text-xs`}>({methodDetails?.label})</span>}
                                             </div>
-                                        );
+                                        )
                                     })
                                 )}
                             </div>
-                        );
+                        )
                     })}
                 </div>
 
@@ -295,7 +285,7 @@ const MethodAssign = () => {
 
             {displayMethodDetailBlock && <MethodDetailModel methods={methods} onClose={() => setDisplayMethodDetailBlock(false)} />}
         </>
-    );
-};
+    )
+}
 
-export default MethodAssign;
+export default MethodAssign
