@@ -6,9 +6,16 @@ import { useSelector } from "react-redux"
 import { getTextColorForBackground } from "../../../../Helpers/Constant"
 import { InfoIcon } from "lucide-react"
 import MethodDetailModel from "../../Model/MethodDetailModel"
+import { usePopper } from "react-popper"
+import { motion } from "framer-motion"
 
-const MethodAssign = () => {
+const MethodAssign = (props) => {
+    const { isExpanded } = props
     const { watch, setValue } = useFormContext()
+    const [tooltipContent, setTooltipContent] = useState(null)
+    const [referenceElement, setReferenceElement] = useState(null)
+    const [popperElement, setPopperElement] = useState(null)
+    const [showTooltip, setShowTooltip] = useState(false)
 
     const methods = useSelector((state) => state.methodSetup.method)
 
@@ -120,7 +127,7 @@ const MethodAssign = () => {
     }
 
     const getBlockStyle = (index) => {
-        const baseStyle = "px-2 py-1 m-1 border relative rounded transition-colors duration-200 w-fit"
+        const baseStyle = "m-1 border relative rounded transition-colors duration-200 w-fit"
         const selected = selectedBlocks.has(index)
 
         if (selected) {
@@ -171,10 +178,33 @@ const MethodAssign = () => {
 
     const [displayMethodDetailBlock, setDisplayMethodDetailBlock] = useState(false)
 
+    const { styles, attributes } = usePopper(referenceElement, popperElement, {
+        placement: "top",
+        modifiers: [
+            {
+                name: "offset",
+                options: {
+                    offset: [0, 10]
+                }
+            }
+        ]
+    })
+
+    const handleMouseEnter = (label, element) => {
+        if (!label) return
+        setTooltipContent(label)
+        setReferenceElement(element)
+        setShowTooltip(true)
+    }
+
+    const handleMouseLeave = () => {
+        setShowTooltip(false)
+    }
+
     return (
         <>
-            <div className="relative w-1/2 overflow-y-auto ml-4 scrollbar-style overflow-x-hidden -mr-2 pr-2">
-                <div className="sticky top-0 z-10 border-b border-neutral-300 pr-2 py-2 bg-[#fbfaf4]">
+            <div className={`relative w-1/2 overflow-y-auto scrollbar-style overflow-x-hidden px-2 -mr-2 pr-2 ml-4 ${isExpanded ? "h-[calc(100vh-60px)]" : "h-[150px]"}`}>
+                <div className="z-10 border-b border-neutral-300 pr-2 pb-2">
                     <div className="max-w-7xl mx-auto flex flex-row justify-between items-center">
                         <div className="pt-1 flex flex-row items-center gap-2">
                             <button onClick={handleSelectAll} className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded hover:bg-gray-100">
@@ -214,7 +244,7 @@ const MethodAssign = () => {
                     </div>
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-2">
                     {getBlockGroups()?.map((group, groupIndex) => {
                         const baseIndex = groupIndex * (displayOption || 1)
 
@@ -230,14 +260,19 @@ const MethodAssign = () => {
                                         role="button"
                                         tabIndex={groupIndex}
                                     >
-                                        <div className="flex flex-row gap-2 items-center">
+                                        <div className="flex flex-row gap-1 items-center">
                                             {group.map((block, blockIndex) => {
                                                 const methodDetails = getMethodDetailsById(block?.method?.value)
 
                                                 return (
-                                                    <p key={blockIndex + "_block"}>
+                                                    <p
+                                                        key={blockIndex + "_block"}
+                                                        onMouseLeave={handleMouseLeave}
+                                                        onMouseEnter={(e) => handleMouseEnter(methodDetails?.label, e.currentTarget)}
+                                                        className="w-8 h-8 flex items-center justify-center rounded cursor-pointer transition-all duration-300 hover:shadow"
+                                                        style={{ backgroundColor: block.color }}
+                                                    >
                                                         {block.block}
-                                                        {block?.method?.value && <span className="ml-2 text-xs text-gray-500">({methodDetails.label})</span>}
                                                     </p>
                                                 )
                                             })}
@@ -255,13 +290,14 @@ const MethodAssign = () => {
                                             <div
                                                 key={index}
                                                 onClick={(e) => handleBlockClick(index, e)}
-                                                className={getBlockStyle(index)}
+                                                className={getBlockStyle(index) + " px-2 py-1 hover:shadow-md hover:scale-110 hover:rounded-lg transition-all duration-300"}
                                                 role="button"
                                                 style={{ background: backgroundColor, color: textColor }}
                                                 tabIndex={innerIndex + groupIndex}
+                                                onMouseEnter={(e) => handleMouseEnter(methodDetails?.label, e.currentTarget)}
+                                                onMouseLeave={handleMouseLeave}
                                             >
                                                 <span className={`text-[${textColor}]`}>{block.block}</span>
-                                                {block?.method?.value && <span className={`ml-2 text-xs`}>({methodDetails?.label})</span>}
                                             </div>
                                         )
                                     })
@@ -283,9 +319,46 @@ const MethodAssign = () => {
                 )}
             </div>
 
+            {showTooltip && (
+                <div
+                    ref={setPopperElement}
+                    style={styles.popper}
+                    {...attributes.popper}
+                    className={`bg-black text-white px-3 py-1 z-[11] rounded text-sm transition-opacity duration-300 ${showTooltip ? "opacity-100" : "opacity-0"}`}
+                >
+                    {tooltipContent}
+                </div>
+            )}
+
             {displayMethodDetailBlock && <MethodDetailModel methods={methods} onClose={() => setDisplayMethodDetailBlock(false)} />}
         </>
     )
 }
 
 export default MethodAssign
+
+// const ZoomablePanel = () => {
+//     const [isExpanded, setIsExpanded] = useState(false)
+
+//     return (
+//         <>
+//             {!isExpanded && (
+//                 <motion.div layoutId="method-panel" className="rounded-lg w-1/2 border p-2 -mr-2 pr-2 ml-4" onClick={() => setIsExpanded(true)}>
+//                     <MethodAssign />
+//                 </motion.div>
+//             )}
+
+//             {isExpanded && (
+//                 <motion.div
+//                     layoutId="method-panel"
+//                     className="fixed inset-0 z-50 bg-white p-4 border rounded-lg w-[90vw] h-[90vh] border-neutral-500 m-auto overflow-auto"
+//                     onClick={() => setIsExpanded(false)}
+//                 >
+//                     <MethodAssign />
+//                 </motion.div>
+//             )}
+//         </>
+//     )
+// }
+
+// export default ZoomablePanel

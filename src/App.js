@@ -1,12 +1,10 @@
-import React, { useState } from "react"
+import React from "react"
 import { BrowserRouter as Router } from "react-router-dom"
-import NavigationPanel from "./renderer/Components/Navigation/NavigationPanel"
 import NotifyToaster from "./renderer/modules/NotifyToaster/NotifyToaster"
 import TabNavigation, { RouteHandler, TabProvider } from "./renderer/Components/Navigation/TabNavigation"
 import { SerialEngineProvider } from "./utils/context/serial-engine-context"
 
 export default function App() {
-
     return (
         <>
             <NotifyToaster />
