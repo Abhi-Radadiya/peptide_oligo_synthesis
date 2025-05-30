@@ -145,7 +145,7 @@ export default function TextArea(props) {
                             placeholder="Enter sequence here"
                             className={`shadow scrollbar-style mt-3 appearance-none border rounded-lg w-full py-2 px-3 text-neutral-700 focus:outline-none focus:shadow-outline ${
                                 error ? "border-red-500 placeholder:text-red-500" : "border-neutral-400"
-                            } ${isExpanded ?'h-[100vh]':'h-[120px]' }`}
+                            } ${isExpanded ?'h-[calc(100vh-500px)]':'h-[120px]' }`}
                         />
                         {error && <p className="text-red-500 text-sm mt-1 w-[calc(100%-20px)] truncate">{error.message}</p>}
                     </div>

@@ -1,10 +1,14 @@
 import React, { useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { LayoutGrid, Settings, List, BookText, ChevronRight, ChevronLeft, Terminal, Proportions, AudioWaveform } from "lucide-react"
+import { useNavigationPanel } from "../../../utils/context/navigation-provider"
 
 export default function NavigationPanel({ isNavOpen, setIsNavOpen }) {
     const location = useLocation()
+
     const navigate = useNavigate()
+
+    const { setIsNavbarOpen } = useNavigationPanel()
 
     const links = [
         {
@@ -71,7 +75,13 @@ export default function NavigationPanel({ isNavOpen, setIsNavOpen }) {
                     {/* Logo or Brand Area */}
                     <div className={`p-4 flex items-center ${isNavOpen ? "justify-between" : "justify-center"}`}>
                         {isNavOpen && <h2 className="text-xl font-bold text-neutral-700">Peptide</h2>}
-                        <button onClick={() => setIsNavOpen(!isNavOpen)} className="hover:bg-blue-50 p-2 rounded-full">
+                        <button
+                            onClick={() => {
+                                setIsNavOpen(!isNavOpen)
+                                setIsNavbarOpen(!isNavOpen)
+                            }}
+                            className="hover:bg-blue-50 p-2 rounded-full"
+                        >
                             {isNavOpen ? <ChevronLeft /> : <ChevronRight />}
                         </button>
                     </div>
@@ -120,7 +130,13 @@ export default function NavigationPanel({ isNavOpen, setIsNavOpen }) {
             </nav>
 
             {!isNavOpen && (
-                <button onClick={() => setIsNavOpen(true)} className="fixed bottom-6 left-6 z-40 bg-white shadow-lg rounded-full p-2 hover:bg-blue-50 transition-all duration-300">
+                <button
+                    onClick={() => {
+                        setIsNavOpen(true)
+                        setIsNavbarOpen(true)
+                    }}
+                    className="fixed bottom-6 left-6 z-40 bg-white shadow-lg rounded-full p-2 hover:bg-blue-50 transition-all duration-300"
+                >
                     <ChevronRight className="text-blue-600" />
                 </button>
             )}

@@ -1,17 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Controller } from "react-hook-form";
-import Select from "react-select";
+import React, { useEffect, useRef, useState } from "react"
+import { Controller } from "react-hook-form"
+import Select from "react-select"
 
 export function Dropdown({ menuItem, onSelectItem, value, label, className, error }) {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false)
 
     const handleMouseEnter = () => {
-        setIsOpen(true);
-    };
+        setIsOpen(true)
+    }
 
     const handleMouseLeave = () => {
-        setIsOpen(false);
-    };
+        setIsOpen(false)
+    }
 
     return (
         <div className={`relative inline-block text-left w-full ${className}`}>
@@ -42,8 +42,8 @@ export function Dropdown({ menuItem, onSelectItem, value, label, className, erro
                             <li
                                 key={index}
                                 onClick={() => {
-                                    onSelectItem(el.value);
-                                    setIsOpen(false);
+                                    onSelectItem(el.value)
+                                    setIsOpen(false)
                                 }}
                             >
                                 <span className="block px-4 py-2 font-normal text-base hover:cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
@@ -55,11 +55,11 @@ export function Dropdown({ menuItem, onSelectItem, value, label, className, erro
                 </div>
             )}
         </div>
-    );
+    )
 }
 
 export function ControllerDropdown(props) {
-    const { control, name, menuItem, rules, label, className } = props;
+    const { control, name, menuItem, rules, label, className } = props
 
     return (
         <Controller
@@ -79,7 +79,7 @@ export function ControllerDropdown(props) {
                 </div>
             )}
         />
-    );
+    )
 }
 
 const customStyles = (width, height) => {
@@ -108,10 +108,10 @@ const customStyles = (width, height) => {
             return {
                 ...defaultStyles,
                 color: "#c4c0c0"
-            };
+            }
         }
-    };
-};
+    }
+}
 
 export function SelectionController(props) {
     const {
@@ -129,7 +129,7 @@ export function SelectionController(props) {
         isMulti = false,
         label,
         labelClassName = "text-gray-700 leading-[17px] font-normal"
-    } = props;
+    } = props
 
     return (
         <>
@@ -149,8 +149,8 @@ export function SelectionController(props) {
                                 menuItem={menuItem}
                                 placeholder={placeholder}
                                 onChange={(option) => {
-                                    onChange(option);
-                                    handleChange?.(option);
+                                    onChange(option)
+                                    handleChange?.(option)
                                 }}
                                 width={width}
                                 className={className}
@@ -163,19 +163,19 @@ export function SelectionController(props) {
                 />
             </div>
         </>
-    );
+    )
 }
 
 export const Selection = (props) => {
-    const { onChange, menuItem, value, isDisabled, className, placeholder, width, isClearable = true, height, isMulti = false, error } = props;
+    const { onChange, menuItem, value, isDisabled, className, placeholder, width, isClearable = true, height, isMulti = false, error } = props
 
-    const selectRef = useRef(null);
+    const selectRef = useRef(null)
 
     useEffect(() => {
         if (error) {
-            selectRef.current.focus();
+            selectRef.current.focus()
         }
-    }, [error]);
+    }, [error])
 
     return (
         <>
@@ -195,5 +195,5 @@ export const Selection = (props) => {
             />
             {error && <p className="text-red-500 text-sm">{error.message}</p>}
         </>
-    );
-};
+    )
+}

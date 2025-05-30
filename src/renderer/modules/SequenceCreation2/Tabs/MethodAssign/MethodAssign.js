@@ -1,13 +1,11 @@
-import React, { useState, useCallback, useMemo } from "react"
+import { useState, useCallback, useMemo } from "react"
 import { useFormContext } from "react-hook-form"
 import Select from "react-select"
-import { useWindowSize } from "@uidotdev/usehooks"
 import { useSelector } from "react-redux"
 import { getTextColorForBackground } from "../../../../Helpers/Constant"
 import { InfoIcon } from "lucide-react"
 import MethodDetailModel from "../../Model/MethodDetailModel"
 import { usePopper } from "react-popper"
-import { motion } from "framer-motion"
 
 const MethodAssign = (props) => {
     const { isExpanded } = props

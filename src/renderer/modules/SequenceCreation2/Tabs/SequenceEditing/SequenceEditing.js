@@ -1,4 +1,3 @@
-import React from "react"
 import TextArea from "./Component/TextArea"
 
 export default function SequenceEditing(props) {

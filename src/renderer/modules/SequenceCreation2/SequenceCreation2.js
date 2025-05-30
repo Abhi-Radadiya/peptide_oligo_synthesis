@@ -44,13 +44,13 @@ export default function SequenceCreation2(props) {
 
     return (
         <>
-            <div className="p-6 overflow-auto scrollbar-style" style={{ height: windowHeight - 60 }}>
+            <div className="p-6 overflow-auto scrollbar-style" style={{ height: windowHeight - 48 }}>
                 <FormProvider {...method}>
                     <Header />
                     {!isExpanded && (
                         <motion.div layoutId="method-panel">
                             <div className="flex flex-row w-full relative mb-6">
-                                <SequenceEditing handleScale={() => setIsExpanded((prevState) => !prevState)} isExpanded={isExpanded}/>
+                                <SequenceEditing handleScale={() => setIsExpanded((prevState) => !prevState)} isExpanded={isExpanded} />
                                 <MethodAssign isExpanded={isExpanded} />
                             </div>
                         </motion.div>
@@ -59,13 +59,11 @@ export default function SequenceCreation2(props) {
                     {isExpanded && (
                         <motion.div layoutId="method-panel" className="bg-white z-[31] border border-neutral-500 rounded-lg p-2 m-auto fixed inset-0">
                             <div className="flex flex-row w-full relative mb-6">
-                                <SequenceEditing handleScale={() => setIsExpanded((prevState) => !prevState)} isExpanded={isExpanded}/>
+                                <SequenceEditing handleScale={() => setIsExpanded((prevState) => !prevState)} isExpanded={isExpanded} />
                                 <MethodAssign isExpanded={isExpanded} />
                             </div>
                         </motion.div>
                     )}
-                    {/* <SequenceEditing />
-                        <MethodAssign /> */}
                     <SequenceMethodTable />
                 </FormProvider>
             </div>
