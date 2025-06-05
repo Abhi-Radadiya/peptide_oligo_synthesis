@@ -18,7 +18,7 @@ const detailsGroup = {
     [AMEDITE]: ["amediteExcessFactor"],
     [ACT]: ["actExcessFactor"],
     [AMEDITE_CONC]: ["amediteConcentration"],
-    [WASH_COLUMN]: [""],
+    [WASH_COLUMN]: ["1_solvent", "1_volume", "1_XFactor", "1_flowRate", "1_columnProcedure", "1_waste"],
     [PRIME]: ["1_primingWaste", "1_primingXFactor", "1_primingFlowRate", "1_primingVolume", "1_primingPosition", "1_primingProcedure"],
     [COUPLING]: [
         "n_couplingWaste",

@@ -57,8 +57,7 @@ const findCommandEditorFileName = (commands, id) => {
     return selectedMethod?.fileName
 }
 
-export const
-    TabProvider = ({ children }) => {
+export const TabProvider = ({ children }) => {
     const [tabs, setTabs] = useState([])
 
     const [activeTabId, setActiveTabId] = useState(null)

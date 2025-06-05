@@ -3,7 +3,22 @@ import SynthesisScale from "./components/synthesis-scale"
 import AmediteExcessFactor from "./components/amedite-excess-factor"
 import ActExcessFactor from "./components/act-excess-factor"
 import AmediteConcentration from "./components/amedite-concentration"
-import { COLUMN_SIZE, SYNTHESIS_SCALE, AMEDITE, ACT, AMEDITE_CONC, PRIME, COUPLING, OXIDIZATION, SULFURIZATION, CAP_A_B, FINAL_DE_BLOCK, DEA } from "../../Component/constants"
+import WashColumn from "./components/wash-column"
+import {
+    COLUMN_SIZE,
+    SYNTHESIS_SCALE,
+    AMEDITE,
+    ACT,
+    AMEDITE_CONC,
+    PRIME,
+    COUPLING,
+    OXIDIZATION,
+    SULFURIZATION,
+    CAP_A_B,
+    FINAL_DE_BLOCK,
+    DEA,
+    WASH_COLUMN
+} from "../../Component/constants"
 import { ModelButton } from "../../../../Components/Buttons/Buttons"
 import ModelWrapper from "../../../../Components/Model/ModelWrapper"
 import Prime from "./components/prime"
@@ -55,6 +70,8 @@ export default function MethodOptionEditingModel(props) {
                     {options?.label === FINAL_DE_BLOCK && <DeBlock />}
 
                     {options?.label === DEA && <DEATab />}
+
+                    {options?.label === WASH_COLUMN && <WashColumn />}
                 </div>
 
                 <ModelButton onCancel={onClose} handleSave={handleSave} />

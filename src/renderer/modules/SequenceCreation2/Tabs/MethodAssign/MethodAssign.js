@@ -334,29 +334,3 @@ const MethodAssign = (props) => {
 }
 
 export default MethodAssign
-
-// const ZoomablePanel = () => {
-//     const [isExpanded, setIsExpanded] = useState(false)
-
-//     return (
-//         <>
-//             {!isExpanded && (
-//                 <motion.div layoutId="method-panel" className="rounded-lg w-1/2 border p-2 -mr-2 pr-2 ml-4" onClick={() => setIsExpanded(true)}>
-//                     <MethodAssign />
-//                 </motion.div>
-//             )}
-
-//             {isExpanded && (
-//                 <motion.div
-//                     layoutId="method-panel"
-//                     className="fixed inset-0 z-50 bg-white p-4 border rounded-lg w-[90vw] h-[90vh] border-neutral-500 m-auto overflow-auto"
-//                     onClick={() => setIsExpanded(false)}
-//                 >
-//                     <MethodAssign />
-//                 </motion.div>
-//             )}
-//         </>
-//     )
-// }
-
-// export default ZoomablePanel

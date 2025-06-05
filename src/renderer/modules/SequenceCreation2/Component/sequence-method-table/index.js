@@ -17,8 +17,6 @@ export default function SequenceMethodTable() {
 
     const methods = useSelector((state) => state.methodSetup.method)
 
-    console.log(` o index factor : `, watch(`sequence[${0}].methodData.last_deaWashXFactor`))
-
     const sequenceMethod = useMemo(() => {
         return sequence?.map((el, index) => {
             const method = methods?.find((method) => method.id === el?.method?.value)

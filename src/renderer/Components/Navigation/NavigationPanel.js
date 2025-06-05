@@ -36,11 +36,11 @@ export default function NavigationPanel({ isNavOpen, setIsNavOpen }) {
             isShowSubLink: true,
             subLink: [{ label: "Sequence Editor", to: "sequence-editor" }]
         },
-        {
-            label: "Synthesis Procedure",
-            icon: Proportions,
-            to: "synthesis-procedure"
-        },
+        // {
+        //     label: "Synthesis Procedure",
+        //     icon: Proportions,
+        //     to: "synthesis-procedure"
+        // },
         {
             label: "Command",
             icon: Terminal,
