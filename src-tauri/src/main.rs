@@ -257,101 +257,94 @@
 // src-tauri/src/main.rs
 
 // #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-
+mod logger;
+use logger::{LogLevel, Logger};
 use serde::{Deserialize, Serialize};
 use serialport::{SerialPort, SerialPortBuilder};
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex}; // For shared serial port access
-use std::time::{Duration, Instant}; // For timing commands
-use tauri::{Emitter, Manager, Window};
-use tokio::time::sleep; // Explicitly import tokio::time::sleep // bring in Manager so we can emit
+use std::sync::{Arc, Mutex};
+use std::time::{Duration, Instant};
+use tauri::{Emitter, Manager, Window}; // Add Emitter here
+use tokio::time::sleep;
 
-// Define the structure for your commands
 #[derive(Debug, Deserialize, Serialize)]
 pub struct CommandsInput {
-    // Using HashMap to allow for dynamic thread names (thread1, thread2, etc.)
-    // Each thread contains a vector of optional strings (for commands or null)
     #[serde(flatten)]
     pub threads: HashMap<String, Vec<Option<String>>>,
-    pub port_name: String,               // Add port_name to the input
-    pub baud_rate: u32,                  // Add baud_rate to the input
-    pub universal_delay_ms: Option<u64>, // <- Add this
+    pub port_name: String,
+    pub baud_rate: u32,
+    pub universal_delay_ms: Option<u64>,
 }
 
-// Tauri command to handle incoming commands from React
 #[tauri::command]
 async fn execute_serial_commands(window: Window, input: CommandsInput) -> Result<String, String> {
-    println!("Received commands: {:?}", input);
+    // Wrap Logger in Arc for sharing across threads without implementing Clone for it directly
+    let logger = Arc::new(Logger::new("D:\\testing_file_saving\\app_logs"));
 
     window
         .emit("commands-received", &input)
-        .map_err(|e| format!("failed to emit event: {}", e))?;
+        .map_err(|e| format!("Failed to emit event: {}", e))?;
 
-    // --- Open the serial port ONCE and share it securely ---
     let port_builder: SerialPortBuilder =
-        serialport::new(&input.port_name, input.baud_rate).timeout(Duration::from_millis(10)); // Small timeout for non-blocking reads/writes
+        serialport::new(&input.port_name, input.baud_rate).timeout(Duration::from_millis(10));
 
     let port: Box<dyn SerialPort> = match port_builder.open() {
         Ok(p) => {
-            println!("Successfully opened serial port: {}", input.port_name);
+            logger.log(
+                LogLevel::INFO,
+                "SYSTEM",
+                &format!("Successfully opened port: {}", input.port_name),
+            );
             p
         }
         Err(e) => {
-            let error_msg = format!("Failed to open serial port {}: {:?}", input.port_name, e);
-            eprintln!("{}", error_msg);
-            return Err(error_msg);
+            let msg = format!("Failed to open port {}: {:?}", input.port_name, e);
+            logger.log(LogLevel::ERROR, "SYSTEM", &msg);
+            return Err(msg);
         }
     };
 
-    // Wrap the serial port in an Arc and Mutex to safely share it across multiple async tasks
     let shared_port = Arc::new(Mutex::new(port));
-
     let mut join_handles = Vec::new();
 
-    // Iterate over each thread (e.g., "thread1", "thread2")
     for (thread_name, command_list) in input.threads {
         let command_list = command_list.clone();
         let thread_shared_port = Arc::clone(&shared_port);
-        let window_clone = window.clone(); // clone the window for use inside the async block
+        let window_clone = window.clone();
+        let logger_clone = Arc::clone(&logger); // Use Arc::clone for logger
+        let thread_name_clone = thread_name.clone();
 
         let handle = tokio::spawn(async move {
-            let emit_log = |msg: &str| {
-                println!("{}", msg); // still print to terminal
-                let _ = window_clone.emit("serial-log", msg.to_string()); // ignore error if no listener
+            let emit_log = |level: LogLevel, msg: &str| {
+                logger_clone.log(level, &thread_name_clone, msg);
+                let _ = window_clone.emit("serial-log", msg.to_string()); // `emit` method should be available now
             };
 
-            emit_log(&format!("Starting thread: {}", thread_name));
+            emit_log(LogLevel::INFO, "Starting thread");
 
             for (index, command_option) in command_list.into_iter().enumerate() {
                 if let Some(command) = command_option {
                     let start_time = Instant::now();
-
-                    emit_log(&format!(
-                        "[{}] Thread '{}' executing command: {}",
-                        index, thread_name, command
-                    ));
+                    emit_log(
+                        LogLevel::INFO,
+                        &format!("({}) Executing command: {}", index, command),
+                    );
 
                     let mut should_hold = false;
                     let mut hold_time_ms: u64 = 0;
 
                     if command.starts_with("HOLD ") {
-                        let parts: Vec<&str> = command.split_whitespace().collect();
-                        if parts.len() == 2 && parts[1].ends_with(';') {
-                            let hold_time_str = parts[1].trim_end_matches(';');
+                        if let Some(hold_str) = command.split_whitespace().nth(1) {
+                            let hold_time_str = hold_str.trim_end_matches(';');
                             if let Ok(time) = hold_time_str.parse::<u64>() {
                                 should_hold = true;
                                 hold_time_ms = time;
                             } else {
-                                emit_log(&format!(
-                                    "[{}] Thread '{}': Invalid HOLD time: {}",
-                                    index, thread_name, command
-                                ));
+                                emit_log(
+                                    LogLevel::WARN,
+                                    &format!("Invalid HOLD time: {}", command),
+                                );
                             }
-                        } else {
-                            emit_log(&format!(
-                                "[{}] Thread '{}': Invalid HOLD format: {}",
-                                index, thread_name, command
-                            ));
                         }
                     } else if command.contains(",SL,") || command.contains(",SN,") {
                         let parts: Vec<&str> = command.trim_end_matches(';').split(',').collect();
@@ -360,16 +353,11 @@ async fn execute_serial_commands(window: Window, input: CommandsInput) -> Result
                                 should_hold = true;
                                 hold_time_ms = time;
                             } else {
-                                emit_log(&format!(
-                                    "[{}] Thread '{}': Could not parse hold time: {}",
-                                    index, thread_name, command
-                                ));
+                                emit_log(
+                                    LogLevel::WARN,
+                                    &format!("Failed to parse hold time: {}", command),
+                                );
                             }
-                        } else {
-                            emit_log(&format!(
-                                "[{}] Thread '{}': Malformed SL/SN command: {}",
-                                index, thread_name, command
-                            ));
                         }
                     }
 
@@ -378,71 +366,64 @@ async fn execute_serial_commands(window: Window, input: CommandsInput) -> Result
                         let command_bytes = format!("{}\r\n", command).into_bytes();
 
                         match serial_port.write_all(&command_bytes) {
-                            Ok(_) => {}
+                            Ok(_) => {
+                                emit_log(LogLevel::INFO, "Command sent to serial port");
+                            }
                             Err(e) => {
-                                emit_log(&format!(
-                                    "[{}] Thread '{}': Failed to write to port: {}",
-                                    index, thread_name, e
-                                ));
-                                return Err(format!(
-                                    "Write error for thread {}: {}",
-                                    thread_name, e
-                                ));
+                                let err_msg = format!("Write failed: {}", e);
+                                emit_log(LogLevel::ERROR, &err_msg);
+                                return Err(err_msg);
                             }
                         }
                     }
 
                     if should_hold {
-                        emit_log(&format!(
-                            "[{}] Thread '{}' holding for {} ms...",
-                            index, thread_name, hold_time_ms
-                        ));
+                        emit_log(
+                            LogLevel::INFO,
+                            &format!("Holding for {} ms...", hold_time_ms),
+                        );
                         sleep(Duration::from_millis(hold_time_ms)).await;
-                        emit_log(&format!("[{}] Thread '{}' resumed.", index, thread_name));
+                        emit_log(LogLevel::INFO, "Hold complete, resuming...");
                     }
 
                     let duration = start_time.elapsed();
-
-                    emit_log(&format!(
-                        "[{}] Thread '{}' command '{}' completed in {:?}",
-                        index, thread_name, command, duration
-                    ));
+                    emit_log(
+                        LogLevel::INFO,
+                        &format!("Command completed in {:?}", duration),
+                    );
 
                     if let Some(delay) = input.universal_delay_ms {
-                        emit_log(&format!(
-                            "[{}] Thread '{}' applying universal delay of {} ms...",
-                            index, thread_name, delay
-                        ));
+                        emit_log(
+                            LogLevel::INFO,
+                            &format!("Applying universal delay: {} ms", delay),
+                        );
                         sleep(Duration::from_millis(delay)).await;
                     }
                 } else {
-                    emit_log(&format!(
-                        "[{}] Thread '{}' skipping null command.",
-                        index, thread_name
-                    ));
+                    emit_log(
+                        LogLevel::INFO,
+                        &format!("({}) Skipping null command", index),
+                    );
                 }
             }
 
-            Ok(format!("Thread '{}' finished execution.", thread_name))
+            emit_log(LogLevel::INFO, "Thread finished");
+            Ok(format!("Thread {} complete", thread_name_clone))
         });
 
         join_handles.push(handle);
     }
 
-    // Wait for all threads to complete (for logging/debugging on backend)
     let mut thread_results = Vec::new();
     for handle in join_handles {
         match handle.await {
-            Ok(thread_res) => thread_results.push(thread_res),
-            Err(e) => eprintln!("Task for a thread panicked or failed to join: {:?}", e),
+            Ok(result) => thread_results.push(result),
+            Err(e) => logger.log(LogLevel::ERROR, "SYSTEM", &format!("Join error: {:?}", e)),
         }
     }
 
-    println!(
-        "All command threads initiated. Results: {:?}",
-        thread_results
-    );
-    Ok("All command threads started and processing. Check console for details.".into())
+    logger.log(LogLevel::INFO, "SYSTEM", "All threads complete.");
+    Ok("All command threads started and processing.".into())
 }
 
 fn main() {

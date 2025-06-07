@@ -18,6 +18,7 @@ import Demo from "../../modules/Demo/Demo"
 import SequenceCommand from "../../modules/SequenceCommand/SequenceCommand"
 import CommandEditor from "../../modules/CommandEditor"
 import SynthesisProcedure from "../../modules/synthesis-procedure"
+import SystemLog from "../../modules/system-log"
 import NavigationPanel from "./NavigationPanel"
 // import SynthesisProcedure from "../../modules/synthesis-procedure/procedure-list"
 
@@ -38,7 +39,8 @@ const routeConfig = {
     "/run-synthesis": { name: "Synthesis", Component: Demo },
     "/synthesis-procedure": { name: "Synthesis Procedure", Component: SynthesisProcedure },
     "/sequence-command": { name: "Sequence Command", Component: SequenceCommand },
-    "/command-editor": { name: "Command Editor", Component: CommandEditor }
+    "/command-editor": { name: "Command Editor", Component: CommandEditor },
+    "/system-log": { name: "System Log", Component: SystemLog }
 }
 
 const findSequenceName = (sequence, id) => {

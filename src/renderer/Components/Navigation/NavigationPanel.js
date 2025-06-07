@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { LayoutGrid, Settings, List, BookText, ChevronRight, ChevronLeft, Terminal, Proportions, AudioWaveform } from "lucide-react"
+import { LayoutGrid, Settings, List, BookText, ChevronRight, ChevronLeft, Terminal, Proportions, AudioWaveform, Notebook } from "lucide-react"
 import { useNavigationPanel } from "../../../utils/context/navigation-provider"
 
 export default function NavigationPanel({ isNavOpen, setIsNavOpen }) {
@@ -45,6 +45,11 @@ export default function NavigationPanel({ isNavOpen, setIsNavOpen }) {
             label: "Command",
             icon: Terminal,
             to: "command-editor"
+        },
+        {
+            label: "System Log",
+            icon: Notebook,
+            to: "system-log"
         }
     ]
 
